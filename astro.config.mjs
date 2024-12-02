@@ -27,6 +27,6 @@ export default defineConfig({
   ],
   output: 'server',
   adapter: vercel(),
-  site: 'https://zjunbin1286.github.io',
-  base: 'joey-blog',
+  // site: 'https://zjunbin1286.github.io',
+  // base: 'joey-blog',
 });
