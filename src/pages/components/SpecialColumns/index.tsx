@@ -1,4 +1,5 @@
 import React from 'react'
+import { listData } from './data'
 
 /**
  * 专栏
@@ -6,6 +7,15 @@ import React from 'react'
  */
 export default function SpecialColumns() {
   return (
-    <h1>敬请期待...</h1>
+    <div className='collection-content'>
+      {listData.map((item, index) => (
+        <div key={item.url} className={`p-5 rounded-md  hover:bg-[#f6f7f9]`}>
+          <div className='item text-[24px] font-bold'>
+            <a href={item.url}>{item.title}</a>
+          </div>
+          <p>{item.description}</p>
+        </div>
+      ))}
+    </div>
   )
 }
