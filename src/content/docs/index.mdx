@@ -17,6 +17,27 @@ hero:
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
+import { LinkCard } from '@astrojs/starlight/components';
+import { Icon } from '@astrojs/starlight/components';
+
+## 我的内容
+<CardGrid>
+  <LinkCard
+    title="作品集"
+    href="/collection"
+    icon="open-book"
+    description='收录了我的项目，包括React、Vue、Vite、NodeCLI、等'
+  >
+    一些你想着重展示的有趣内容。
+  </LinkCard>
+  <LinkCard
+    title="作品集"
+    href="/special-column"
+    icon="open-book"
+    description='我的文章专栏'>
+    更多你想分享的信息。
+  </LinkCard>
+</CardGrid>
 
 ## Next steps
 
