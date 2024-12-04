@@ -21,7 +21,7 @@ import { Card, CardGrid } from '@astrojs/starlight/components';
 import { LinkCard } from '@astrojs/starlight/components';
 import { Icon } from '@astrojs/starlight/components';
 
-## 我的内容
+## 快捷跳转
 <CardGrid>
   <LinkCard
     title="作品集"
@@ -40,19 +40,19 @@ import { Icon } from '@astrojs/starlight/components';
   </LinkCard>
 </CardGrid>
 
-## Next steps
+## 我的内容
 
 <CardGrid stagger>
-	<Card title="Update content" icon="pencil">
-		Edit `src/content/docs/index.mdx` to see this page change.
+	<Card title="作品集" icon="pencil">
+		收录了我的项目，包括React、Vue、Vite、HTML、CSS、NodeCLI等，查看更多详情 [点击前往](/collection).
+	</Card>
+	<Card title="文章专栏" icon="open-book">
+		包含的类别有 React、Vue、Vite、HTML、CSS等，查看更多详情 [点击前往](/special-column).
 	</Card>
 	<Card title="Add new content" icon="add-document">
 		Add Markdown or MDX files to `src/content/docs` to create new pages.
 	</Card>
 	<Card title="Configure your site" icon="setting">
 		Edit your `sidebar` and other config in `astro.config.mjs`.
-	</Card>
-	<Card title="Read the docs" icon="open-book">
-		Learn more in [the Starlight Docs](https://starlight.astro.build/).
 	</Card>
 </CardGrid>
