@@ -1,5 +1,6 @@
 import React from 'react'
 import { listData } from './data'
+import styles from './styles.module.scss';
 
 /**
  * 专栏
@@ -9,11 +10,15 @@ export default function SpecialColumns() {
   return (
     <div className='collection-content'>
       {listData.map((item, index) => (
-        <div key={item.url} className={`p-5 rounded-md  hover:bg-[#f6f7f9]`}>
-          <div className='item text-[24px] font-bold'>
-            <a href={item.url}>{item.title}</a>
+        <div key={item.url} className={styles.collectionItem}>
+          <div className={styles.coverImg}>
+            <img src={item.coverPath} />
           </div>
-          <p>{item.description}</p>
+          <div className={styles.rightText}>
+            <a href={item.url}>{item.title}</a>
+            <p>{item.description}</p>
+            <p>{item.createDate}</p>
+          </div>
         </div>
       ))}
     </div>
