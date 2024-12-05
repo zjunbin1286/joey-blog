@@ -41,5 +41,14 @@ export default defineConfig({
       //   autogenerate: { directory: 'reference' },
       // },
     ],
+    // 使用自定义css
+    customCss: [
+      './src/styles/custom.css',
+    ],
+    // 重写组件
+    components: {
+      SocialIcons: './src/components/NavBar/index.astro',
+      Footer: './src/components/Footer/index.astro',
+    }
   }), react(), tailwind()],
 });
