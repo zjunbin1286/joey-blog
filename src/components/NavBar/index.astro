@@ -1,9 +1,14 @@
 ---
 import type { Props } from '@astrojs/starlight/props'
 import Default from '@astrojs/starlight/components/SocialIcons.astro'
+
+import './index.scss'
 ---
 
-<a href="/about-me">👀 关于我</a>
+<a href="/about-me" class="about-me">
+  <img src="/src/assets/my-avatar.png" alt="" />
+  关于我
+</a>
 <a href="/collection">🚀 作品集</a>
 <a href="/special-column">📖 文章专栏</a>
 <Default {...Astro.props}><slot /></Default>
