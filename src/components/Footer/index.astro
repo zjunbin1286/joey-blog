@@ -1,6 +1,18 @@
 ---
 import type { Props } from '@astrojs/starlight/props'
+import Default from '@astrojs/starlight/components/Footer.astro'
 import './index.css'
+
+// 判断是否为首页
+const isHomePage = Astro.props.slug === ''
 ---
 
-<div class="footer-content">💖 Love life, keep moving forward | 热爱生活，不断前进</div>
+{
+  isHomePage ? (
+    <footer class="footer-content">💖 Love life, keep moving forward | 热爱生活，不断前进</footer>
+  ) : (
+    <Default {...Astro.props}>
+      <slot />
+    </Default>
+  )
+}
