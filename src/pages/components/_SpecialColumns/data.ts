@@ -12,7 +12,7 @@ export const listData: ListItem[] = [
     title: 'Vue.js',
     url: '/articles/vue',
     description: '渐进式 JavaScript 框架，易学易用，性能出色，适用场景丰富的 Web 前端框架。',
-    coverPath: '/src/assets/collection/vue.jpg',
+    coverPath: '/public/vue.jpg',
     createDate: '2024-12-05',
   },
   {
