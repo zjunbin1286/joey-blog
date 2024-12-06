@@ -1,12 +1,14 @@
 ---
 import type { Props } from '@astrojs/starlight/props'
 import Default from '@astrojs/starlight/components/SocialIcons.astro'
+import { Image } from 'astro:assets'
 
+import avatar from '../../assets/my-avatar.png'
 import './index.scss'
 ---
 
 <a href="/about-me" class="about-me">
-  <img src="/src/assets/my-avatar.png" alt="" />
+  <Image src={avatar} alt="" />
   关于我
 </a>
 <a href="/collection">🚀 作品集</a>
