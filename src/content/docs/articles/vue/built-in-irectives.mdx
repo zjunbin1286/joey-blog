@@ -52,7 +52,9 @@ title: Vue内置指令大全
 事件类型由参数来指定。表达式可以是一个方法名，一个内联声明，如果有修饰符则可省略。
 
 * 当用于普通元素，只监听[**原生 DOM 事件**](https://developer.mozilla.org/en-US/docs/Web/Events)。当用于自定义元素组件，则监听子组件触发的**自定义事件**。
+
 * 当监听原生 DOM 事件时，方法接收原生事件作为唯一参数。如果使用内联声明，声明可以访问一个特殊的 `$event` 变量：`v-on:click="handle('ok', $event)"`。
+
 * `v-on` 还支持绑定不带参数的事件/监听器对的对象。请注意，当使用对象语法时，不支持任何修饰符。
 ```
 <!-- 方法处理函数 -->
@@ -105,10 +107,14 @@ title: Vue内置指令大全
 * `.attr` ——强制绑定为 DOM attribute。3.2+
 
 **用途：**
-* 当用于绑定 `class` 或 `style` attribute，`v-bind` 支持额外的值类型如数组或对象。详见下方的指南链接。
-* 在处理绑定时，Vue 默认会利用 `in` 操作符来检查该元素上是否定义了和绑定的 key 同名的 DOM property。如果存在同名的 property，则 Vue 会把作为 DOM property 赋值，而不是作为 attribute 设置。这个行为在大多数情况都符合期望的绑定值类型，但是你也可以显式用 `.prop` 和 `.attr` 修饰符来强制绑定方式。有时这是必要的，特别是在和[自定义元素](https://cn.vuejs.org/guide/extras/web-components.html#passing-dom-properties)打交道时。
-* 当用于组件 props 绑定时，所绑定的 props 必须在子组件中已被正确声明。
-* 当不带参数使用时，可以用于绑定一个包含了多个 attribute 名称-绑定值对的对象。
+
+1、当用于绑定 `class` 或 `style` attribute，`v-bind` 支持额外的值类型如数组或对象。详见下方的指南链接。
+
+2、在处理绑定时，Vue 默认会利用 `in` 操作符来检查该元素上是否定义了和绑定的 key 同名的 DOM property。如果存在同名的 property，则 Vue 会把作为 DOM property 赋值，而不是作为 attribute 设置。这个行为在大多数情况都符合期望的绑定值类型，但是你也可以显式用 `.prop` 和 `.attr` 修饰符来强制绑定方式。有时这是必要的，特别是在和[自定义元素](https://cn.vuejs.org/guide/extras/web-components.html#passing-dom-properties)打交道时。
+
+3、当用于组件 props 绑定时，所绑定的 props 必须在子组件中已被正确声明。
+
+4、 当不带参数使用时，可以用于绑定一个包含了多个 attribute 名称-绑定值对的对象。
 ```html
 <!-- 绑定 attribute -->
 <img v-bind:src="imageSrc" />
