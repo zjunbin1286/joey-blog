@@ -7,6 +7,7 @@ import tailwind from '@astrojs/tailwind';
 export default defineConfig({
   integrations: [starlight({
     title: 'Joey',
+    favicon: '/avatar.png',
     social: {
       github: 'https://github.com/zjunbin1286',
     },
@@ -49,6 +50,11 @@ export default defineConfig({
     components: {
       SocialIcons: './src/components/NavBar/index.astro',
       Footer: './src/components/Footer/index.astro',
-    }
+    },
+    // 渲染代码块的配置
+    expressiveCode: {
+      styleOverrides: { borderRadius: '0.3rem' },
+    },
+    lastUpdated: true,
   }), react(), tailwind()],
 });
