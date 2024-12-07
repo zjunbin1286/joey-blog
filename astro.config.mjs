@@ -16,6 +16,7 @@ export default defineConfig({
         label: 'Vue',
         items: [
           // Each item here is one entry in the navigation menu.
+          { label: 'Vue内置指令大全', slug: 'articles/vue/built-in-irectives' },
           { label: '全面拥抱Vue3，Vuex4 最新详解教程！', slug: 'articles/vue/vuex4' },
         ],
       },
