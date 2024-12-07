@@ -10,7 +10,7 @@ description: A guide in my new Starlight docs site.
 
 ## Vuex4 的工作流程
 
-![vuex4.png](../../../assets/vuex4.png)
+![vuex4.png](../../../assets/vue/vuex4.png)
 ## 1. 学习初始
 这里使用 vuecli 来快速创建一个vue3项目，这里选择 JS 编写（使用 JS 或 TS 都可以）
 ```
