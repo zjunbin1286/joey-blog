@@ -1,0 +1,32 @@
+---
+import styles from './styles.module.scss'
+import { listData } from './data'
+---
+
+<div class="collection-content">
+  {
+    listData.map((item, index) => (
+      <div class={styles.collectionItem}>
+        <div class={styles.coverImg}>
+          <img src={item.coverPath} class="toArticle" data-url={item.url} />
+        </div>
+        <div class={styles.rightText}>
+          <a href={item.url}>{item.title}</a>
+          <p>{item.description}</p>
+          <p>{item.createDate}</p>
+        </div>
+      </div>
+    ))
+  }
+</div>
+
+<script>
+  const buttons = document.querySelectorAll('.toArticle')
+  const handleClick = (e: Record<string, any>) => {
+    window.open(e.target.dataset.url, '_self')
+  }
+
+  buttons.forEach(button => {
+    button.addEventListener('click', handleClick)
+  })
+</script>
