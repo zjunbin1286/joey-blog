@@ -29,6 +29,7 @@ export default defineConfig({
         label: 'React',
         items: [
           { label: 'React-Router6 全面解析', slug: 'articles/react/router6' },
+          { label: '关于 React 的几个常用技巧', slug: 'articles/react/common-techniques' },
         ],
       },
       {
