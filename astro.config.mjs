@@ -2,6 +2,7 @@ import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import react from '@astrojs/react';
 import tailwind from '@astrojs/tailwind';
+import starlightImageZoom from 'starlight-image-zoom'
 
 // https://astro.build/config
 export default defineConfig({
@@ -58,6 +59,9 @@ export default defineConfig({
     expressiveCode: {
       styleOverrides: { borderRadius: '0.3rem' },
     },
+    // 文章的最后修改时间
     lastUpdated: true,
+    // 注册插件
+    plugins: [starlightImageZoom()],
   }), react(), tailwind()],
 });
