@@ -1,0 +1,251 @@
+---
+title: Vue常用修饰符详解
+---
+
+:::tip[前言]
+最近在写Vue的项目，由于有一段时间没写的原因，对Vue中的修饰符有些生疏了。所以花了点时间去看了下文档，所以，本文将总结关于Vue中的一些常见的修饰符和写法，希望对大家有所帮助,谢谢。
+:::
+
+## 一、修饰符是什么
+
+在`Vue`中，修饰符处理了许多`DOM`事件的细节，让我们不再需要花大量的时间去处理这些烦恼的事情，而能有更多的精力专注于程序的逻辑处理
+
+`vue`中修饰符分为以下五种：
+
+- 表单修饰符
+- 事件修饰符
+- 鼠标按键修饰符
+- 键值修饰符
+- v-bind修饰符
+
+## 二、常见的修饰符
+
+### 2.1 表单修饰符
+
+在我们填写表单的时候用得最多的是`input`标签，指令用得最多的是`v-model`
+
+关于表单的修饰符有如下：
+
+-   lazy
+-   trim
+-   number
+
+#### 1. lazy
+
+默认情况下，`v-model` 会在每次 `input` 事件后更新数据。你可以添加 `lazy` 修饰符来改为在每次 `change` 事件后更新数据：
+```html
+<input type="text" v-model.lazy="value">
+<p>{{value}}</p>
+```
+
+#### 2. trim
+
+如果你想要默认自动去除用户输入内容中两端的空格，你可以在 `v-model` 后添加 `.trim` 修饰符：
+
+```html
+<input type="text" v-model.trim="value">
+```
+
+#### 3. number
+
+如果你想让用户输入自动转换为数字，你可以在 `v-model` 后添加 `.number` 修饰符来管理输入：
+
+```html
+<input v-model.number="age" type="number">
+```
+
+### 2.2 事件修饰符
+
+事件修饰符是对事件捕获以及目标进行了处理，有如下修饰符：
+
+-   stop
+-   prevent
+-   self
+-   once
+-   capture
+-   passive
+-   native
+
+#### 1. stop
+
+阻止了事件冒泡，相当于调用了`event.stopPropagation`方法，单击事件将停止传递
+
+```html
+<div @click="shout(2)">
+    <button @click.stop="shout(1)">ok</button> 
+</div> 
+//只输出1
+```
+
+#### 2. prevent
+
+阻止了事件的默认行为，相当于调用了`event.preventDefault`方法，提交事件将不再重新加载页面
+
+```html
+<form @submit.prevent="onSubmit"></form>
+```
+
+#### 3. self
+
+仅当 event.target 是元素本身时才会触发事件处理器，例如：事件处理器不来自子元素
+
+```html
+<div v-on:click.self="doThat">...</div>
+```
+
+> 使用修饰符时需要注意调用顺序，因为相关代码是以相同的顺序生成的。因此使用 `@click.prevent.self` 会阻止**元素及其子元素的所有点击事件的默认行为**而 `@click.self.prevent` 则只会阻止对元素本身的点击事件的默认行为。
+
+#### 4. once
+
+绑定了事件以后只能触发一次，第二次就不会触发
+
+```html
+<button @click.once="shout(1)">ok</button>
+```
+
+#### 5. capture
+
+添加事件监听器时，使用 `capture` 捕获模式，例如：指向内部元素的事件，在被内部元素处理前，先被外部处理。使事件触发从包含这个元素的顶层开始往下触发
+
+```html
+<div @click.capture="shout(1)">
+    obj1
+<div @click.capture="shout(2)">
+    obj2
+<div @click="shout(3)">
+    obj3
+<div @click="shout(4)">
+    obj4
+</div>
+</div>
+</div>
+</div>
+// 输出结构: 1 2 4 3 
+```
+
+#### 6. passive
+
+在移动端，当我们在监听元素滚动事件的时候，会一直触发`onscroll`事件会让我们的网页变卡，因此我们使用这个修饰符的时候，相当于给`onscroll`事件整了一个`.lazy`修饰符。
+
+滚动事件的默认行为 (scrolling) 将立即发生而非等待 `onScroll` 完成，以防其中包含 `event.preventDefault()`
+```html
+<!-- 滚动事件的默认行为 (即滚动行为) 将会立即触发 -->
+<!-- 而不会等待 `onScroll` 完成  -->
+<!-- 这其中包含 `event.preventDefault()` 的情况 -->
+<div v-on:scroll.passive="onScroll">...</div>
+```
+`.passive` 修饰符一般用于触摸事件的监听器，可以用来[改善移动端设备的滚屏性能](https://developer.mozilla.org/zh-CN/docs/Web/API/EventTarget/addEventListener#%E4%BD%BF%E7%94%A8_passive_%E6%94%B9%E5%96%84%E7%9A%84%E6%BB%9A%E5%B1%8F%E6%80%A7%E8%83%BD)。
+
+
+> 请勿同时使用 `.passive` 和 `.prevent`，因为 `.passive` 已经向浏览器表明了你*不想*阻止事件的默认行为。如果你这么做了，则 `.prevent` 会被忽略，并且浏览器会抛出警告。
+
+#### 7. native
+
+让组件变成像`html`内置标签那样监听根元素的原生事件，否则组件上使用 `v-on` 只会监听自定义事件
+
+```html
+<my-component v-on:click.native="doSomething"></my-component>
+```
+
+> 使用.native修饰符来操作普通HTML标签是会令事件失效的
+
+### 2.3 鼠标按钮修饰符
+
+鼠标按钮修饰符针对的就是左键、右键、中键点击，有如下：
+
+-   left 左键点击
+-   right 右键点击
+-   middle 中键点击
+
+```html
+<button @click.left="shout(1)">ok</button>
+<button @click.right="shout(1)">ok</button>
+<button @click.middle="shout(1)">ok</button>
+```
+
+### 2.4 键盘修饰符
+
+键盘修饰符是用来修饰键盘事件（`onkeyup`，`onkeydown`）的，有如下：
+
+`keyCode`存在很多，但`vue`为我们提供了别名，分为以下两种：
+
+-   普通键（enter、tab、delete、space、esc、up...）
+-   系统修饰键（ctrl、alt、meta、shift...）
+
+```html
+// 只有按键为keyCode的时候才触发 
+<input type="text" @keyup.keyCode="shout()">
+```
+
+
+### 2.5 v-bind修饰符
+
+v-bind修饰符主要是为属性进行操作，用来分别有如下：
+
+-   async
+-   prop
+-   camel
+
+#### 1. async
+
+能对`props`进行一个双向绑定
+
+```html
+//父组件
+<comp :myMessage.sync="bar"></comp> 
+//子组件
+this.$emit('update:myMessage',params);
+```
+
+以上这种方法相当于以下的简写
+
+```html
+//父亲组件
+<comp :myMessage="bar" @update:myMessage="func"></comp>
+func(e){
+ this.bar = e;
+}
+//子组件js
+func2(){
+  this.$emit('update:myMessage',params);
+}
+```
+
+使用`async`需要注意以下两点：
+
+-   使用`sync`的时候，子组件传递的事件名格式必须为`update:value`，其中`value`必须与子组件中`props`中声明的名称完全一致
+-   注意带有 `.sync` 修饰符的 `v-bind` 不能和表达式一起使用
+-   将 `v-bind.sync` 用在一个字面量的对象上，例如 `v-bind.sync=”{ title: doc.title }”`，是无法正常工作的
+
+#### 2. props
+
+设置自定义标签属性，避免暴露数据，防止污染HTML结构
+
+```html
+<input id="uid" title="title1" value="1" :index.prop="index">
+```
+
+#### 3. camel
+
+将命名变为驼峰命名法，如将` view-Box`属性名转换为 `viewBox`
+
+```html
+<svg :viewBox="viewBox"></svg>
+```
+
+## 三、应用场景
+
+根据每一个修饰符的功能，我们可以得到以下修饰符的应用场景：
+
+-   `.stop`：阻止事件冒泡
+-   `.native`：绑定原生事件
+-   `.once`：事件只执行一次
+-   `.self `：将事件绑定在自身身上，相当于阻止事件冒泡
+-   `.prevent`：阻止默认事件
+-   `.capture`：用于事件捕获
+-   `.once`：只触发一次
+-   `.keyCode`：监听特定键盘按下
+-   `.right`：右键
+
+
+> 每文一句：爱学出勤奋，勤奋出天才。——郭沫若
