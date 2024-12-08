@@ -44,6 +44,7 @@ export default defineConfig({
         label: 'Html5&CSS3',
         items: [
           { label: '浅析HTML页面的生命周期', slug: 'articles/html5-css3/life-cycle' },
+          { label: '如何使用 CSS 提高页面性能？', slug: 'articles/html5-css3/page-performance' },
         ],
       },
       // {
