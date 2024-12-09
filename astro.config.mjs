@@ -45,6 +45,7 @@ export default defineConfig({
         items: [
           { label: '浅析HTML页面的生命周期', slug: 'articles/html5-css3/life-cycle' },
           { label: '如何使用 CSS 提高页面性能？', slug: 'articles/html5-css3/page-performance' },
+          { label: '前端页面之“回流重绘”', slug: 'articles/html5-css3/reflux-redrawing' },
         ],
       },
       // {
