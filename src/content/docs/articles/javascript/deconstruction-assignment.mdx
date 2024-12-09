@@ -1,0 +1,247 @@
+---
+title: 你真的了解 “对象解构赋值” 吗？关于对象解构的全面解析 ✌
+---
+
+## 1. 语法介绍
+
+ECMAScript 6 新增了对象解构语法，可以在一条语句中使用嵌套数据实现一个或多个赋值操作。简单地说，对象解构就是使用与对象匹配的结构来实现对象属性赋值。
+
+## 2. 解构的一般使用方式
+
+下面的例子展示了两段等价的代码，首先是不使用对象解构的：
+
+```js
+// 不使用对象解构
+let person = {
+ name: 'CoderBin',
+ age: 18
+};
+
+let personName = person.name,
+let personAge = person.age;
+
+console.log(personName); // CoderBin
+console.log(personAge); // 18
+```
+
+然后，是使用对象解构的：
+
+```js
+// 使用对象解构
+let person = {
+ name: 'CoderBin',
+ age: 18
+};
+
+let { name: personName, age: personAge } = person;
+
+console.log(personName); // CoderBin
+console.log(personAge); // 18
+
+```
+
+## 3. 直接使用属性名称做变量名
+
+使用解构，可以在一个类似对象字面量的结构中，声明多个变量，同时执行多个赋值操作。如果想让变量直接使用属性的名称，那么可以使用简写语法，比如：
+
+```js
+let person = {
+ name: 'CoderBin',
+ age: 18
+};
+
+let { name, age } = person;
+
+console.log(name); // CoderBin
+console.log(age); // 18
+```
+
+解构赋值不一定与对象的属性匹配。赋值的时候可以忽略某些属性，而如果引用的属性不存在，则该变量的值就是undefined ：
+
+```js
+let person = {
+ name: 'CoderBin',
+ age: 18
+};
+
+let { name, job } = person;
+
+console.log(name); // CoderBin
+console.log(job); // undefined
+```
+
+## 4. 解构时定义默认值
+
+也可以在解构赋值的同时定义默认值，这适用于前面刚提到的引用的属性不存在于源对象中的情况：
+
+```js
+let person = {
+ name: 'CoderBin',
+ age: 18
+};
+
+let { name, address='guangdong' } = person;
+
+console.log(name); // CoderBin
+console.log(address); // guangdong
+```
+
+解构在内部使用函数  `ToObject()`（不能在运行时环境中直接访问）把源数据结构转换为对象。这意味着在对象解构的上下文中，原始值会被当成对象。这也意味着（根据ToObject() 的定义），null 和 undefined 不能被解构，否则会抛出错误。
+
+```js
+let { length } = 'foobar';
+console.log(length); // 6
+
+let { constructor: c } = 4;
+console.log(c === Number); // true
+
+let { _ } = null; // TypeError
+let { _ } = undefined; // TypeError
+```
+
+解构并不要求变量必须在解构表达式中声明。不过，如果是给事先声明的变量赋值，则赋值表达式必须包含在一对括号中：
+
+```js
+let personName, personAge;
+let person = {
+ name: 'CoderBin',
+ age: 18
+};
+({name: personName, age: personAge} = person);
+console.log(personName, personAge); // CoderBin, 18
+```
+
+## 5. 嵌套解构
+
+解构对于引用嵌套的属性或赋值目标没有限制。为此，可以通过解构来复制对象属性：
+
+```js
+let person = {
+  name: 'CoderBin',
+  age: 18,
+  job: {
+    title: 'student'
+  }
+};
+
+let personCopy = {};	// 定义空对象，用来存放解构出来的 person 属性值
+
+({
+ name: personCopy.name,
+ age: personCopy.age,
+ job: personCopy.job
+} = person);
+
+// 因为一个对象的引用被赋值给personCopy，所以修改
+// person.job对象的属性也会影响personCopy
+person.job.title = 'author'
+
+console.log(person);
+// { name: 'CoderBin', age: 18, job: { title: 'author' } }
+
+console.log(personCopy);
+// { name: 'CoderBin', age: 18, job: { title: 'author' } }
+
+```
+
+解构赋值可以使用嵌套结构，以匹配嵌套的属性：
+
+```js
+let person = {
+ name: 'CoderBin',
+ age: 27,
+ job: {
+ 	title: 'student'
+ }
+};
+// 声明title变量并将person.job.title的值赋给它
+let { job: { title } } = person;
+
+console.log(title); // student
+```
+
+在外层属性没有定义的情况下不能使用嵌套解构。无论源对象还是目标对象都一样：
+
+```js
+let person = {
+ job: {
+ 	title: 'student'
+ }
+};
+
+let personCopy = {};
+// foo在源对象上是undefined
+({
+ foo: {
+ 	bar: personCopy.bar
+ }
+} = person);
+// TypeError: Cannot destructure property 'bar' of 'undefined' or 'null'.
+// 表示 person 对象上并无 foo 属性
+
+// job在目标对象上是undefined
+({
+ job: {
+ 	title: personCopy.job.title
+ }
+} = person);
+// TypeError: Cannot set property 'title' of undefined
+// 表示 personCopy 上并无 job 属性
+```
+
+## 6. 部分解构
+
+需要注意的是，涉及多个属性的解构赋值是一个输出无关的顺序化操作。如果一个解构表达式涉及多个赋值，开始的赋值成功而后面的赋值出错，则整个解构赋值只会完成一部分：
+
+```js
+let person = {
+ name: 'CoderBin',
+ age: 18
+};
+
+let personName, personBar, personAge;
+
+try {
+ // person.foo是undefined，因此会抛出错误
+ ({name: personName, foo: { bar: personBar }, age: personAge} =person);
+} catch(e) {}
+
+console.log(personName, personBar, personAge);
+// CoderBin, undefined, undefined
+```
+
+结构中断，只成功解构了第一个属性
+
+## 7. 参数上下文匹配
+
+在函数参数列表中也可以进行解构赋值。对参数的解构赋值不会影响arguments 对象，但可以在函数签名中声明在函数体内使用局部变量：
+
+```js
+let person = {
+ name: 'CoderBin',
+ age: 18
+};
+
+function printPerson(foo, {name, age}, bar) {
+ console.log(arguments);
+ console.log(name, age);
+}
+
+function printPerson2(foo, {name: personName, age: personAge}, bar)
+{
+ console.log(arguments);
+ console.log(personName, personAge);
+}
+
+printPerson('1st', person, '2nd');
+// ['1st', { name: 'CoderBin', age: 18 }, '2nd']
+// 'CoderBin', 18
+
+printPerson2('1st', person, '2nd');
+// ['1st', { name: 'CoderBin', age: 18 }, '2nd']
+// 'CoderBin', 18
+```
+
+总结：在给函数传递对象时，函数形参可以进行解构对象获取对象属性值。
+
+>每文一句：求学将以致用；读书先在虚心。
