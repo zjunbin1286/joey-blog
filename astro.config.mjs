@@ -30,6 +30,7 @@ export default defineConfig({
         items: [
           { label: '快速体验 React 开发基础入门指南', slug: 'articles/react/quick-learn-react' },
           { label: 'React-Router6 全面解析', slug: 'articles/react/router6' },
+          { label: 'Redux+React-Redux 最新入门实战指南💥', slug: 'articles/react/redux_react-redux' },
           { label: '关于 React 的几个常用技巧', slug: 'articles/react/common-techniques' },
         ],
       },
