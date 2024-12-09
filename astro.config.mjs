@@ -45,6 +45,7 @@ export default defineConfig({
           { label: '关于 JavaScript 的本地存储方案', slug: 'articles/javascript/localstorage' },
           { label: '你真的了解 “对象解构赋值” 吗？关于对象解构的全面解析 ✌', slug: 'articles/javascript/deconstruction-assignment' },
           { label: '一篇文章带你搞懂 this 的四个绑定规则 ✍', slug: 'articles/javascript/this-four-binding-rules' },
+          { label: '关于 "尾调用优化" 的那些事儿 👏', slug: 'articles/javascript/tail-call' },
         ],
       },
       {
