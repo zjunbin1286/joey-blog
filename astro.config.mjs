@@ -38,6 +38,7 @@ export default defineConfig({
         items: [
           { label: '关于 JavaScript 的本地存储方案', slug: 'articles/javascript/localstorage' },
           { label: 'ES6 中数组做了哪些新扩展？', slug: 'articles/javascript/es6' },
+          { label: '手写 call 方法', slug: 'articles/javascript/call' },
         ],
       },
       {
