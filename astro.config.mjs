@@ -43,6 +43,8 @@ export default defineConfig({
           { label: '柯里化函数 currying 的实现', slug: 'articles/javascript/currying' },
           { label: 'ES6 中数组做了哪些新扩展？', slug: 'articles/javascript/es6' },
           { label: '关于 JavaScript 的本地存储方案', slug: 'articles/javascript/localstorage' },
+          { label: '你真的了解 “对象解构赋值” 吗？关于对象解构的全面解析 ✌', slug: 'articles/javascript/deconstruction-assignment' },
+          { label: '一篇文章带你搞懂 this 的四个绑定规则 ✍', slug: 'articles/javascript/this-four-binding-rules' },
         ],
       },
       {
