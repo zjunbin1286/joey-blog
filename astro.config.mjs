@@ -50,6 +50,21 @@ export default defineConfig({
         ],
       },
       {
+        label: 'Node',
+        items: [
+          { label: 'Node入门系列-fs、path 模块的使用（1）', slug: 'articles/node/01-learn-fs-path' },
+          { label: 'Node入门系列-http 模块的使用（2）', slug: 'articles/node/02-learn-http' },
+          { label: 'Node入门系列-npm 包管理器（3）', slug: 'articles/node/03-learn-npm' },
+          { label: 'Node入门系列-Express 框架的简单使用（4）', slug: 'articles/node/04-learn-express' },
+          { label: 'Node入门系列-Express 框架的使用 — 路由（5）', slug: 'articles/node/05-learn-express-router' },
+          { label: 'Node入门系列-Express 框架的使用 — 编写接口（6）', slug: 'articles/node/06-learn-express-api' },
+          { label: 'Node入门系列-Express 框架的使用 — 中间件（7）', slug: 'articles/node/07-learn-middleware' },
+          { label: 'Node入门系列-在项目中操作 MySql 数据库（8）', slug: 'articles/node/08-learn-mysql' },
+          { label: 'Node入门系列-前后端的开发模式和 Session 身份认证（9）', slug: 'articles/node/09-learn-session' },
+          { label: 'Node入门系列-前后端的身份认证 — JWT（10）', slug: 'articles/node/10-learn-jwt' },
+        ]
+      },
+      {
         label: 'Html5&CSS3',
         items: [
           { label: '浅析HTML页面的生命周期', slug: 'articles/html5-css3/life-cycle' },
