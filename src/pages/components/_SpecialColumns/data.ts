@@ -2,6 +2,7 @@ import vueImg from '../../../assets/collection/vue.jpg'
 import reactImg from '../../../assets/collection/react.jpg'
 import javascriptImg from '../../../assets/collection/javascript.png'
 import htmlCssImg from '../../../assets/collection/html-css.jpg'
+import nodeImg from '../../../assets/collection/node.jpg'
 
 interface ListItem {
   title: string;
@@ -32,6 +33,13 @@ export const listData: ListItem[] = [
     description: 'JS 是当前最流行、应用最广泛的客户端脚本语言，在 Web 开发领域有着举足轻重的地位，是成为一名优秀前端工程师的必备技能之一。',
     coverPath: javascriptImg.src,
     createDate: '2024-12-05',
+  },
+  {
+    title: 'Node.js',
+    url: '/articles/node',
+    description: 'Node.js 是一个基于 Chrome V8 引擎 的 JavaScript 运行时环境。',
+    coverPath: nodeImg.src,
+    createDate: '2024-12-10',
   },
   {
     title: 'HTML5&CSS3',
