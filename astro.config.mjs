@@ -35,6 +35,7 @@ export default defineConfig({
           { label: '如何使用 CSS 提高页面性能？', slug: 'articles/html5-css3/02-page-performance' },
           { label: '前端页面之“回流重绘”', slug: 'articles/html5-css3/03-reflux-redrawing' },
           { label: 'js 和 css 是如何影响DOM树构建的？', slug: 'articles/html5-css3/04-dom-tree-construction' },
+          { label: '前端布局之浅谈 BFC', slug: 'articles/html5-css3/05-bfc' },
         ],
       },
       {
