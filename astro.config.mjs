@@ -14,6 +14,30 @@ export default defineConfig({
     },
     sidebar: [
       {
+        label: 'JavaScript',
+        items: [
+          { label: '手写 call 方法', slug: 'articles/javascript/call' },
+          { label: '手写 apply 方法', slug: 'articles/javascript/apply' },
+          { label: '手写 bind 方法', slug: 'articles/javascript/bind' },
+          { label: '通用组合函数 compose 的实现', slug: 'articles/javascript/compose' },
+          { label: '柯里化函数 currying 的实现', slug: 'articles/javascript/currying' },
+          { label: 'ES6 中数组做了哪些新扩展？', slug: 'articles/javascript/es6' },
+          { label: '关于 JavaScript 的本地存储方案', slug: 'articles/javascript/localstorage' },
+          { label: '你真的了解 “对象解构赋值” 吗？关于对象解构的全面解析 ✌', slug: 'articles/javascript/deconstruction-assignment' },
+          { label: '一篇文章带你搞懂 this 的四个绑定规则 ✍', slug: 'articles/javascript/this-four-binding-rules' },
+          { label: '关于 "尾调用优化" 的那些事儿 👏', slug: 'articles/javascript/tail-call' },
+        ],
+      },
+      {
+        label: 'Html5&CSS3',
+        items: [
+          { label: '浅析HTML页面的生命周期', slug: 'articles/html5-css3/01-life-cycle' },
+          { label: '如何使用 CSS 提高页面性能？', slug: 'articles/html5-css3/02-page-performance' },
+          { label: '前端页面之“回流重绘”', slug: 'articles/html5-css3/03-reflux-redrawing' },
+          { label: 'js 和 css 是如何影响DOM树构建的？', slug: 'articles/html5-css3/04-dom-tree-construction' },
+        ],
+      },
+      {
         label: 'Vue',
         items: [
           // Each item here is one entry in the navigation menu.
@@ -35,21 +59,6 @@ export default defineConfig({
         ],
       },
       {
-        label: 'JavaScript',
-        items: [
-          { label: '手写 call 方法', slug: 'articles/javascript/call' },
-          { label: '手写 apply 方法', slug: 'articles/javascript/apply' },
-          { label: '手写 bind 方法', slug: 'articles/javascript/bind' },
-          { label: '通用组合函数 compose 的实现', slug: 'articles/javascript/compose' },
-          { label: '柯里化函数 currying 的实现', slug: 'articles/javascript/currying' },
-          { label: 'ES6 中数组做了哪些新扩展？', slug: 'articles/javascript/es6' },
-          { label: '关于 JavaScript 的本地存储方案', slug: 'articles/javascript/localstorage' },
-          { label: '你真的了解 “对象解构赋值” 吗？关于对象解构的全面解析 ✌', slug: 'articles/javascript/deconstruction-assignment' },
-          { label: '一篇文章带你搞懂 this 的四个绑定规则 ✍', slug: 'articles/javascript/this-four-binding-rules' },
-          { label: '关于 "尾调用优化" 的那些事儿 👏', slug: 'articles/javascript/tail-call' },
-        ],
-      },
-      {
         label: 'Node',
         items: [
           { label: 'Node入门系列-fs、path 模块的使用（1）', slug: 'articles/node/01-learn-fs-path' },
@@ -63,14 +72,6 @@ export default defineConfig({
           { label: 'Node入门系列-前后端的开发模式和 Session 身份认证（9）', slug: 'articles/node/09-learn-session' },
           { label: 'Node入门系列-前后端的身份认证 — JWT（10）', slug: 'articles/node/10-learn-jwt' },
         ]
-      },
-      {
-        label: 'Html5&CSS3',
-        items: [
-          { label: '浅析HTML页面的生命周期', slug: 'articles/html5-css3/life-cycle' },
-          { label: '如何使用 CSS 提高页面性能？', slug: 'articles/html5-css3/page-performance' },
-          { label: '前端页面之“回流重绘”', slug: 'articles/html5-css3/reflux-redrawing' },
-        ],
       },
       // {
       //   label: 'Reference',
