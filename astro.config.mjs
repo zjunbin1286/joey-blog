@@ -42,12 +42,12 @@ export default defineConfig({
         label: 'Vue',
         items: [
           // Each item here is one entry in the navigation menu.
-          { label: 'Vue 内置指令大全', slug: 'articles/vue/built-in-irectives' },
-          { label: 'Vue 常用修饰符详解', slug: 'articles/vue/event-handling' },
-          { label: 'Vue3 组合式 API：生命周期钩子总结', slug: 'articles/vue/lifecycle-hooks' },
-          { label: '全面拥抱Vue3，Vuex4 最新详解教程！', slug: 'articles/vue/vuex4' },
-          { label: '新一代的状态管理器？关于 Pinia 的全方位解析！', slug: 'articles/vue/pinia' },
-          { label: '关于Vue-Router4路由导航守卫的全面解析', slug: 'articles/vue/vue-router4' },
+          { label: 'Vue 内置指令大全', slug: 'articles/vue/01-built-in-irectives' },
+          { label: 'Vue 常用修饰符详解', slug: 'articles/vue/02-event-handling' },
+          { label: 'Vue3 组合式 API：生命周期钩子总结', slug: 'articles/vue/03-lifecycle-hooks' },
+          { label: '全面拥抱Vue3，Vuex4 最新详解教程！', slug: 'articles/vue/04-vuex4' },
+          { label: '新一代的状态管理器？关于 Pinia 的全方位解析！', slug: 'articles/vue/05-pinia' },
+          { label: '关于Vue-Router4路由导航守卫的全面解析', slug: 'articles/vue/06-vue-router4' },
         ],
       },
       {
