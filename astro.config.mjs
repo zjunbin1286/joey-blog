@@ -53,10 +53,10 @@ export default defineConfig({
       {
         label: 'React',
         items: [
-          { label: '快速体验 React 开发基础入门指南', slug: 'articles/react/quick-learn-react' },
-          { label: 'React-Router6 全面解析', slug: 'articles/react/router6' },
-          { label: 'Redux+React-Redux 最新入门实战指南💥', slug: 'articles/react/redux_react-redux' },
-          { label: '关于 React 的几个常用技巧', slug: 'articles/react/common-techniques' },
+          { label: '快速体验 React 开发基础入门指南', slug: 'articles/react/01-quick-learn-react' },
+          { label: '关于 React 的几个常用技巧', slug: 'articles/react/02-common-techniques' },
+          { label: 'React-Router6 全面解析', slug: 'articles/react/03-router6' },
+          { label: 'Redux+React-Redux 最新入门实战指南💥', slug: 'articles/react/04-redux_react-redux' },
         ],
       },
       {
