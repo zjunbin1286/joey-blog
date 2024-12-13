@@ -49,6 +49,7 @@ export default defineConfig({
           { label: '新一代的状态管理器？关于 Pinia 的全方位解析！', slug: 'articles/vue/05-pinia' },
           { label: '关于Vue-Router4路由导航守卫的全面解析', slug: 'articles/vue/06-vue-router4' },
           { label: 'Vue 中的 nextTick 有什么作用？', slug: 'articles/vue/07-vue-nexttick' },
+          { label: 'Vue3状态管理器Vuex4.0的进阶使用方案！', slug: 'articles/vue/08-vuex4-plus' },
         ],
       },
       {
