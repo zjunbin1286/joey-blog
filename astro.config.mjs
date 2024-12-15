@@ -83,6 +83,7 @@ export default defineConfig({
         items: [
           { label: '说说 Vue 中的组件和插件有什么区别？', slug: 'articles/interview/01-component-plugin' },
           { label: '说说你对 Set、Map 的理解', slug: 'articles/interview/02-set-map' },
+          { label: '谈谈你知道的 DOM 的常见操作', slug: 'articles/interview/03-dom-operate' },
         ]
       }
       // {
