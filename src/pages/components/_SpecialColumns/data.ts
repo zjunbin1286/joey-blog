@@ -50,9 +50,9 @@ export const listData: ListItem[] = [
     createDate: '2024-12-05',
   },
   {
-    title: '面试官系列',
-    url: '/articles/interview',
-    description: 'html5是html的最新标准版,css3是css的最新标准版。',
+    title: '前端必知必会',
+    url: '/articles/interview/01-component-plugin',
+    description: '一些关于前端的知识技巧',
     coverPath: interviewImg.src,
     createDate: '2024-12-15',
   }

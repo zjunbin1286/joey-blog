@@ -79,8 +79,10 @@ export default defineConfig({
         ]
       },
       {
-        label: '面试官系列',
-        items: []
+        label: '前端必知必会',
+        items: [
+          { label: '面试官：你说说Vue中的组件和插件有什么区别？', slug: 'articles/interview/01-component-plugin' },
+        ]
       }
       // {
       //   label: 'Reference',
