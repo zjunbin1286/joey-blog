@@ -3,6 +3,7 @@ import reactImg from '../../../assets/collection/react.jpg'
 import javascriptImg from '../../../assets/collection/javascript.png'
 import htmlCssImg from '../../../assets/collection/html-css.jpg'
 import nodeImg from '../../../assets/collection/node.jpg'
+import interviewImg from '../../../assets/collection/interview.jpg'
 
 interface ListItem {
   title: string;
@@ -48,4 +49,11 @@ export const listData: ListItem[] = [
     coverPath: htmlCssImg.src,
     createDate: '2024-12-05',
   },
+  {
+    title: '面试官系列',
+    url: '/articles/interview',
+    description: 'html5是html的最新标准版,css3是css的最新标准版。',
+    coverPath: interviewImg.src,
+    createDate: '2024-12-15',
+  }
 ]

@@ -78,6 +78,10 @@ export default defineConfig({
           { label: 'Node入门系列-前后端的身份认证 — JWT（10）', slug: 'articles/node/10-learn-jwt' },
         ]
       },
+      {
+        label: '面试官系列',
+        items: []
+      }
       // {
       //   label: 'Reference',
       //   autogenerate: { directory: 'reference' },
