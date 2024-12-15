@@ -8,7 +8,7 @@ interface ListItem {
 export const listData: ListItem[] = [
   {
     title: 'npm-registry-nrs',
-    url: 'https://github.com/zjunbin1286/npm-registry-nrs',
+    url: 'collections/npm-registry-nrs',
     description: '📦 npm-registry-nrs is an NPM source manager that allows you to quickly switch between NPM sources and supports managing image sources through addition, deletion, modification, and querying. （npm-registry-nrs 是一个 npm 源管理器，允许你快速地在 npm 源间切换，并且支持通过增删改查等管理镜像源。）'
   },
   {
