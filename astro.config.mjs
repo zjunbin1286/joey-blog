@@ -51,6 +51,7 @@ export default defineConfig({
           { label: 'Vue 中的 nextTick 有什么作用？', slug: 'articles/vue/07-vue-nexttick' },
           { label: 'Vue3状态管理器Vuex4.0的进阶使用方案！', slug: 'articles/vue/08-vuex4-plus' },
           { label: '关于 Vue3 中的 <script setup> 语法使用详解', slug: 'articles/vue/09-script-setup' },
+          { label: '浅谈 Vue3 中的状态管理，为什么推荐Pinia？', slug: 'articles/vue/10-why-pinia' },
         ],
       },
       {
