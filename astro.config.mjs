@@ -26,6 +26,7 @@ export default defineConfig({
           { label: '你真的了解 “对象解构赋值” 吗？关于对象解构的全面解析 ✌', slug: 'articles/javascript/08-deconstruction-assignment' },
           { label: '一篇文章带你搞懂 this 的四个绑定规则 ✍', slug: 'articles/javascript/09-this-four-binding-rules' },
           { label: '关于 "尾调用优化" 的那些事儿 👏', slug: 'articles/javascript/10-tail-call' },
+          { label: 'JavaScript 自定义双击事件，CustomEvent 对象的使用详解', slug: 'articles/javascript/11-custom-event-double-click' },
         ],
       },
       {

@@ -1,0 +1,249 @@
+---
+title: JavaScript 自定义双击事件，CustomEvent 对象的使用详解
+---
+
+# 前言
+
+:::tip[前言]
+在平时的原生开发当中，我相信你创建过很多事件监听器来监听诸如点击事件和表单提交。一般情况下 JavaScript 提供的事件足够平时的开发了，但有时难免需要创建自己的自定义事件来处理更复杂的交互。
+
+在本篇文章中，我会详细介绍关于如何创建自定义事件、监听自定义事件的技巧，以及实现一个关于双击自定义事件的案例。
+:::
+
+## 一、如何创建自定义事件
+
+在 JavaScript 中创建一个自定义事件听起来相当困难，但它实际上只是一行简单的代码。
+
+```js
+// 创建 Event 对象
+const myEvent = new Event("myCustomEvent")
+```
+
+你可以通过使用 `Event` 构造函数来创建一个新的 `Event` 对象，在最基本的形式下，你需要做的就是向构造函数传递一个字符串，也就是自定义事件的名称。为了监听该事件，可以在你想监听的任何元素上添加一个事件监听器。
+
+```js
+// 监听自定义事件
+document.addEventListener("myCustomEvent", e => {
+  console.log(e)
+})
+```
+
+最后，需要做的最后一步是实际触发你创建的并正在监听的事件。
+
+```js
+// 触发事件
+document.dispatchEvent(myEvent)
+```
+
+手动触发事件，这就是 `dispatchEvent` 函数的作用。每个元素都有这个函数，传递一个由 `new Event` 创建的事件对象。
+
+如果我们把所有这些结合起来，将会得到一个基本的事件，进而触发事件，输出事件的内容。
+
+![微信图片\_20230203234838.png](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/58471e2637df44c98f1d419ddffc75de~tplv-k3u1fbpfcp-watermark.image#?w=1048\&h=550\&s=34159\&e=png\&b=212225)
+
+上图就是一个事件对象所包含的基本属性。它包含一堆信息，红色框内的是比较重要的属性，它们的含义如下：
+
+*   `isTrusted` 属性只是指这个事件是由用户互动还是由自定义的 JavaScript 代码触发的。例如，当用户点击一个按钮时，该事件的 `isTrusted` 值为 `true`，而我们的自定义事件的 `isTrusted` 值为 `false`，因为该事件是由 `JavaScript` 触发的。
+
+*   `target` 是 `dispatchEvent` 被调用的那个元素。
+
+*   `timeStamp` 是指事件发生时距离页面加载有多长时间。
+
+*   `type` 是事件的名称
+
+## 二、自定义事件
+
+```js
+const myEvent = new Event('myCustomEvent', {
+  bubbles: true,
+  cancelable: true,
+  composed: true
+})
+```
+
+在事件属性中有`bubbles`, `cancelable`, 和`composed`等属性。这些是我们在创建自定义事件时可以配置的选项。
+
+### bubbles
+
+`bubbles` 属性决定了当事件被触发时，是否应该通过 HTML 向上冒泡。默认情况下，这个值是 `false`，这意味着事件不会向上冒泡，但如果我们想让事件在 HTML 元素的每个父元素上被调用，那么我们可以将其设置为 `true`。
+
+```js
+const bubbleEvent = new Event('bubbleEvent', { bubbles: true })
+const defaultEvent = new Event('defaultEvent', { bubbles: false })
+
+document.addEventListener('bubbleEvent', () => {
+  // bubbles 为 true，这将被调用，因为事件将从按钮冒出到文档中。
+  console.log('Bubble')
+})
+
+document.addEventListener('defaultEvent', () => {
+  // bubbles 为 false，所以事件不能从按钮冒出到文档中，所以它从未被调用。
+  console.log('Default')
+})
+
+const button = document.querySelector('button')
+button.dispatchEvent(bubbleEvent)
+button.dispatchEvent(defaultEvent)
+```
+
+### cancelable
+
+`cancelable` 属性决定了该事件是否可以通过调用 `e.preventDefault()` 来取消。默认情况下，这被设置为 `false`。如果这个属性为真，当你调用 `e.preventDefault()` 时，它将把我们事件的 `defaultPrevented` 属性设为真。
+
+```js
+const cancelableEvent = new Event('cancelableEvent', { cancelable: true })
+const defaultEvent = new Event('defaultEvent', { cancelable: false })
+
+document.addEventListener('cancelableEvent', (e) => {
+  e.preventDefault()
+  console.log(e.defaultPrevented) // True
+})
+
+document.addEventListener('defaultEvent', (e) => {
+  e.preventDefault()
+  console.log(e.defaultPrevented) // False
+})
+
+document.dispatchEvent(cancelableEvent)
+document.dispatchEvent(defaultEvent)
+```
+
+### composed
+
+`composed` 属性决定了该事件是否可以通过 shadow DOM（阴影DOM） 向上传播。默认情况下，它被设置为 `false`。这个属性只有在你使用自定义 HTML 元素和 shadow DOM 时才真正适用，它所做的就是允许事件在 shadow DOM 外传播。如果你想确保在你的 shadow DOM 中触发的事件可以在 shadow DOM 之外被捕捉到，请将此设置为 `true`。
+
+## 三、向事件传递自定义数据
+
+一般来说，当使用自定义事件时，希望能够向自定义事件传递某种形式的自定义数据。在一般的 `new Event` 构造函数中，这是做不到的。所以我们使用第二个方法 `new CustomEvent` 来创建自定义事件。
+
+```js
+const myEvent = new CustomEvent('myEvent', {
+  detail: { hello: 'World' }
+})
+```
+
+可以使用 `CustomEvent` 构造函数来代替。它的工作原理与 `new Event` 完全相同，但你也可以在第二个参数中传递一个 `detail` 属性，以及 `bubbles`, `cancelable`, 和 `composed` 属性。你在 `detail` 属性中定义的任何数据都将被传递给事件监听器。
+
+```js
+const myEvent = new CustomEvent('myEvent', { detail: { hello: 'World' } })
+
+document.addEventListener('myEvent', (e) => {
+  console.log(e.detail) // { hello: "World" }
+})
+
+document.dispatchEvent(myEvent)
+```
+
+## 四、命名规则
+
+在开始实现双击事件的案例之前，先说明一下自定义事件的命名规则。首先，命名是完全由你自己定义的，但是重要的是得考虑遵循一个命名惯例，使你的代码更容易操作。自定义事件最常见的命名规则是在名称前加上 `custom:` 或你当前项目的名称。
+
+遵循命名规则是有好处的，它不仅使开发者很容易区分哪些事件是自定义事件，哪些是内置事。因为它们都是以 `custom:` 开头的，而且它还确保你的代码在 JavaScript 添加一个与你的事件同名的新事件时不会中断。
+
+例如，如果 JavaScript 添加了一个叫做 `doubleclick` 的事件，而你又用 `doubleclick` 这个名字来表示你的自定义事件，这时可能会有不必要的麻烦，因为你的自定义代码会触发这个事件，而浏览器也会试图触发它自己的事件。
+
+## 五、双击事件案例
+
+在这个例子中，我们将创建一个双击事件，只要你在短时间内点击一个元素两次，该事件就会被触发。它还会将你点击按钮之间的总时间作为自定义数据传递出去。
+
+### 确定双击
+
+首先，我们需要创建一个普通的点击事件监听器来确定是否有双击。
+
+```js
+const button = document.querySelector('button')
+
+const MAX_DOUBLE_CLICK_TIME = 500
+let lastClick = 0
+
+button.addEventListener('click', (e) => {
+  const timeBetweenClicks = e.timeStamp - lastClick
+  if (timeBetweenClicks > MAX_DOUBLE_CLICK_TIME) {
+    lastClick = e.timeStamp
+    return
+  }
+  // TODO: 规定时间内双击，就会触发自定义事件
+  lastClick = 0
+})
+```
+
+上面的代码使用 `timeStamp` 属性来确定我们的按钮的点击事件之间的时间，如果点击事件之间的间隔超过500毫秒，它将立即返回并更新 `lastClick` 值。一旦我们有两次点击都在500毫秒之内，我们就继续通过 `if` 检查，并能够触发我们的双击事件。要做到这一点，我们需要创建自定义事件并将其派发。
+
+```js
+const button = document.querySelector('button')
+
+const MAX_DOUBLE_CLICK_TIME = 500
+let lastClick = 0
+button.addEventListener('click', (e) => {
+  const timeBetweenClicks = e.timeStamp - lastClick
+  if (timeBetweenClicks > MAX_DOUBLE_CLICK_TIME) {
+    lastClick = e.timeStamp
+    return
+  }
+
+  // 创建自定义事件
+  const doubleClickEvent = new CustomEvent('custom:doubleClick', {
+    bubbles: true,
+    cancelable: true,
+    composed: true,
+    detail: { timeBetweenClicks }
+  })
+  // 派发事件（触发）
+  e.target.dispatchEvent(doubleClickEvent)
+
+  lastClick = 0
+})
+```
+
+对于自定义事件，我们将所有的选项设置为 `true`，因为默认情况下，点击事件的所有这些属性都设置为 `true`，我们希望我们的双击行为与正常的点击相似。
+
+我们还将时间间隔（`timeBetweenClicks`）传递给自定义事件的 `detail` 选项。最后，我们在事件的目标上派发事件。本次是在按钮元素上进行测试，所以最后一步就是监听自定义事件。
+
+```js
+const button = document.querySelector('button')
+
+// 监听自定义的双击事件
+button.addEventListener('custom:doubleClick', (e) => {
+  console.log('触发双击', e.detail.timeBetweenClicks)
+})
+
+const MAX_DOUBLE_CLICK_TIME = 500
+let lastClick = 0
+button.addEventListener('click', (e) => {
+  const timeBetweenClicks = e.timeStamp - lastClick
+  if (timeBetweenClicks > MAX_DOUBLE_CLICK_TIME) {
+    lastClick = e.timeStamp
+    return
+  }
+
+  const doubleClickEvent = new CustomEvent('custom:doubleClick', {
+    bubbles: true,
+    cancelable: true,
+    composed: true,
+    detail: {
+      timeBetweenClicks
+    }
+  })
+  e.target.dispatchEvent(doubleClickEvent)
+  lastClick = 0
+})
+```
+
+新增的代码只是给按钮添加了一个简单的事件监听器，它将输出文字 "触发双击" 和两次点击之间的时间。
+
+效果如下所示：
+
+![动画 (1).gif](https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9a18d9150e4d46d4acbbc17925fa7f12~tplv-k3u1fbpfcp-watermark.image#?w=1313\&h=782\&s=90833\&e=gif\&f=57\&b=ffffff)
+
+## 六、总结
+
+自定义事件是 JavaScript 中处理手势和双击等事情的好方法，最重要的是它们非常容易实现和使用，赶快学习起来吧！
+
+## 七、码上掘金
+
+PC端打开控制台查看输出结果哦\~
+
+[jcode](https://code.juejin.cn/pen/7196236715873271845)
+
+
+> 每文一句：蜂采百花酿甜蜜，人读群书明真理。
