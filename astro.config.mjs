@@ -87,6 +87,7 @@ export default defineConfig({
           { label: '谈谈你知道的 DOM 的常见操作', slug: 'articles/interview/03-dom-operate' },
           { label: '说说 var、let、const 三者的区别', slug: 'articles/interview/04-var-let-const' },
           { label: '40 道 Promise 输出题，你都会了吗？🔥', slug: 'articles/interview/05-promise-forty-questions' },
+          { label: '说说 JavaScript 中类型的转换机制', slug: 'articles/interview/06-type-transformation' },
         ]
       }
       // {
