@@ -30,7 +30,7 @@ export const listData: ListItem[] = [
   },
   {
     title: 'JavaScript',
-    url: '/articles/javascript/01-call',
+    url: '/articles/javascript/01-es6',
     description: 'JS 是当前最流行、应用最广泛的客户端脚本语言，在 Web 开发领域有着举足轻重的地位，是成为一名优秀前端工程师的必备技能之一。',
     coverPath: javascriptImg.src,
     createDate: '2024-12-05',
