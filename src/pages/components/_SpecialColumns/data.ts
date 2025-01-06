@@ -55,5 +55,12 @@ export const listData: ListItem[] = [
     description: '一些关于前端的知识技巧',
     coverPath: interviewImg.src,
     createDate: '2024-12-15',
-  }
+  },
+  {
+    title: '方法实现',
+    url: '/articles/handwriting-method/01-call',
+    description: '手写一些方法',
+    coverPath: javascriptImg.src,
+    createDate: '2025-01-07',
+  },
 ]

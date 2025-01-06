@@ -48,7 +48,7 @@ console.log(foo.count);   // 0
 
 **解答**：因为`this.count` 中此时的 this，根本不是指向 foo 函数自身，**而是指向全局 `window`**。再细心一点，我们可以发现，在 `window` 身上，被添加了个 `count` 属性，值为 NaN。
 （为什么 this 指向 window 后面会阐述）
-![image.png](../../../../assets/javascript/09-this-four-binding-rules/image.png)
+![image.png](../../../../assets/javascript/04-this-four-binding-rules/image.png)
 所以，单纯的把 this 理解为指向函数自身是错误的。
 
 **this 实际上是在函数被调用时发生的绑定，它指向什么完全取决于函数在哪里被调用。**

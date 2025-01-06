@@ -16,18 +16,13 @@ export default defineConfig({
       {
         label: 'JavaScript',
         items: [
-          { label: '手写 call 方法', slug: 'articles/javascript/01-call' },
-          { label: '手写 apply 方法', slug: 'articles/javascript/02-apply' },
-          { label: '手写 bind 方法', slug: 'articles/javascript/03-bind' },
-          { label: '通用组合函数 compose 的实现', slug: 'articles/javascript/04-compose' },
-          { label: '柯里化函数 currying 的实现', slug: 'articles/javascript/05-currying' },
-          { label: 'ES6 中数组做了哪些新扩展？', slug: 'articles/javascript/06-es6' },
-          { label: '关于 JavaScript 的本地存储方案', slug: 'articles/javascript/07-localstorage' },
-          { label: '你真的了解 “对象解构赋值” 吗？关于对象解构的全面解析 ✌', slug: 'articles/javascript/08-deconstruction-assignment' },
-          { label: '一篇文章带你搞懂 this 的四个绑定规则 ✍', slug: 'articles/javascript/09-this-four-binding-rules' },
-          { label: '关于 "尾调用优化" 的那些事儿 👏', slug: 'articles/javascript/10-tail-call' },
-          { label: 'JavaScript 自定义双击事件，CustomEvent 对象的使用详解', slug: 'articles/javascript/11-custom-event-double-click' },
-          { label: '关于JavaScript实现继承的六大方案，你都了解过吗？', slug: 'articles/javascript/12-six-types-inheritance' },
+          { label: 'ES6 中数组做了哪些新扩展？', slug: 'articles/javascript/01-es6' },
+          { label: '关于 JavaScript 的本地存储方案', slug: 'articles/javascript/02-localstorage' },
+          { label: '你真的了解 “对象解构赋值” 吗？关于对象解构的全面解析 ✌', slug: 'articles/javascript/03-deconstruction-assignment' },
+          { label: '一篇文章带你搞懂 this 的四个绑定规则 ✍', slug: 'articles/javascript/04-this-four-binding-rules' },
+          { label: '关于 "尾调用优化" 的那些事儿 👏', slug: 'articles/javascript/05-tail-call' },
+          { label: 'JavaScript 自定义双击事件，CustomEvent 对象的使用详解', slug: 'articles/javascript/06-custom-event-double-click' },
+          { label: '关于JavaScript实现继承的六大方案，你都了解过吗？', slug: 'articles/javascript/07-six-types-inheritance' },
         ],
       },
       {
@@ -90,7 +85,17 @@ export default defineConfig({
           { label: '40 道 Promise 输出题，你都会了吗？🔥', slug: 'articles/interview/05-promise-forty-questions' },
           { label: '说说 JavaScript 中类型的转换机制', slug: 'articles/interview/06-type-transformation' },
         ]
-      }
+      },
+      {
+        label: '方法实现',
+        items: [
+          { label: '手写 call 方法', slug: 'articles/handwriting-method/01-call' },
+          { label: '手写 apply 方法', slug: 'articles/handwriting-method/02-apply' },
+          { label: '手写 bind 方法', slug: 'articles/handwriting-method/03-bind' },
+          { label: '通用组合函数 compose 的实现', slug: 'articles/handwriting-method/04-compose' },
+          { label: '柯里化函数 currying 的实现', slug: 'articles/handwriting-method/05-currying' },
+        ],
+      },
       // {
       //   label: 'Reference',
       //   autogenerate: { directory: 'reference' },
