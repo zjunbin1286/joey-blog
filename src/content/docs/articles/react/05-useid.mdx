@@ -1,0 +1,67 @@
+---
+title: React18 中关于 useId() 的使用
+description: A guide in my new Starlight docs site.
+---
+
+## 一、 How `useId` Works ？
+
+**`useId` 钩子的主要作用是生成唯一的ID，用于HTML元素中**。最好的例子是为一个输入创建一个ID，并让标签指向同一个ID。例如，如果你有一个 `EmailForm` 组件，你可以这样写。
+```js
+function EmailForm() {
+  return (
+    <>
+      <label htmlFor="email">Email</label>
+      <input id="email" type="email" />
+    </>
+  )
+}
+```
+这段代码可以正常使用，但如果你想在同一个页面上多次呈现这个表单，你就会有多个输入元素具有相同的电子邮件 ID。这显然是不太合理的，因为一个页面上的每个 ID 都应该是唯一的，此外，当你点击标签时，都会指向页面上的第一个 email 输入，而不是与该标签相关的 email 输入。为了解决这个问题，我们可以使用 `useId`。将代码重构为如下：
+```js
+function EmailForm() {
+  const id = useId()
+  return (
+    <>
+      <label htmlFor={id}>Email</label>
+      <input id={id} type="email" />
+    </>
+  )
+}
+```
+**`useId` hook 是一个非常简单的钩子，它不需要输入，并返回一个唯一的ID**。这个 id 对每个单独的组件都是唯一的，这意味着我们可以在我们的页面上多次呈现这个表单，而不必担心重复的 id。
+
+由 `useId` 生成的 id 看起来就像这样 `:r1:`, `:r2:`, 等等。
+
+>注意：`useId` 生成一个包含 `:` 的字符串 token。这有助于确保 token 是唯一的
+
+## 二、能用 `querySelector` 获取元素吗？
+关于 `useId` 钩子需要注意的一点是，它所产生的 id 在 `querySelector` 方法中是无效的选择器。这是 React 故意设计的，因为 React 不希望你用 `querySelector` 这样的方法来选择元素的 id。相反，你应该使用 `useRef` 钩子来做这件事。
+
+## 三、在一个组件中使用多个 Ids
+关于这个钩子，还有一件需要注意的是每个组件上只使用一次。这有助于提高性能，并且依旧可以从钩子中得到帮助。
+```js
+function LogInForm() {
+  const id = useId()
+  return (
+    <>
+    <div>
+      <label htmlFor={`${id}-email`}>Email</label>
+      <input id={`${id}-email`} type="email" />
+    </div>
+    <div>
+      <label htmlFor={`${id}-password`}>Password</label>
+      <input id={`${id}-password`} type="password" />
+    </div>
+    </>
+  )
+}
+```
+正如你在上面的例子中看到的，我们在组件中使用了一次 `useId` 钩子，只是在 `useId` 生成的 id 后面附加了一个唯一的 id。这也是为我们的页面上的所有元素提供了唯一的id，但为我们节省了在一个有多个 id 的组件中多次调用这个钩子的性能开销。
+
+## 四、服务端渲染
+**使用这个钩子的另一个主要原因是为了帮助服务器端的渲染**。如果你使用像 `Math.random()` 或其他随机生成器来生成你的 id，你会遇到这样的问题：你的服务器上的同一个组件的 id 与客户端的这些组件的 id 不同。当你的应用程序中混合了客户端和服务器渲染的代码时，这就变得特别复杂，因为你无法相信代码所生成的id。
+
+而 `useId` 钩子解决了所有这些问题，因为它所产生的 id 不是随机的。这意味着ID在服务器和客户端之间是匹配的，无论你有什么样的客户端/服务器渲染的代码组合，你都可以去相信你的ID是正确的。这是使用这个钩子的最大原因，因为它使处理服务器渲染的代码更加容易。
+
+## 五、总结
+我们很容易忽视 React 18 中的 `useId` hook，因为与它一起发布的还有其他令人惊奇的特性/hook，属于是被其他 hook 的光辉所掩盖了，哈哈。但这个小 hook 在某些场景也是非常好用的，不妨学起来吧！
