@@ -23,6 +23,7 @@ export default defineConfig({
           { label: '关于 "尾调用优化" 的那些事儿 👏', slug: 'articles/javascript/05-tail-call' },
           { label: 'JavaScript 自定义双击事件，CustomEvent 对象的使用详解', slug: 'articles/javascript/06-custom-event-double-click' },
           { label: '关于JavaScript实现继承的六大方案，你都了解过吗？', slug: 'articles/javascript/07-six-types-inheritance' },
+          { label: '深度解析 JavaScript 严格模式：利弊长远的考量', slug: 'articles/javascript/08-strict-mode' },
         ],
       },
       {
