@@ -55,7 +55,7 @@ console.log(stu.getPersonValue()) // CoderBin
 
 下图展示了子类的实例与两个构造函数及其对应的原型之间的关系：
 
-![image.png](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/cb91633be9244ecaa7b3e5a782c90fe8~tplv-k3u1fbpfcp-watermark.image?)
+![image.png](../../../../assets/javascript/07-six-types-inheritance/image1.png)
 
 ### 1.2 代码核心解析
 
@@ -70,7 +70,7 @@ console.log(stu.getPersonValue()) // CoderBin
 
 下图展示了完整的原型链。
 
-![image.png](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/3b547ca477dd4d47bad3589e33dde351~tplv-k3u1fbpfcp-watermark.image?)
+![image.png](../../../../assets/javascript/07-six-types-inheritance/image2.png)
 
 Student 继承 Person ，而 Person 继承 Object 。在调用 stu.toString() 时，实际上调用的是保存在 Object.prototype 上的方法。
 
