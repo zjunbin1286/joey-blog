@@ -104,6 +104,12 @@ export default defineConfig({
             { label: '柯里化函数 currying 的实现', slug: 'articles/handwriting-method/05-currying' },
           ],
         },
+        {
+          label: '更多分享',
+          items: [
+            { label: '知道了web的攻击方式，还不快防起来？', slug: 'articles/shared/01-web-attack-methods' },
+          ],
+        },
         // {
         //   label: 'Reference',
         //   autogenerate: { directory: 'reference' },
