@@ -11,7 +11,7 @@ export default function Collection() {
       {listData.map((item, index) => (
         <div key={item.url} className={`p-5 rounded-md  hover:bg-[#f6f7f9]`}>
           <div className='item text-[24px] font-bold'>
-            <a href={item.url}>{item.title}</a>
+            <a href={item.url} target='_blank'>{item.title}</a>
           </div>
           <p>{item.description}</p>
         </div>
