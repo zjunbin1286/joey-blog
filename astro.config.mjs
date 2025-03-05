@@ -26,6 +26,7 @@ export default defineConfig({
             { label: '深度解析 JavaScript 严格模式：利弊长远的考量', slug: 'articles/javascript/08-strict-mode' },
             { label: '深入 JavaScript 模块：建立可扩展的应用', slug: 'articles/javascript/09-module-expand' },
             { label: 'JavaScript 加载原理解析 -- Async Vs Defer', slug: 'articles/javascript/10-async-defer' },
+            { label: '深入浅出防抖与节流函数', slug: 'articles/javascript/11-debounce-throttle' },
           ],
         },
         {
