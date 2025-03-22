@@ -27,6 +27,7 @@ export default defineConfig({
             { label: '深入 JavaScript 模块：建立可扩展的应用', slug: 'articles/javascript/09-module-expand' },
             { label: 'JavaScript 加载原理解析 -- Async Vs Defer', slug: 'articles/javascript/10-async-defer' },
             { label: '深入浅出防抖与节流函数', slug: 'articles/javascript/11-debounce-throttle' },
+            { label: '关于 JavaScript 编译原理以及作用域的深入探讨', slug: 'articles/javascript/12-js-compile-scope' },
           ],
         },
         {
