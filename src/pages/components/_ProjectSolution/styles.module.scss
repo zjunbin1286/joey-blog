@@ -1,0 +1,32 @@
+.ProjectSolutionContent {
+  .item {
+    width: 100%;
+    height: 100%;
+    border-bottom: 1px solid #f1f1f1;
+    padding-bottom: 20px;
+
+    .title {
+
+      a {
+        max-width: calc(100% - 20px);
+        font-weight: 400;
+        font-size: 20px;
+        color: #1d2129;
+        display: inline-block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+    }
+
+    .bottom {
+      margin: 0;
+      .time {
+        font-weight: 400;
+        font-size: 16px;
+        color: #86909c;
+      }
+    }
+  }
+}
