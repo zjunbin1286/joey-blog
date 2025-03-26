@@ -3,6 +3,8 @@ import starlight from '@astrojs/starlight';
 import react from '@astrojs/react';
 import tailwind from '@astrojs/tailwind';
 import starlightImageZoom from 'starlight-image-zoom'
+import mdx from '@astrojs/mdx';
+
 // https://astro.build/config
 export default defineConfig({
   integrations: [
@@ -137,5 +139,6 @@ export default defineConfig({
     }),
     react(),
     tailwind(),
+    mdx()
   ],
 });
