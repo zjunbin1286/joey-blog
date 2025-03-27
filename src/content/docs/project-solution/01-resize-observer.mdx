@@ -1,0 +1,112 @@
+---
+title: 浏览器内置API，ResizeObserver 的使用，用于监测DOM元素尺寸的变化
+template: 'splash'
+---
+
+### 前言
+某天，我正在 “欢快” 的开发需求，突然 tapd 接收个 Bug：**某单据详情页内的展开按钮，在第二次进入页面时会突然消失。**
+
+我只能停下开发，开始定位，后面发现这个展开按钮时根据子元素的高度进行展示的，如果子元素高度没有到某个阈值，就不显示该按钮。
+
+显示逻辑定位到了，现在的问题是为何只有在第二次进入页面才会消失？
+
+通过一番调试，发现原因是：获取子元素的高度是通过给外层元素绑定 ref 获取的，在离开页面时，这个 ref 置为了 `undefined`，第二次进入页面还是 `undefined` 所以就拿不到子元素高度，也就不显示展开按钮。
+
+只需要每次进入页面时，获取到子元素高度即可。这个时候就想到不久前才看到浏览器内置的API `ResizeObserver`，这东西可以检测元素尺寸变化从而触发回调，在进入页面时由于渲染，必然会监听到元素尺寸变化，所以可以在变化回调里面获取到子元素高度！
+
+下面正式介绍
+
+### ResizeObserver 定义
+
+`ResizeObserver` 是浏览器提供的一个 API，用于监听 DOM 元素尺寸的变化（如宽度、高度的改变）。
+
+相比传统的 `window.resize` 事件（只能监听窗口大小变化），它可以直接观察特定元素或其子元素、边框盒（border box）、内容盒（content box）的尺寸变化。
+
+### 基本用法
+#### 1. 创建 ResizeObserver 实例
+通过回调函数定义当元素尺寸变化时的处理逻辑：
+```js
+const observer = new ResizeObserver((entries) => {
+  for (const entry of entries) {
+    // 处理每个变化的元素
+  }
+});
+```
+#### 2. 监听目标元素
+```js
+const targetElement = document.getElementById("my-element");
+observer.observe(targetElement);
+```
+
+#### 3. 停止监听
+停止监听特定元素：`observer.unobserve(targetElement)`
+
+停止所有监听并销毁观察器：`observer.disconnect()`
+
+#### 4. 示例代码
+```html
+<div id="resizable-box" style="width: 100px; height: 100px; background: lightblue;"></div>
+
+<script>
+  const box = document.getElementById("resizable-box");
+  const observer = new ResizeObserver((entries) => {
+    for (const entry of entries) {
+      const { width, height } = entry.contentRect;
+      console.log(`元素尺寸变化：宽度 ${width}px，高度 ${height}px`);
+      // 动态修改背景颜色
+      entry.target.style.background = width > 150 ? "salmon" : "lightblue";
+    }
+  });
+
+  observer.observe(box);
+
+  // 动态改变元素大小（测试用）
+  setTimeout(() => {
+    box.style.width = "200px";
+  }, 2000);
+</script>
+```
+##### 回调参数解析
+回调函数的参数 `entries` 是一个数组，每个元素是一个 ResizeObserverEntry 对象，包含以下关键属性：
+
+- **target**: 尺寸发生变化的元素。
+
+- **contentRect**: 内容区域的尺寸信息（width, height, top, right, bottom, left）。
+
+- **borderBoxSize**: 边框盒的尺寸信息（需注意浏览器兼容性）。
+
+- **contentBoxSize**: 内容盒的尺寸信息（需注意浏览器兼容性）。
+
+### 5. 应用场景
+- 响应式布局：元素尺寸变化时动态调整子元素布局。
+
+- 图表库：当图表容器大小变化时，重新渲染图表（如 ECharts、D3.js）。
+
+- 适应组件：如侧边栏折叠/展开时，调整内容区域布局。
+
+### 6. 注意事项
+1.兼容性
+
+现代浏览器（Chrome 64+、Firefox 69+、Edge 79+、Safari 13.4+）均支持。
+
+旧版浏览器需使用 [polyfill](https://github.com/juggle/resize-observer)。
+
+2.性能优化
+
+避免在回调中执行耗时操作，必要时使用防抖（debounce）。
+
+及时调用 `unobserve()` 或 `disconnect()` 释放资源。
+
+3.观测范围
+
+默认监听` content-box`（内容区域），可通过 `box` 选项修改观测类型：
+
+### 7. 总结
+通过 `ResizeObserver`，开发者可以更高效地响应元素尺寸变化，替代传统的轮询或基于 `window.resize` 的间接监听方案。
+
+
+### 最后的解决代码
+等待补充...
+```js
+
+```
