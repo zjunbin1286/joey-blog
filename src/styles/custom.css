@@ -3,4 +3,6 @@
   --sl-content-width: 57rem;
   /* 标题字体大小 */
   /* --sl-text-5xl: 3.5rem; */
+  /* <h1> 标签的大小，主要在 template: 'splash' 的页面中 */
+  --sl-text-h1: 2rem;
 }
