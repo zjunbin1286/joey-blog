@@ -106,7 +106,24 @@ observer.observe(targetElement);
 
 
 ### 最后的解决代码
-等待补充...
-```js
+```tsx
+  const childrenRef = useRef<HTMLDivElement>(null);
+  const [ childrenHeight, setChildrenHeight ] = useState(0);
 
+  useEffect(() => {
+    if (!childrenRef.current) return;
+    // 创建监听实例
+    const resizeObserver = new ResizeObserver((entries) => {
+      if (!entries.length) return;
+      const entry = entries.find((entry) => entry.target === childrenRef.current);
+      if (!entry) return;
+      setChildrenHeight(entry.contentRect.height);
+    });
+    // 监听元素
+    resizeObserver.observe(childrenRef.current);
+    return () => {
+      // 消除监听
+      resizeObserver.disconnect();
+    };
+  }, [ props.children ]);
 ```
