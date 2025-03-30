@@ -115,6 +115,7 @@ observer.observe(targetElement);
     // 创建监听实例
     const resizeObserver = new ResizeObserver((entries) => {
       if (!entries.length) return;
+      // 找到对应监听的dom
       const entry = entries.find((entry) => entry.target === childrenRef.current);
       if (!entry) return;
       setChildrenHeight(entry.contentRect.height);
