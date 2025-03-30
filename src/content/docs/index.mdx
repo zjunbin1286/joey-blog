@@ -42,11 +42,18 @@ import { Icon } from '@astrojs/starlight/components';
   >
     一些你想着重展示的有趣内容。
   </LinkCard>
-    <LinkCard
-    title="🔧 工作实际开发的问题记录"
+  <LinkCard
+    title="🔧 工作实际开发中的问题记录"
     href="/project-solution"
     icon="open-book"
     description='在工作项目中遇到问题以及如何解决的方案'>
+    更多你想分享的信息。
+  </LinkCard>
+    <LinkCard
+    title="🏂 社区转发"
+    href="/community-article"
+    icon="open-book"
+    description='专门收录来自各个社区有趣、看了有收获的文章'>
     更多你想分享的信息。
   </LinkCard>
 </CardGrid>
@@ -60,7 +67,10 @@ import { Icon } from '@astrojs/starlight/components';
 	<Card title="文章专栏" icon="open-book">
 		包含的类别有 React、Vue、Vite、HTML、CSS等，查看更多详情 [点击前往](/special-column).
 	</Card>
-  <Card title="工作实际开发的问题记录" icon="setting">
+  <Card title="工作实际开发中的问题记录" icon="setting">
 		在项目中遇到问题以及如何解决的方案 [点击前往](/project-solution).
+	</Card>
+  <Card title="社区转发" icon="nix">
+		专门收录来自各个社区有趣、看了有收获的文章 [点击前往](/community-article).
 	</Card>
 </CardGrid>
