@@ -17,7 +17,7 @@ hero:
       variant: minimal
 banner:
   content: |
-    站点上线我的作品集栏目，请快点来看看吧！
+    📢 站点上线我的作品集栏目，请快点来看看吧！
     <a href="/collection">点击查看！</a>
 ---
 
@@ -28,25 +28,25 @@ import { Icon } from '@astrojs/starlight/components';
 {/* ## 快捷跳转 */}
 <CardGrid>
   <LinkCard
-    title="🚀 作品集"
+    title="✍ 文章专栏"
+    href="/special-column"
+    icon="open-book"
+    description='我的文章专栏，内容包括JavaScript、Vue、React、Node、HTML&CSS等'>
+    更多你想分享的信息。
+  </LinkCard>
+  <LinkCard
+    title="🌈 作品集"
     href="/collection"
     icon="open-book"
-    description='收录了我的项目，包括React、Vue、Vite、NodeCLI、等'
+    description='收录了我的项目，包括在线多人协同文档、npm镜像源管理器、KeepAlive缓存组件等'
   >
     一些你想着重展示的有趣内容。
   </LinkCard>
-  <LinkCard
-    title="📖 专栏"
-    href="/special-column"
-    icon="open-book"
-    description='我的文章专栏'>
-    更多你想分享的信息。
-  </LinkCard>
     <LinkCard
-    title="📖 项目疑难杂症的解决方案"
+    title="🔧 工作实际开发的问题记录"
     href="/project-solution"
     icon="open-book"
-    description='在项目中遇到问题以及如何解决的方案'>
+    description='在工作项目中遇到问题以及如何解决的方案'>
     更多你想分享的信息。
   </LinkCard>
 </CardGrid>
@@ -60,10 +60,7 @@ import { Icon } from '@astrojs/starlight/components';
 	<Card title="文章专栏" icon="open-book">
 		包含的类别有 React、Vue、Vite、HTML、CSS等，查看更多详情 [点击前往](/special-column).
 	</Card>
-	{/* <Card title="Add new content" icon="add-document">
-    Add Markdown or MDX files to `src/content/docs` to create new pages.
-  </Card>
-  <Card title="Configure your site" icon="setting">
-    Edit your `sidebar` and other config in `astro.config.mjs`.
-  </Card> */}
+  <Card title="工作实际开发的问题记录" icon="setting">
+		在项目中遇到问题以及如何解决的方案 [点击前往](/project-solution).
+	</Card>
 </CardGrid>
