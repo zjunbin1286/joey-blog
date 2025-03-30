@@ -1,0 +1,86 @@
+---
+title: 使用深度优先搜索查找父子级关联的数据
+template: 'splash'
+---
+
+源数据结构如下：
+```ts
+const treeAllData=[
+  {id: 1, parentId: 0},
+  {id: 2, parentId: 1},
+  {id: 3, parentId: 2},
+  {id: 4, parentId: 2},
+  {id: 5, parentId: 4},
+  {id: 6, parentId: 5},
+]
+```
+查找 `newArr = [{id: 2, parentId: 1}, {id: 3, parentId: 2}]`
+的所有父级和所有子级，注意，父级可能有父级的父级，子级可能有子级的子级
+
+```ts
+/**
+ * 查找出父级和子级，返回列表
+ *
+ * 查父级：当前的 parentId，是其他的 id(同级只有一个)
+ * 查子级：当前的 id，是其他的 parentId(同级可能有多个)
+ */
+export const findParentAndChildren = (treeAllData, targetArr) => {
+  if (!targetArr.length) return [];
+
+  const result = new Set();
+
+  // 创建映射加速查找
+  const nodeMap = new Map(treeAllData.map((node) => [node.id, node]));
+
+  // 查找所有父级节点
+  const findParentsByStack = (startId) => {
+    let currentId = startId;
+
+    while (currentId !== 0) {
+      const parent = nodeMap.get(currentId) as Record<string, any>;
+      if (parent) {
+        result.add(parent);
+        currentId = parent.parentId;
+      } else {
+        break;
+      }
+    }
+  };
+
+  // 创建父节点到子节点的映射，一个父节点可能有多个子节点
+  const childrenMap = new Map();
+  treeAllData.forEach((node) => {
+    if (!childrenMap.has(node.parentId)) {
+      childrenMap.set(node.parentId, []);
+    }
+    childrenMap.get(node.parentId).push(node);
+  });
+
+  // 查找所有子级节点
+  const findChildrenByStack = (startId) => {
+    const stack = [startId];
+
+    while (stack.length > 0) {
+      const currentId = stack.pop();
+      // 获取当前节点的所有子节点
+      const children = childrenMap.get(currentId) || [];
+
+      for (const child of children) {
+        if (!result.has(child)) {
+          result.add(child);
+          stack.push(child.id);
+        }
+      }
+    }
+  };
+
+  // 处理目标数组
+  targetArr.forEach((node) => {
+    result.add(node);
+    findParentsByStack(node.parentId);
+    findChildrenByStack(node.id);
+  });
+
+  return Array.from(result) as never[];
+};
+```
