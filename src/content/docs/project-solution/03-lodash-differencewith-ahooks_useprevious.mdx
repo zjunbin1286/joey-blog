@@ -1,0 +1,139 @@
+---
+title: lodash 中 differenceWith 以及 ahooks 中 usePrevious 的用法
+template: 'splash'
+---
+
+今天在开发中遇到表格列动态显隐的问题，修改了 field 的 hidden 属性后，界面的列并没有更新。经过定位后发现其组件内容用了 ahooks 中的 `usePrevious` 和 lodash 中的 [differenceWith](https://www.lodashjs.com/docs/lodash.differenceWith#_differencewitharray-values-comparator) 方法对 field 进行了过滤，导致一直获取的是未更新的值。
+
+下面来探究下这两个方法的使用。
+
+### 一、usePrevious 的使用
+**定义**：ahooks 中的 `usePrevious` 是一个用于获取变量上一次值的自定义 Hook，常用于在 React 函数组件中追踪状态或属性的变化。它的核心作用是保存变量的 “前一个状态”，方便对比当前值和历史值。
+
+#### **基本用法**
+```jsx
+import { usePrevious } from 'ahooks';
+
+function Demo() {
+  const [count, setCount] = useState(0);
+  const prevCount = usePrevious(count); // 保存 count 的上一个值
+
+  return (
+    <div>
+      <p>Current: {count}</p>
+      <p>Previous: {prevCount}</p>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+    </div>
+  );
+}
+```
+**输出：**
+
+初始时：`Current: 0`, `Previous: undefined`
+
+点击按钮后：`Current: 1`, `Previous: 0`
+
+再次点击：`Current: 2`, `Previous: 1`
+
+#### 核心特点
+
+1、自动追踪变化：通过 `useEffect` 监听变量变化，自动更新保存的“前一个值”。
+
+2、基于 useRef 实现：内部使用 `useRef` 存储值，确保更新不会触发组件重新渲染。
+
+3、初始值为 undefined：首次调用时，返回的 `previousValue` 为 `undefined`（可通过默认值覆盖）。
+
+#### 常见场景
+
+##### 1.对比状态变化
+检测某个状态是否改变并执行逻辑（如发送日志、触发动画）。
+```jsx
+const prevData = usePrevious(data);
+useEffect(() => {
+  if (prevData !== data) {
+    // 数据变化时执行操作
+  }
+}, [data]);
+```
+##### 2.恢复历史状态
+实现 “撤销” 功能时，保存用户操作的历史记录。
+
+##### 3.优化渲染性能
+避免不必要的渲染（如仅在特定属性变化时更新组件）。
+
+#### 注意事项
+
+##### 1.引用类型比较
+如果变量是对象或数组，`usePrevious` 保存的是引用地址。若要对比内容变化，需使用深比较（如 `_.isEqual`）。\
+
+##### 2.类组件替代方案
+在类组件中，可以直接通过 `this.prevProps` 或 `this.prevState` 实现类似功能。
+
+##### 3.内存泄漏
+如果保存的值是大型对象，需手动清理（一般场景无需处理，React 自动管理）。
+
+#### 总结
+`usePrevious` 是一个轻量但实用的工具，适用于需要追踪变量历史值的场景。通过简洁的 API 封装了 `useRef` 和 `useEffect` 的细节，帮助开发者更高效地处理状态变化逻辑。
+
+### 二、differenceWith 的使用
+`lodash` 的 `differenceWith` 方法用于找出第一个数组中不在后续数组中的元素，允许自定义比较规则。其用法如下：
+
+#### 语法
+```js
+_.differenceWith(array, values, [comparator])
+```
+**array**: 要检查的源数组。
+
+**values**: 包含需排除元素的数组。
+
+**comparator**: 比较函数，接受两个参数（源数组元素和需排除数组元素），返回 true 表示两者相等。
+
+#### 功能
+1、返回一个新数组，包含源数组中所有在 `values` 数组中没有匹配项的元素。
+
+2、匹配规则由 `comparator` 定义：若返回 `true`，则源元素会被排除。
+
+#### 示例
+
+1、对象数组比较（按属性）：
+```js
+const array1 = [{ x: 1, y: 2 }, { x: 3, y: 4 }];
+const array2 = [{ x: 1, y: 3 }];
+
+const result = _.differenceWith(array1, array2, (a, b) => a.x === b.x);
+// 结果：[{ x: 3, y: 4 }]
+```
+比较 `x` 属性，排除 `array1` 中 `x` 存在于 `array2` 的元素。
+
+2、深比较（使用 `_.isEqual`）：
+```js
+const obj1 = { data: { id: 1 } };
+const obj2 = { data: { id: 2 } };
+const array1 = [obj1, obj2];
+const array2 = [{ data: { id: 1 } }];
+
+const result = _.differenceWith(array1, array2, _.isEqual);
+// 结果：[{ data: { id: 2 } }]
+```
+深比较排除完全相同的对象。
+
+2、多条件比较：
+```js
+const arr1 = [{ a: 1, b: 2 }, { a: 2, b: 3 }];
+const arr2 = [{ a: 1, b: 3 }];
+
+const result = _.differenceWith(arr1, arr2, (a, b) => a.a + a.b === b.a + b.b);
+// 结果：[{ a: 2, b: 3 }]
+```
+比较属性之和，排除和为 4 的元素。
+
+#### 注意事项
+**1、参数顺序**：比较器第一个参数是源数组元素，第二个是需排除数组元素。
+
+**2、性能**：自定义比较可能较慢，尤其在处理大数组时。
+
+**3、多数组排除**：需合并多个排除数组后再传入。
+
+#### 总结
+`differenceWith` 适用于需要自定义相等逻辑的场景，如对象属性比较或复杂结构对比，通过灵活定义比较器实现精确控制。
+

@@ -12,7 +12,7 @@ export default function ProjectSolution() {
       {listData.map((item, index) => (
         <div key={item.url} className={styles.item}>
           <div className={styles.title}>
-            <a className='text-[20px]' href={item.url}>{item.title}</a>
+            <a className='text-[20px] !text-[#1d2129]' href={item.url}>{item.title}</a>
           </div>
           <div className={styles.bottom}>
             <span className={styles.time}>{item.createDate}</span>
