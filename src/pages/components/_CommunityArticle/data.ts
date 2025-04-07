@@ -18,4 +18,10 @@ export const listData: ListItem[] = [
     createDate: '2024-04-07',
     from: '微信公众号'
   },
+  {
+    url: 'https://segmentfault.com/a/1190000039311939',
+    title: '中高级前端必须注意的40条移动端H5坑位指南 | 网易三年实践',
+    createDate: '2024-04-07',
+    from: '思否'
+  },
 ]
