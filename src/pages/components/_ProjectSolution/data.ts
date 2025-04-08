@@ -25,4 +25,9 @@ export const listData: ListItem[] = [
     title: '创建离屏 Canvas 将图片进行旋转，并转为二进制流',
     createDate: '2024-04-08',
   },
+  {
+    url: '/project-solution/05-blob-type-json-to-blob-formdata',
+    title: '将 JSON 对象转换为 Blob，设置 Blob 数据的类型，再使用 FormData 数据格式请求接口',
+    createDate: '2024-04-08',
+  },
 ]

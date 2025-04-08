@@ -1,0 +1,28 @@
+---
+title: 将 JSON 对象转换为 Blob，设置 Blob 数据的类型，再使用 FormData 数据格式请求接口
+template: 'splash'
+---
+
+今日与后端联调请求接口，遇到一个问题，接口要求传入的数据格式为 FormData，并且要将 JSON 数据转成流
+
+我们需要将 JSON 对象转换为 Blob 数据格式，并设置 Blob 的类型为 `application/json`
+
+将原本文件流的 Blob 类型设置为 `application/octet-stream`, 然后使用 FormData 进行请求。
+
+具体实现如下：
+```ts
+const formData = new FormData();
+
+// 将二进制流设置类型为 application/octet-stream
+const fileBlob = new Blob([ signatureData?.blob ], { type: 'application/octet-stream' });
+
+// 将 JSON 对象转换为 Blob，并设置类型为 application/json
+const jsonBlob = new Blob([ JSON.stringify({
+  name: 'CoderBin',
+  age: 18,
+}) ], { type: 'application/json' });
+
+formData.append('file', fileBlob, `${uuid()}-file.png`); // 第三个参数设置文件名
+formData.append('actionSignatureRecord', jsonBlob);
+```
+
