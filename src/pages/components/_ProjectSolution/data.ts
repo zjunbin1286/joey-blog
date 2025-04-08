@@ -20,4 +20,9 @@ export const listData: ListItem[] = [
     title: 'lodash 中 differenceWith 以及 ahooks 中 usePrevious 的用法',
     createDate: '2024-04-01',
   },
+  {
+    url: '/project-solution/04-canvas-handle-image-rotate',
+    title: '创建离屏 Canvas 将图片进行旋转，并转为二进制流',
+    createDate: '2024-04-08',
+  },
 ]
