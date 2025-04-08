@@ -24,4 +24,10 @@ export const listData: ListItem[] = [
     createDate: '2024-04-07',
     from: '思否'
   },
+  {
+    url: 'https://juejin.cn/post/6844903926110617613',
+    title: '灵活运用CSS开发技巧，布局、行为、色彩、图形、组件等',
+    createDate: '2024-04-08',
+    from: '掘金'
+  },
 ]
