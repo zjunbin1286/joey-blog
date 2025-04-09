@@ -9,15 +9,15 @@ template: 'splash'
 
 具体实现如下：
 ```ts
-async function fetchImageToBinary(url: string): Promise<ArrayBuffer> {
+async function fetchImageToBinaryAndBlob(url: string): Promise<{arrayBuffer: ArrayBuffer, blob: Blob}> {
   try {
     // 使用 Fetch API 获取远程图片
     const response = await fetch(url);
-    
+
     if (!response.ok) {
       throw new Error(`请求失败，状态码：${response.status}`);
     }
-    
+
     // 获取二进制文件
     const arrayBuffer = await response.arrayBuffer();
 
