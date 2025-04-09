@@ -1,0 +1,37 @@
+---
+title: 将远程图片转换为二进制、 Blob 数据
+template: 'splash'
+---
+
+遇到一个需求，需要将一个远程图片链接转换为二进制数据或 Blob 数据，再作为请求参数发送到后端。
+
+在前端中，使用 Fetch API 可以很方便地获取远程资源，包括图片。Fetch API 支持多种响应类型，包括文本、JSON、Blob 和 ArrayBuffer 等。  
+
+具体实现如下：
+```ts
+async function fetchImageToBinary(url: string): Promise<ArrayBuffer> {
+  try {
+    // 使用 Fetch API 获取远程图片
+    const response = await fetch(url);
+    
+    if (!response.ok) {
+      throw new Error(`请求失败，状态码：${response.status}`);
+    }
+    
+    // 获取二进制文件
+    const arrayBuffer = await response.arrayBuffer();
+
+    // 获取 Blob 文件
+    const blob = await response.blob();
+
+    return {
+      arrayBuffer,
+      blob
+    };
+
+  } catch (error) {
+    console.error('获取图片失败:', error);
+    throw error; // 可根据需要处理错误
+  }
+}
+```

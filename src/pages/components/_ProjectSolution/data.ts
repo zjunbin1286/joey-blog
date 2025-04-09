@@ -6,6 +6,11 @@ interface ListItem {
 
 export const listData: ListItem[] = [
   {
+    url: '/project-solution/06-remote-image-link-to-buffer-blob',
+    title: '将远程图片转换为二进制、 Blob 数据',
+    createDate: '2024-04-09',
+  },
+  {
     url: '/project-solution/05-blob-type-json-to-blob-formdata',
     title: '将 JSON 对象转换为 Blob，设置 Blob 数据的类型，再使用 FormData 数据格式请求接口',
     createDate: '2024-04-08',
