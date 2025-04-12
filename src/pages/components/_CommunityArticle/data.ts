@@ -7,6 +7,12 @@ interface ListItem {
 
 export const listData: ListItem[] = [
   {
+    url: 'https://mp.weixin.qq.com/s/AZV7rJWO1pZOQ2M6136EUg',
+    title: '2025年十大CSS新特性：已在所有主流浏览器中支持',
+    createDate: '2024-04-12',
+    from: '微信公众号'
+  },
+  {
     url: 'https://juejin.cn/post/6844903926110617613',
     title: '灵活运用CSS开发技巧，布局、行为、色彩、图形、组件等',
     createDate: '2024-04-08',
