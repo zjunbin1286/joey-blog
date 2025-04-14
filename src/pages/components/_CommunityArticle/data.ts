@@ -6,6 +6,13 @@ interface ListItem {
 }
 
 export const listData: ListItem[] = [
+
+  {
+    url: 'https://developer.chrome.google.cn/docs/devtools/performance?hl=zh-cn',
+    title: '如何使用 Chrome DevTools 中的“性能”面板分析运行时性能，分析网页的响应、动画和空闲阶段',
+    createDate: '2024-04-14',
+    from: '谷歌开发者文章'
+  },
   {
     url: 'https://mp.weixin.qq.com/s/AZV7rJWO1pZOQ2M6136EUg',
     title: '2025年十大CSS新特性：已在所有主流浏览器中支持',
