@@ -7,6 +7,12 @@ interface ListItem {
 
 export const listData: ListItem[] = [
   {
+    url: 'https://juejin.cn/post/7023906112843808804',
+    title: '史上最全！熬夜整理56个JavaScript高级的手写知识点！！专业扫盲！',
+    createDate: '2024-04-18',
+    from: '掘金'
+  },
+  {
     url: 'https://mp.weixin.qq.com/s/zpH0vuz-Q37qK8Qc0NgmAA',
     title: '前端文件操作黑魔法！Blob和File让你玩转文件流',
     createDate: '2024-04-14',
