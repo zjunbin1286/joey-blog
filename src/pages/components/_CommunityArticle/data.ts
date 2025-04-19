@@ -7,6 +7,12 @@ interface ListItem {
 
 export const listData: ListItem[] = [
   {
+    url: 'https://mp.weixin.qq.com/s/yfhaqyVd7up_lWyJ6xqPgA',
+    title: '前端页面中，如何让用户回到上次阅读的位置？',
+    createDate: '2024-04-18',
+    from: '微信公众号'
+  },
+  {
     url: 'https://juejin.cn/post/7023906112843808804',
     title: '史上最全！熬夜整理56个JavaScript高级的手写知识点！！专业扫盲！',
     createDate: '2024-04-18',
