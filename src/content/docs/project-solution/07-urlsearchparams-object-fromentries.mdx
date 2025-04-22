@@ -1,0 +1,139 @@
+---
+title: 处理 URL query 参数的小技巧：使用 URLSearchParams 处理 URL 的查询字符串，使用 Object.fromEntries 方法将键值对的列表转换为对象
+template: 'splash'
+---
+
+直接上代码
+```ts
+const queryString = 'name=CoderBin&age=18';
+
+// 创建 URLSearchParams 对象，内容为 queryString
+const params = new URLSearchParams(queryString);
+
+// 返回一个迭代器，例如 [key, value]
+const paramsEntries = params.entries();
+
+// 将迭代器转换为对象
+const data = Object.fromEntries(paramsEntries) //  { name: 'CoderBin', age: '18' }
+
+```
+
+### 一、Object.fromEntries （[MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/fromEntries)）
+`Object.fromEntries()` 方法用于将一个键值对的列表转换为一个对象。这个列表通常是一个 `Array` 或者 `Map` 实例，其元素是形如 `[key, value]` 的条目。
+
+`Object.fromEntries()` 接收一个可迭代对象（如 `Array`、`Map` 等），该对象包含键值对。它会遍历这个可迭代对象，并将每个键值对转换为新对象的属性。
+
+#### 1、从数组转换：
+```ts
+const entriesArray = [
+  ['name', 'Alice'],
+  ['age', 30],
+  ['city', 'New York']
+];
+
+const personObjectFromArray = Object.fromEntries(entriesArray);
+console.log(personObjectFromArray); // 输出: { name: 'Alice', age: 30, city: 'New York' }
+```
+
+#### 2、从 Map 转换：
+```ts
+const entriesMap = new Map([
+  ['product', 'Laptop'],
+  ['price', 1200],
+  ['brand', 'XYZ']
+]);
+
+const productObjectFromMap = Object.fromEntries(entriesMap);
+console.log(productObjectFromMap); // 输出: { product: 'Laptop', price: 1200, brand: 'XYZ' }
+```
+
+#### 3、键的重复：
+```ts
+const duplicateKeysEntries = [
+  ['color', 'red'],
+  ['size', 'large'],
+  ['color', 'blue']
+];
+
+const objectWithDuplicateKeys = Object.fromEntries(duplicateKeysEntries);
+console.log(objectWithDuplicateKeys); // 输出: { color: 'blue', size: 'large' }
+```
+
+### 二、URLSearchParams（[MDN](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams)）
+`URLSearchParams` 接口提供了一种方便的方法来处理 URL 的查询字符串。它允许你轻松地获取、设置、删除和迭代 URL 中的参数。
+
+`URLSearchParams` 对象可以从一个包含查询字符串的字符串创建，也可以在脚本中直接创建。创建后，你可以使用其提供的方法来管理 URL 的参数。
+
+#### **1、 从查询字符串创建 URLSearchParams 对象：**
+```ts
+const queryString = 'name=Alice&age=30&city=New%20York';
+const params = new URLSearchParams(queryString);
+
+console.log(params.get('name')); // 输出: Alice
+console.log(params.get('age'));  // 输出: 30
+console.log(params.get('city')); // 输出: New York (注意空格被解码了)
+```
+
+#### **2、直接创建 URLSearchParams 对象并添加参数：**
+```ts
+const params = new URLSearchParams();
+params.append('product', 'Laptop');
+params.append('price', '1200');
+params.append('color', 'Silver');
+
+console.log(params.toString()); // 输出: product=Laptop&price=1200&color=Silver
+```
+
+#### **3、获取所有参数的值：**
+```ts
+const queryString = 'name=Alice&age=30&city=New%20York&city=Singapore';
+const params = new URLSearchParams(queryString);
+
+console.log(params.getAll('city')); // 输出: ['New York', 'Singapore']
+```
+
+#### **4、设置参数的值：**
+```ts
+const params = new URLSearchParams('name=Alice&age=30');
+params.set('age', '31');
+params.set('country', 'USA');
+
+console.log(params.toString()); // 输出: name=Alice&age=31&country=USA
+```
+
+#### **5、删除参数：**
+```ts
+const params = new URLSearchParams('name=Alice&age=30&city=New%20York');
+params.delete('age');
+
+console.log(params.toString()); // 输出: name=Alice&city=New%20York
+```
+
+#### **6、迭代参数：**
+```ts
+const params = new URLSearchParams('name=Alice&age=30&city=New%20York');
+
+for (const [key, value] of params.entries()) {
+  console.log(`${key}: ${value}`);
+}
+// 输出:
+// name: Alice
+// age: 30
+// city: New York
+
+for (const key of params.keys()) {
+  console.log(key);
+}
+// 输出:
+// name
+// age
+// city
+
+for (const value of params.values()) {
+  console.log(value);
+}
+// 输出:
+// Alice
+// 30
+// New York
+```
