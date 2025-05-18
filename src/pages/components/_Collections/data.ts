@@ -6,6 +6,11 @@ interface ListItem {
 }
 
 export const listData: ListItem[] = [
+    {
+    title: 'NovaPix AI（AI智能图片设计平台）',
+    url: 'https://magic-image-ai.cn',
+    description: '这是一个集 AI 生成、智能编辑、极速创作、资源管理于一体的综合性平台。目标是让创意更高效，AI 赋能图片生成与编辑，助力设计师与内容创作者轻松完成视觉创意。'
+  },
   {
     title: 'Docs Unity',
     url: 'https://docs-unity.online/',
