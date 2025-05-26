@@ -6,6 +6,12 @@ interface ListItem {
 }
 
 export const listData: ListItem[] = [
+    {
+    url: 'https://juejin.cn/post/7026941253845516324',
+    title: 'Fabric.js 从入门到________',
+    createDate: '2024-05-26',
+    from: '掘金'
+  },
   {
     url: 'https://mp.weixin.qq.com/s/yfhaqyVd7up_lWyJ6xqPgA',
     title: '前端页面中，如何让用户回到上次阅读的位置？',
