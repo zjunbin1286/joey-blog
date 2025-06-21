@@ -7,6 +7,12 @@ interface ListItem {
 
 export const listData: ListItem[] = [
   {
+    url: 'https://juejin.cn/post/7404739357083156516',
+    title: '一文看懂 SSE 流式传输',
+    createDate: '2025-06-21',
+    from: '掘金'
+  },
+  {
     url: 'https://juejin.cn/post/7026941253845516324',
     title: '等等，fetch 请求还能被取消？',
     createDate: '2025-05-31',
