@@ -7,6 +7,12 @@ interface ListItem {
 
 export const listData: ListItem[] = [
   {
+    url: 'https://mp.weixin.qq.com/s/C1n162LIG-_EUdZkdKV1pQ',
+    title: 'try...catch 抓不到 Promise 的错误？原来是这么回事',
+    createDate: '2025-07-02',
+    from: '微信公众号'
+  },
+  {
     url: 'https://mp.weixin.qq.com/s/LMxZ-ndewJX5KBwc0bpW_Q',
     title: '如何判断用户是否离开了当前页面？',
     createDate: '2025-07-01',
