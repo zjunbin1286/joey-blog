@@ -7,6 +7,12 @@ interface ListItem {
 
 export const listData: ListItem[] = [
   {
+    url: 'https://mp.weixin.qq.com/s/ysZFKWIlKLlHsTaoP9CRtg',
+    title: '前端录屏黑科技：几行 JS 代码就能实现！',
+    createDate: '2025-07-12',
+    from: '微信公众号'
+  },
+  {
     url: 'https://mp.weixin.qq.com/s/Qb7SU3vzlwa3zxXEHz-d-Q',
     title: 'Array.from() 的 5 个神仙用法，彻底告别 for 循环初始化！',
     createDate: '2025-07-11',
