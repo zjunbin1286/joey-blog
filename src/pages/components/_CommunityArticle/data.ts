@@ -7,6 +7,12 @@ interface ListItem {
 
 export const listData: ListItem[] = [
   {
+    url: 'https://mp.weixin.qq.com/s/NG0xv9Hy5OA3-uiT6X2gfw',
+    title: '为何 async/await 会“阻塞”页面？并发处理的正确姿势',
+    createDate: '2025-07-18',
+    from: '微信公众号'
+  },
+  {
     url: 'https://mp.weixin.qq.com/s/Xj5WbyFOOEIHx16AR-pstw',
     title: '浏览器悄悄支持了这个新API，让数组操作性能翻倍',
     createDate: '2025-07-13',
