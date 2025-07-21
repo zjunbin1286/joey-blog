@@ -46,7 +46,7 @@ message = 'here is CoderBin'
 let color = 'red'
 delete color
 ```
-**严格模式也对变量名增加了限制**。具体来说，不允许变量名为implements 、interface 、let 、package 、private 、protected 、public 、static 和yield 。这些是目前的保留字，可能在将来的ECMAScript版本中用到。如果在严格模式下使用这些名称作为变量名，则会导致语法错误。
+**严格模式也对变量名增加了限制**。具体来说，不允许变量名为implements 、interface 、let 、package 、private 、protected 、public 、static 和yield 。这些是目前的保留字，可能在将来的ECMAScript版本中用到。如果在严格模式下使用这些名称作为变量名，则会导致语法错误；
 
 ## 3. 对象
 **在严格模式下操作对象比在非严格模式下更容易抛出错误**。严格模式倾向于在非严格模式下会静默失败的情况下抛出错误，增加了开发中提前发现错误的可能性。
