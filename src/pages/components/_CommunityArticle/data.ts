@@ -7,6 +7,12 @@ interface ListItem {
 
 export const listData: ListItem[] = [
   {
+    url: 'https://mp.weixin.qq.com/s/6-_ZPYzWiA-1J9Q_nOz0MA',
+    title: '前端文件下载的N种姿势：从简单到高级',
+    createDate: '2025-07-25',
+    from: '微信公众号'
+  },
+  {
     url: 'https://mp.weixin.qq.com/s/NG0xv9Hy5OA3-uiT6X2gfw',
     title: '为何 async/await 会“阻塞”页面？并发处理的正确姿势',
     createDate: '2025-07-18',
