@@ -7,6 +7,12 @@ interface ListItem {
 
 export const listData: ListItem[] = [
   {
+    url: 'https://mp.weixin.qq.com/s/BcMlcxp0I7jsjE8eB5ERsA',
+    title: '告别 addEventListener',
+    createDate: '2025-07-18',
+    from: '微信公众号'
+  },
+  {
     url: 'https://mp.weixin.qq.com/s/6-_ZPYzWiA-1J9Q_nOz0MA',
     title: '前端文件下载的N种姿势：从简单到高级',
     createDate: '2025-07-25',
