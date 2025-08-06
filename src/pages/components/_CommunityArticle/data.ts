@@ -6,6 +6,12 @@ interface ListItem {
 }
 
 export const listData: ListItem[] = [
+      {
+    url: 'https://mp.weixin.qq.com/s/qzN9bq1YKUc9nKv158RyLw',
+    title: '再见 try/catch，我有更好的选择了！',
+    createDate: '2025-08-06',
+    from: '微信公众号'
+  },
     {
     url: 'https://mp.weixin.qq.com/s/3XjCACU7Jr-vMoeF4LE36Q',
     title: '别再用 px 做单位了！用这个 CSS 新特性，轻松实现响应式布局',
