@@ -6,7 +6,13 @@ interface ListItem {
 }
 
 export const listData: ListItem[] = [
-    {
+  {
+    url: 'https://mp.weixin.qq.com/s/7CJuz6Nx5IoxhLJXcjrCEg',
+    title: '11 个神秘又有趣的前端技巧',
+    createDate: '2025-08-20',
+    from: '掘金'
+  },
+  {
     url: 'https://juejin.cn/post/7501187644328509503',
     title: '使用 monaco editor 实现 typescript 代码提示',
     createDate: '2025-08-17',
