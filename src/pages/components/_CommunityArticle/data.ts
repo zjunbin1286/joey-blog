@@ -7,16 +7,22 @@ interface ListItem {
 
 export const listData: ListItem[] = [
   {
+    url: 'https://mp.weixin.qq.com/s/cRxrAvklOsEWY2kDCKLqaQ',
+    title: '前端神器！每位开发者都必须要知道的 10 个浏览器扩展',
+    createDate: '2025-09-05',
+    from: '微信公众号'
+  },
+  {
     url: 'https://mp.weixin.qq.com/s/OfnTUDWr-sOmAl9CxeM2tg?scene=1&click_id=1',
     title: '16 个 JavaScript 简写神技，提效 60%！',
     createDate: '2025-09-03',
-    from: '掘金'
+    from: '微信公众号'
   },
   {
     url: 'https://mp.weixin.qq.com/s/7CJuz6Nx5IoxhLJXcjrCEg',
     title: '11 个神秘又有趣的前端技巧',
     createDate: '2025-08-20',
-    from: '掘金'
+    from: '微信公众号'
   },
   {
     url: 'https://juejin.cn/post/7501187644328509503',
