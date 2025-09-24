@@ -7,6 +7,12 @@ interface ListItem {
 
 export const listData: ListItem[] = [
   {
+    url: 'https://mp.weixin.qq.com/s/KOuLK0ENANuSMbkRBYKFmA',
+    title: '首个「专业级」WebSocket 调试神器来了！',
+    createDate: '2025-09-24',
+    from: '微信公众号'
+  },
+  {
     url: 'https://mp.weixin.qq.com/s/cRxrAvklOsEWY2kDCKLqaQ',
     title: '前端神器！每位开发者都必须要知道的 10 个浏览器扩展',
     createDate: '2025-09-05',
