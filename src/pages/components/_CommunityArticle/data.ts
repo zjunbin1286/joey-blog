@@ -7,6 +7,12 @@ interface ListItem {
 
 export const listData: ListItem[] = [
   {
+    url: 'https://mp.weixin.qq.com/s/pYAR5PS3mqIqh62crqEAjQ',
+    title: '一天一个有趣的 npm 库：Tippy.js',
+    createDate: '2025-09-27',
+    from: '微信公众号'
+  },
+  {
     url: 'https://mp.weixin.qq.com/s/KOuLK0ENANuSMbkRBYKFmA',
     title: '首个「专业级」WebSocket 调试神器来了！',
     createDate: '2025-09-24',
