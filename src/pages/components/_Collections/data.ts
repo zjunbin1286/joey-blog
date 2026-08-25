@@ -7,13 +7,13 @@ interface ListItem {
 
 export const listData: ListItem[] = [
     {
-    title: 'NovaPix AI（AI智能图片设计平台）',
-    url: 'https://magic-image-ai.cn',
+    title: 'Novapix AI（AI智能图片设计平台）',
+    url: 'https://novapix-ai.online/',
     description: '这是一个集 AI 生成、智能编辑、极速创作、资源管理于一体的综合性平台。目标是让创意更高效，AI 赋能图片生成与编辑，助力设计师与内容创作者轻松完成视觉创意。'
   },
   {
     title: 'Docs Unity',
-    url: 'https://docs-unity.online/',
+    url: 'https://docs-unity.icu/',
     description: '在线多人协同文档，该 Docs 包含了现代文档编辑器所具备的功能，包括但不限于表格插入，字体定制，图片上传等等。支持 JSON、PDF、HTML、Text 等格式导出方式。使用 GitHub、Google 快捷登录。该 Docs 同时支持个人和组织账户，全面有效的邀请系统，和与组织内成员共同管理及编辑文档。可以对一个文档发起讨论，建立了一个通知系统，可以跟踪左右提及和评论，随时@组织成员分享文档内容。提供实时同步、富文本的编辑和用户管理。技术实现：Next.js15、React19、Tiptap、Shadcn/ui、Nuqs、Convex、LiveBlocks、Clerk'
   },
   {
