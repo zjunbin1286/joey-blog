@@ -114,6 +114,18 @@ export default defineConfig({
             { label: '知道了web的攻击方式，还不快防起来？', slug: 'articles/shared/01-web-attack-methods' },
           ],
         },
+        {
+          label: '工作问题记录',
+          items: [
+            { label: '浏览器内置 API：ResizeObserver 监听元素尺寸变化', slug: 'project-solution/01-resize-observer' },
+            { label: '使用深度优先搜索查找父子级关联的数据', slug: 'project-solution/02-depth-first-search-parent-children' },
+            { label: 'lodash 中 differenceWith 以及 ahooks 中 usePrevious 的用法', slug: 'project-solution/03-lodash-differencewith-ahooks_useprevious' },
+            { label: '创建离屏 Canvas 将图片进行旋转，并转为二进制流', slug: 'project-solution/04-canvas-handle-image-rotate' },
+            { label: '将 JSON 对象转换为 Blob 并用 FormData 请求接口', slug: 'project-solution/05-blob-type-json-to-blob-formdata' },
+            { label: '将远程图片转换为 Buffer、Blob 数据', slug: 'project-solution/06-remote-image-link-to-buffer-blob' },
+            { label: '用 URLSearchParams 与 Object.fromEntries 处理 URL query', slug: 'project-solution/07-urlsearchparams-object-fromentries' },
+          ],
+        },
         // {
         //   label: 'Reference',
         //   autogenerate: { directory: 'reference' },

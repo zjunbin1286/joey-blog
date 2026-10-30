@@ -1,14 +1,16 @@
 .collectionItem {
   display: flex;
   padding: 20px 5px 20px 5px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--sl-color-hairline);
   margin-top: 0 !important;
 
   &:hover {
-    background-color: #f6f7f9;
+    background-color: var(--sl-color-gray-6);
   }
 
   .coverImg {
+    display: block;
+    flex: 0 0 auto;
     width: 250px !important;
     height: 120px;
     margin-right: 20px;

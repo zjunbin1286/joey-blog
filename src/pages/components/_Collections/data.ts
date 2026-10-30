@@ -18,7 +18,7 @@ export const listData: ListItem[] = [
   },
   {
     title: 'npm-registry-nrs',
-    url: 'collections/npm-registry-nrs',
+    url: '/collections/npm-registry-nrs',
     description: '📦 npm-registry-nrs is an NPM source manager that allows you to quickly switch between NPM sources and supports managing image sources through addition, deletion, modification, and querying. （npm-registry-nrs 是一个 npm 源管理器，允许你快速地在 npm 源间切换，并且支持通过增删改查等管理镜像源。）'
   },
   {
@@ -32,7 +32,7 @@ export const listData: ListItem[] = [
     description: '🔥 基于 React Router 实现的 KeepAlive 缓存组件（KeepAlive caching component based on React Router implementation）'
   },
   {
-    title: 'react-router-keepalive',
+    title: 'react-playground',
     url: 'https://github.com/zjunbin1286/react-playground',
     description: '🎯 适用于 React 的 Playground 代码演练场'
   },

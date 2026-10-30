@@ -12,7 +12,7 @@ export default function SpecialColumns() {
       {listData.map((item, index) => (
         <div key={item.url} className={styles.collectionItem}>
           <div className={styles.coverImg}>
-            <img src={item.coverPath} />
+            <img src={item.coverPath} alt={item.title} />
           </div>
           <div className={styles.rightText}>
             <a href={item.url}>{item.title}</a>
