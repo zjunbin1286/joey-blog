@@ -168,7 +168,7 @@
 /* ── 数字统计 ── */
 .consts {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1.15rem;
   max-width: var(--home-maxw);
   margin: 0.5rem auto 0;
@@ -176,12 +176,18 @@
 }
 
 .const {
-  padding: 0.15rem 0 0.15rem 1.15rem;
-  border-left: 1px solid var(--home-line);
+  padding: 0.15rem 0;
+  text-align: center;
   min-width: 0;
+
+  /* 分隔线只出现在项与项之间：三项都居中后，首项左边若还挂着一条线会显得多余 */
+  & + & {
+    border-left: 1px solid var(--home-line);
+  }
 
   b {
     display: flex;
+    justify-content: center;
     align-items: baseline;
     gap: 1px;
     font-size: 1.875rem;
@@ -727,9 +733,10 @@
 }
 
 @media (max-width: 48rem) {
+  /* 只有三项，窄屏也保持一行三等分，避免第三项掉到第二行落单 */
   .consts {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem 1.15rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem 0.75rem;
   }
 
   .const b {

@@ -75,9 +75,8 @@ const lastUpdated = articles[0]?.date ?? '';
 
 const stats = [
   { value: articles.length, suffix: '', label: '篇文章' },
-  { value: listData.length, suffix: '', label: '个开源项目' },
+  { value: listData.length, suffix: '', label: '个项目' },
   { value: solutions.length, suffix: '', label: '份问题记录' },
-  { value: experience, suffix: '年', label: '前端经验' },
 ];
 
 const extraLinks = [
@@ -106,7 +105,7 @@ const extraLinks = [
         在星图上<em>写下坐标</em>
       </h1>
       <p>
-        {articles.length} 篇技术笔记、{listData.length} 个开源项目、{solutions.length} 份踩坑记录。
+        {articles.length} 篇技术笔记、{listData.length} 个项目、{solutions.length} 份踩坑记录。
         这些不是教程，是我在这张图上留下的坐标。
       </p>
       <div class={styles.acts}>
@@ -211,7 +210,7 @@ const extraLinks = [
 
     <section class={styles.sec} data-reveal>
       <div class={styles.secHead}>
-        <h2>开源项目</h2>
+        <h2>作品集</h2>
         <a href="/collection">全部 {listData.length} 个 →</a>
       </div>
       <div class={styles.projects}>
