@@ -1,21 +1,62 @@
 ---
+import { getCollection } from 'astro:content'
 import styles from './styles.module.scss'
 import { listData } from './data'
+
+/** 兼容 legacy collection 的 entry 形状（id 是否带扩展名各版本不一致） */
+interface DocEntry {
+  id: string
+  slug?: string
+  data: { sidebar?: { hidden?: boolean } }
+}
+
+const docs = (await getCollection('docs')) as unknown as DocEntry[]
+const slugOf = (entry: DocEntry) => entry.slug ?? entry.id.replace(/\.mdx?$/, '')
+
+/** 专栏笔记数：按 url 前两段（articles/<dir>）匹配。
+    各目录自带的 index 是专栏落地页，不算笔记，排除掉。 */
+const countOf = (url: string) => {
+  const prefix = url.replace(/^\/+/, '').split('/').slice(0, 2).join('/')
+  return docs.filter((entry) => {
+    const slug = slugOf(entry)
+    if (entry.data.sidebar?.hidden) return false
+    if (/(^|\/)index$/.test(slug)) return false
+    return slug.startsWith(`${prefix}/`)
+  }).length
+}
+
+const items = listData.map((item) => ({ ...item, count: countOf(item.url) }))
 ---
 
-<div class="collection-content">
+<div class={`${styles.list} not-content`}>
+  <p class={styles.lead}>{items.length} 个技术方向 · 按主题归档</p>
+
   {
-    listData.map((item, index) => (
-      <div class={styles.collectionItem}>
-        <a class={styles.coverImg} href={item.url} aria-label={item.title}>
-          <img src={item.coverPath} alt={item.title} />
-        </a>
-        <div class={styles.rightText}>
-          <a href={item.url}>{item.title}</a>
-          <p>{item.description}</p>
-          <p>{item.createDate}</p>
-        </div>
-      </div>
+    items.map((item) => (
+      <a class={styles.item} href={item.url}>
+        <span class={styles.cover}>
+          <img src={item.coverPath} alt="" loading="lazy" width="168" height="94" />
+        </span>
+
+        <span class={styles.body}>
+          <span class={styles.title}>{item.title}</span>
+          <span class={styles.desc}>{item.description}</span>
+          <span class={styles.meta}>
+            {item.createDate.replace(/-/g, '.')}
+            <i aria-hidden="true">·</i>
+            {item.count} 篇
+          </span>
+        </span>
+
+        <svg class={styles.arrow} viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path
+            d="M3 8h9M8.5 4.5 12 8l-3.5 3.5"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </svg>
+      </a>
     ))
   }
 </div>

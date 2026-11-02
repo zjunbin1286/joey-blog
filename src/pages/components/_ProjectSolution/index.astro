@@ -1,0 +1,65 @@
+---
+import { getCollection } from 'astro:content'
+import styles from './styles.module.scss'
+import { dates } from './data'
+
+/** 兼容 legacy collection 的 entry 形状（id 是否带扩展名各版本不一致） */
+interface DocEntry {
+  id: string
+  slug?: string
+  data: { title: string; description?: string; sidebar?: { hidden?: boolean } }
+}
+
+const docs = (await getCollection('docs')) as unknown as DocEntry[]
+const slugOf = (entry: DocEntry) => entry.slug ?? entry.id.replace(/\.mdx?$/, '')
+
+/** 直接读 mdx 的 title / description，标题和摘要跟正文永远一致；
+    example.md 是模板残留，不算记录。 */
+const items = docs
+  .map((entry) => {
+    const slug = slugOf(entry)
+    return {
+      slug,
+      title: entry.data.title,
+      desc: entry.data.description ?? '',
+      href: `/${slug}/`,
+      date: dates[slug] ?? '',
+    }
+  })
+  .filter((item) => item.slug.startsWith('project-solution/') && !item.slug.endsWith('example'))
+  .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0))
+
+const month = (date: string) => date.slice(0, 7).replace('-', '.')
+const oldest = items.at(-1)?.date ?? ''
+const newest = items[0]?.date ?? ''
+---
+
+<div class={`${styles.list} not-content`}>
+  <p class={styles.lead}>
+    {items.length} 条记录
+    {oldest && newest && <> · {month(oldest)} — {month(newest)}</>}
+  </p>
+
+  {
+    items.map((item) => (
+      <a class={styles.item} href={item.href}>
+        <span class={styles.date}>{item.date.replace(/-/g, '.')}</span>
+
+        <span class={styles.body}>
+          <span class={styles.title}>{item.title}</span>
+          {item.desc && <span class={styles.desc}>{item.desc}</span>}
+        </span>
+
+        <svg class={styles.arrow} viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path
+            d="M3 8h9M8.5 4.5 12 8l-3.5 3.5"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </a>
+    ))
+  }
+</div>

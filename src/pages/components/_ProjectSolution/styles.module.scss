@@ -1,26 +1,152 @@
-.ProjectSolutionContent {
+/* 问题记录列表
+   与专栏、作品集同一套语言：无外框，1px hairline 分隔。
+   区别是标题本身往往就是一句完整的问题描述，所以把日期收到左侧独立一列，
+   让「什么时候」和「什么问题」两条读序分开。 */
+
+.list {
+  margin: 0.5rem 0 3rem;
+}
+
+.lead {
+  margin: 0 0 1.1rem;
+  font-size: 0.8125rem;
+  letter-spacing: 0.01em;
+  color: var(--sl-color-gray-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: 4.9rem minmax(0, 1fr) 1rem;
+  align-items: start;
+  gap: 1.15rem;
+  /* 左右各外扩 1rem，hover 底色把内容兜住、不贴左边界；
+     外扩多少内边距就补多少，文字仍与 h1 对齐。 */
+  position: relative;
+  margin-inline: -1rem;
+  padding: 0.95rem 1.75rem 0.95rem 1rem;
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.22s ease;
+
+  /* 分隔线不跟着外扩，仍按内容宽度画 */
+  &::after {
+    content: '';
+    position: absolute;
+    left: 1rem;
+    right: 1rem;
+    bottom: 0;
+    height: 1px;
+    background: var(--sl-color-hairline);
+  }
+
+  &:hover {
+    background: var(--sl-color-gray-6);
+
+    .title {
+      color: var(--sl-color-text-accent);
+    }
+
+    .arrow {
+      color: var(--sl-color-text-accent);
+      transform: translateX(3px);
+    }
+  }
+}
+
+/* 等宽数字，7 行日期才能左右对齐 */
+.date {
+  padding-top: 0.15rem;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  color: var(--sl-color-gray-3);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+/* 标题常是一整句问题描述，压到两行；原来 20px 铺三行，整页像正文段落 */
+.title {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.55;
+  letter-spacing: -0.005em;
+  color: var(--sl-color-text);
+  transition: color 0.22s ease;
+}
+
+/* 摘要直接取 mdx 的 description：一句结论，扫读时先知道「这题怎么解的」 */
+.desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--sl-color-gray-3);
+}
+
+.arrow {
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.2rem;
+  color: var(--sl-color-gray-3);
+  transition:
+    transform 0.22s ease,
+    color 0.22s ease;
+}
+
+@media (max-width: 48rem) {
   .item {
-    width: 100%;
-    height: 100%;
-    border-bottom: 1px solid var(--sl-color-hairline);
-    padding-bottom: 15px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.4rem;
+    margin-inline: -0.5rem;
+    padding: 0.9rem 1rem 0.9rem 0.5rem;
 
-    .title a {
-      color: var(--sl-color-text);
-      transition: color 0.2s ease;
-
-      &:hover {
-        color: var(--sl-color-text-accent);
-      }
+    &::after {
+      left: 0.5rem;
+      right: 0.5rem;
     }
+  }
 
-    .bottom {
-      margin-top: 10px;
-      .time {
-        font-weight: 400;
-        font-size: 16px;
-        color: var(--sl-color-gray-3);
-      }
-    }
+  /* 窄屏没有横向余量放独立日期列，改成标题上方一行小字 */
+  .date {
+    padding-top: 0;
+  }
+
+  .title {
+    font-size: 0.9rem;
+  }
+
+  .desc {
+    font-size: 0.78125rem;
+  }
+
+  .arrow {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .item,
+  .title,
+  .arrow {
+    transition: none;
+  }
+
+  .item:hover .arrow {
+    transform: none;
   }
 }

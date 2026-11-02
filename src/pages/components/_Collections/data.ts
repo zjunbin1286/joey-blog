@@ -1,49 +1,92 @@
-
-interface ListItem {
+export interface ProjectItem {
+  /** 列表里的主标题 */
   title: string;
+  /** 标题右侧的补充说明，没有就不显示 */
+  note?: string;
   url: string;
+  /** 归属：线上产品 or 开源仓库，渲染成第一枚标签 */
+  kind: '产品' | '开源';
+  /** 一句到两句说清它是什么，列表里最多显示两行 */
   description: string;
+  /** 技术栈 / 能力标签 */
+  tags: string[];
+  /** 左侧标记，两字符缩写 */
+  mark: string;
 }
 
-export const listData: ListItem[] = [
-    {
-    title: 'Novapix AI（AI智能图片设计平台）',
+export const listData: ProjectItem[] = [
+  {
+    title: 'Novapix AI',
+    note: 'AI 智能图片设计平台',
     url: 'https://novapix-ai.online/dashboard',
-    description: '这是一个集 AI 生成、智能编辑、极速创作、资源管理于一体的综合性平台。目标是让创意更高效，AI 赋能图片生成与编辑，助力设计师与内容创作者轻松完成视觉创意。'
+    kind: '产品',
+    description:
+      '集 AI 生成、智能编辑、极速创作与资源管理于一体的图片设计平台，让设计师和内容创作者更快完成视觉创意。',
+    tags: ['AI 生成', '智能编辑', '资源管理'],
+    mark: 'NV',
   },
   {
     title: 'Docs Unity',
+    note: '在线多人协同文档',
     url: 'https://docs-unity.icu/',
-    description: '在线多人协同文档，该 Docs 包含了现代文档编辑器所具备的功能，包括但不限于表格插入，字体定制，图片上传等等。支持 JSON、PDF、HTML、Text 等格式导出方式。使用 GitHub、Google 快捷登录。该 Docs 同时支持个人和组织账户，全面有效的邀请系统，和与组织内成员共同管理及编辑文档。可以对一个文档发起讨论，建立了一个通知系统，可以跟踪左右提及和评论，随时@组织成员分享文档内容。提供实时同步、富文本的编辑和用户管理。技术实现：Next.js15、React19、Tiptap、Shadcn/ui、Nuqs、Convex、LiveBlocks、Clerk'
+    kind: '产品',
+    description:
+      '支持表格、字体、图片等完整编辑能力，可导出 JSON / PDF / HTML / Text；具备组织账户、邀请系统、文档讨论与 @ 通知，以及实时同步编辑和用户管理。',
+    tags: ['Next.js', 'React', 'Tiptap', 'Convex', 'LiveBlocks', 'Clerk'],
+    mark: 'DU',
   },
   {
     title: 'npm-registry-nrs',
+    note: 'npm 源管理器',
     url: '/collections/npm-registry-nrs',
-    description: '📦 npm-registry-nrs is an NPM source manager that allows you to quickly switch between NPM sources and supports managing image sources through addition, deletion, modification, and querying. （npm-registry-nrs 是一个 npm 源管理器，允许你快速地在 npm 源间切换，并且支持通过增删改查等管理镜像源。）'
+    kind: '开源',
+    description: '快速切换 npm 源，并对镜像源做增删改查的源管理工具。',
+    tags: ['npm 源切换', '镜像管理'],
+    mark: 'NR',
   },
   {
     title: 'easypress',
+    note: 'SSG 静态站点生成框架',
     url: 'https://github.com/zjunbin1286/easypress',
-    description: '🚀 基于 Vite 的 SSG 静态站点生成框架（A static site generator for the modern web）'
+    kind: '开源',
+    description: '基于 Vite 的静态站点生成框架，面向现代 Web。',
+    tags: ['Vite', 'SSG'],
+    mark: 'EP',
   },
   {
     title: 'react-router-keepalive',
+    note: '路由缓存组件',
     url: 'https://github.com/zjunbin1286/react-router-keepalive',
-    description: '🔥 基于 React Router 实现的 KeepAlive 缓存组件（KeepAlive caching component based on React Router implementation）'
+    kind: '开源',
+    description: '基于 React Router 实现的 KeepAlive 缓存组件。',
+    tags: ['React Router', 'KeepAlive'],
+    mark: 'RK',
   },
   {
     title: 'react-playground',
+    note: '代码演练场',
     url: 'https://github.com/zjunbin1286/react-playground',
-    description: '🎯 适用于 React 的 Playground 代码演练场'
+    kind: '开源',
+    description: '适用于 React 的 Playground 代码演练场。',
+    tags: ['React', 'Playground'],
+    mark: 'RP',
   },
   {
     title: 'react-lowcode-editor',
+    note: '低代码编辑器',
     url: 'https://github.com/zjunbin1286/react-lowcode-editor',
-    description: '🎯 基于 React 实现的低代码编辑器'
+    kind: '开源',
+    description: '基于 React 实现的低代码编辑器。',
+    tags: ['React', '低代码'],
+    mark: 'LC',
   },
   {
     title: 'react-ui-design',
+    note: 'React 组件库',
     url: 'https://github.com/zjunbin1286/react-ui-design',
-    description: '✨ 适用于 React 的简洁优雅的组件库（A concise and elegant component library suitable for React）'
+    kind: '开源',
+    description: '适用于 React 的简洁优雅的组件库。',
+    tags: ['React', '组件库'],
+    mark: 'UI',
   },
-]
+];

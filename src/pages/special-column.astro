@@ -1,10 +1,8 @@
 ---
 import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro'
-import SpecialColumns from './components/_SpecialColumns'
-import NewSpecialColumns from './components/_SpecialColumns/newIndex.astro'
+import SpecialColumns from './components/_SpecialColumns/newIndex.astro'
 ---
 
 <StarlightPage frontmatter={{ title: '文章专栏', template: 'splash' }}>
-  <!-- <SpecialColumns /> -->
-  <NewSpecialColumns />
+  <SpecialColumns />
 </StarlightPage>

@@ -1,0 +1,72 @@
+---
+import styles from './styles.module.scss'
+import { listData } from './data'
+
+const productCount = listData.filter((item) => item.kind === '产品').length
+const repoCount = listData.length - productCount
+---
+
+<div class={`${styles.list} not-content`}>
+  <p class={styles.lead}>
+    {listData.length} 个项目 · {productCount} 个线上产品 · {repoCount} 个开源仓库
+  </p>
+
+  {
+    listData.map((item) => {
+      const external = /^https?:/.test(item.url)
+      return (
+        <a
+          class={styles.item}
+          href={item.url}
+          target={external ? '_blank' : undefined}
+          rel={external ? 'noopener noreferrer' : undefined}
+        >
+          <span class={styles.mark} aria-hidden="true">
+            {item.mark}
+          </span>
+
+          <span class={styles.body}>
+            <span class={styles.head}>
+              <span class={styles.title}>{item.title}</span>
+              {item.note && <span class={styles.note}>{item.note}</span>}
+            </span>
+
+            <span class={styles.desc}>{item.description}</span>
+
+            <span class={styles.meta}>
+              <span class={styles.kind} data-kind={item.kind}>
+                {item.kind}
+              </span>
+              {item.tags.map((tag) => (
+                <span class={styles.tag}>{tag}</span>
+              ))}
+              {item.tags.length > 4 && (
+                <span class={styles.more}>+{item.tags.length - 4}</span>
+              )}
+            </span>
+          </span>
+
+          <svg class={styles.arrow} viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            {external ? (
+              <path
+                d="M5.5 10.5 10.5 5.5M10.5 5.5H6.2M10.5 5.5v4.3"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            ) : (
+              <path
+                d="M3 8h9M8.5 4.5 12 8l-3.5 3.5"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            )}
+          </svg>
+        </a>
+      )
+    })
+  }
+</div>
