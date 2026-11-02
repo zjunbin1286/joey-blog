@@ -9,3 +9,51 @@
     margin-right: 8px;
   }
 }
+
+/* Novapix AI 入口：品牌 logo 与文字居中对齐，别让 svg 被 flex 压缩变形 */
+.nav-novapix {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+
+  svg {
+    flex: none;
+  }
+}
+
+/* 顶部导航项较多，中等宽度下缩小字号，靠腾出的空间避免文字折行。
+   注意：这个文件是全局 SCSS（不是 CSS Module），里面写 :global() 会被原样
+   输出成无效选择器 —— 必须用 `header.header` 这种元素+类组合，
+   顺带避开 Expressive Code 代码块里同名的 .header 容器。
+   不要加 white-space: nowrap，那会把 header 撑溢出、把 logo 挤出视口。 */
+@media (max-width: 64rem) {
+  header.header a {
+    font-size: 0.78125rem;
+  }
+}
+
+@media (max-width: 56rem) {
+  header.header a {
+    font-size: 0.71875rem;
+  }
+
+  .about-me img {
+    width: 22px;
+    height: 22px;
+    margin-right: 5px;
+  }
+
+  /* 再窄就只留品牌图标，文字会把这行撑爆 */
+  .nav-novapix {
+    gap: 0;
+
+    svg {
+      width: 17px;
+      height: 17px;
+    }
+  }
+
+  .nav-novapix-text {
+    display: none;
+  }
+}

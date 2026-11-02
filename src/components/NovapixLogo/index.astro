@@ -1,0 +1,89 @@
+---
+/**
+ * Novapix AI 品牌标志：一条鲸鱼，喷出来的水是几格像素，最顶上那格是一颗星。
+ *
+ * 几何与 nova-pix-ai 项目的 logo-mark.tsx 保持一致，全站只有这一份。
+ * 配色（靛紫渐变 + 粉色星）走 custom.css 里的 `.nvp-*` 类，亮暗两套：
+ * 暗色整体提亮一档，原色压在黑底上会发闷。
+ *
+ * 渐变 id 每次渲染随机生成 —— 同一页会出现多个实例（顶栏 + 首页），id 撞了会串色。
+ *
+ * hover 动效的触发点在外层（`.nvp-hover:hover .nvp-pixel`），不能是 SVG 自己：
+ * SVG 默认 pointer-events 只覆盖填充像素，空白处不响应。
+ */
+interface Props {
+  size?: number;
+  class?: string;
+  /** 装饰性使用（旁边已有文字）时保持 true，否则给无障碍名称 */
+  decorative?: boolean;
+  /** 一直喷水（加载态），不依赖 hover */
+  animated?: boolean;
+}
+
+const { size = 24, class: className, decorative = true, animated = false } = Astro.props;
+const gid = `nvp-g-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<svg
+  viewBox="0 0 64 64"
+  fill="none"
+  width={size}
+  height={size}
+  class:list={['nvp-logo', animated && 'nvp-animated', className]}
+  role={decorative ? undefined : 'img'}
+  aria-hidden={decorative ? 'true' : undefined}
+  aria-label={decorative ? undefined : 'Novapix AI'}
+>
+  <defs>
+    <linearGradient id={gid} gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="64" y2="64">
+      <stop offset="0" class="nvp-stop-a"></stop>
+      <stop offset="1" class="nvp-stop-b"></stop>
+    </linearGradient>
+  </defs>
+
+  <!-- 身子 + 尾巴，背上那点白是眼睛 -->
+  <g class="nvp-body">
+    <path d="M10.5 54C10.5 36 21 25 35.5 25C50 25 60.5 36 60.5 54Z" fill={`url(#${gid})`}></path>
+    <path d="M14.5 54L3.5 38L20.5 46Z" fill={`url(#${gid})`}></path>
+    <circle cx="51.5" cy="45" r="2.8" fill="#fff"></circle>
+  </g>
+
+  <!-- 喷出来的水：三格像素 + 一颗星，--i 决定冒出来的先后 -->
+  <g class="nvp-spout">
+    <rect
+      class="nvp-pixel"
+      style="--i: 0"
+      x="38"
+      y="17.5"
+      width="5"
+      height="5"
+      rx="1.2"
+      fill={`url(#${gid})`}
+      opacity="0.85"></rect>
+    <rect
+      class="nvp-pixel"
+      style="--i: 1"
+      x="32"
+      y="11.5"
+      width="4"
+      height="4"
+      rx="1"
+      fill={`url(#${gid})`}
+      opacity="0.6"></rect>
+    <rect
+      class="nvp-pixel"
+      style="--i: 1"
+      x="44"
+      y="11.5"
+      width="4"
+      height="4"
+      rx="1"
+      fill={`url(#${gid})`}
+      opacity="0.6"></rect>
+    <path
+      class="nvp-pixel nvp-spark"
+      style="--i: 2"
+      transform="translate(0 -3)"
+      d="M40.5 7.5C40.8 10.3 41.7 11.2 44.5 11.5C41.7 11.8 40.8 12.7 40.5 15.5C40.2 12.7 39.3 11.8 36.5 11.5C39.3 11.2 40.2 10.3 40.5 7.5Z"></path>
+  </g>
+</svg>

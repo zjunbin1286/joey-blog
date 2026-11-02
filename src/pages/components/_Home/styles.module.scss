@@ -1,0 +1,797 @@
+/* ── 首页「星辰」 ──
+   颜色全部走变量：结构色取 Starlight token，点缀色取 custom.css 里的 --home-*。
+   禁止在这里写死十六进制/具名色值，否则暗色主题会失效。 */
+
+.root {
+  --home-maxw: 72rem;
+  --home-pad: clamp(1.15rem, 4vw, 2rem);
+  --home-ink: var(--sl-color-text);
+  --home-ink-2: var(--sl-color-gray-3);
+  --home-ink-3: var(--sl-color-gray-4);
+  --home-line: var(--sl-color-hairline);
+
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--sl-color-bg);
+}
+
+.canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.veil {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(ellipse 68% 46% at 50% 0%, var(--home-glow), transparent 72%);
+}
+
+.inner {
+  position: relative;
+  z-index: 2;
+}
+
+/* ── 首屏 ── */
+.hero {
+  max-width: var(--home-maxw);
+  margin: 0 auto;
+  /* 首页星空要铺到 fixed header 后面，正文得让出导航高度 */
+  padding: calc(var(--sl-nav-height) + clamp(3.25rem, 8vw, 5.75rem)) var(--home-pad) 3.75rem;
+  text-align: center;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  height: 2rem;
+  padding: 0 0.95rem;
+  border-radius: 99px;
+  border: 1px solid var(--home-line);
+  font-size: 0.75rem;
+  color: var(--home-ink-2);
+  background: var(--home-surface);
+  backdrop-filter: blur(10px);
+
+  i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--home-a1);
+    animation: ping 2.4s ease-out infinite;
+  }
+}
+
+@keyframes ping {
+  0% {
+    box-shadow: 0 0 0 0 var(--home-glow);
+  }
+  70%,
+  100% {
+    box-shadow: 0 0 0 9px transparent;
+  }
+}
+
+.hero h1 {
+  margin: 1.75rem 0 0;
+  font-size: clamp(2.25rem, 6.6vw, 5rem);
+  line-height: 1.04;
+  letter-spacing: -0.05em;
+  font-weight: 800;
+  color: var(--home-ink);
+
+  em {
+    display: block;
+    font-style: normal;
+    background: linear-gradient(100deg, var(--home-a1), var(--home-a2) 52%, var(--home-a3));
+    background-size: 220% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: gradientShift 9s ease-in-out infinite;
+  }
+}
+
+@keyframes gradientShift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.hero p {
+  max-width: 46ch;
+  margin: 1.5rem auto 0;
+  font-size: 1rem;
+  line-height: 1.88;
+  color: var(--home-ink-2);
+}
+
+.acts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+/* Starlight 的 `.sl-markdown-content a` 会把正文里的链接染成 accent 色，
+   特异性 (0,2,0) 盖过单个类选择器。这里统一加 `.root` 前缀提到 (0,2,1)。 */
+.root a.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  height: 2.875rem;
+  padding: 0 1.5rem;
+  border-radius: 99px;
+  border: 1px solid var(--home-line);
+  font-size: 0.875rem;
+  font-weight: 650;
+  color: var(--home-ink-2);
+  transition:
+    color 0.22s ease,
+    border-color 0.22s ease,
+    transform 0.22s ease;
+
+  svg {
+    flex: none;
+  }
+
+  &:hover {
+    border-color: var(--home-a1);
+    color: var(--home-ink);
+  }
+}
+
+.root a.primary {
+  border-color: transparent;
+  background: linear-gradient(120deg, var(--home-a1), var(--home-a2));
+  color: var(--sl-color-bg);
+  box-shadow: 0 14px 40px -14px var(--home-glow);
+
+  &:hover {
+    transform: translateY(-2px);
+    color: var(--sl-color-bg);
+  }
+}
+
+/* ── 数字统计 ── */
+.consts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.15rem;
+  max-width: var(--home-maxw);
+  margin: 0.5rem auto 0;
+  padding: 0 var(--home-pad);
+}
+
+.const {
+  padding: 0.15rem 0 0.15rem 1.15rem;
+  border-left: 1px solid var(--home-line);
+  min-width: 0;
+
+  b {
+    display: flex;
+    align-items: baseline;
+    gap: 1px;
+    font-size: 1.875rem;
+    font-weight: 750;
+    letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums;
+    color: var(--home-ink);
+
+    i {
+      font-style: normal;
+      font-size: 0.875rem;
+      color: var(--home-ink-3);
+      margin-left: 3px;
+    }
+  }
+
+  > span {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.75rem;
+    color: var(--home-ink-3);
+  }
+}
+
+/* ── 区块 ── */
+.sec {
+  max-width: var(--home-maxw);
+  margin: 0 auto;
+  padding: clamp(3.5rem, 7vw, 6rem) var(--home-pad) 0;
+}
+
+.root .secHead {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 0.5rem;
+
+  h2 {
+    margin: 0;
+    font-size: clamp(1.375rem, 2.8vw, 1.875rem);
+    letter-spacing: -0.03em;
+    color: var(--home-ink);
+  }
+
+  a {
+    flex: none;
+    padding-bottom: 2px;
+    border-bottom: 1px solid var(--home-line);
+    font-size: 0.8125rem;
+    color: var(--home-ink-2);
+    transition:
+      color 0.2s ease,
+      border-color 0.2s ease;
+
+    &:hover {
+      color: var(--home-a1);
+      border-color: var(--home-a1);
+    }
+  }
+}
+
+/* ── 文章列表 ── */
+.list {
+  position: relative;
+  margin-top: 1.375rem;
+}
+
+.item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 7px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.2rem 0.875rem 1.2rem 0;
+  border-bottom: 1px solid var(--home-line);
+  transition:
+    background 0.22s ease,
+    padding-left 0.22s ease;
+
+  &::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--home-a1);
+    box-shadow: 0 0 14px 2px var(--home-a1);
+    opacity: 0.55;
+    transition:
+      opacity 0.22s ease,
+      transform 0.22s ease;
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 620;
+    line-height: 1.5;
+    letter-spacing: 0;
+    color: var(--home-ink);
+    transition: color 0.22s ease;
+    overflow-wrap: anywhere;
+  }
+
+  &:hover {
+    background: var(--sl-color-gray-6);
+    border-radius: 10px;
+    padding-left: 0.875rem;
+
+    &::before {
+      opacity: 1;
+      transform: scale(1.35);
+    }
+
+    h3 {
+      color: var(--home-a1);
+    }
+  }
+}
+
+.meta {
+  font-size: 0.75rem;
+  color: var(--home-ink-3);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ── 项目卡片 ── */
+.projects {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.125rem;
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 1.375rem;
+  border-radius: 16px;
+  border: 1px solid var(--home-line);
+  background: var(--home-surface);
+  overflow: hidden;
+  min-width: 0;
+  transition:
+    border-color 0.22s ease,
+    transform 0.22s ease;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 16px;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(
+      120px circle at var(--mx, 50%) var(--my, 50%),
+      var(--home-glow),
+      transparent 70%
+    );
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover {
+    border-color: var(--home-a1);
+    transform: translateY(-3px);
+
+    &::after {
+      opacity: 1;
+    }
+  }
+
+  h3 {
+    margin: 0 0 0.375rem;
+    font-size: 0.97rem;
+    letter-spacing: -0.01em;
+    color: var(--home-ink);
+    overflow-wrap: anywhere;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.78rem;
+    line-height: 1.65;
+    color: var(--home-ink-2);
+    overflow-wrap: anywhere;
+  }
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-top: auto;
+  padding-top: 0.875rem;
+  font-size: 0.69rem;
+  letter-spacing: 0.04em;
+  color: var(--home-ink-3);
+
+  i {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--home-live);
+    box-shadow: 0 0 8px var(--home-live);
+  }
+}
+
+/* ── Novapix AI 推荐区块 ── */
+.promo {
+  max-width: var(--home-maxw);
+  margin: 0 auto;
+  padding: clamp(3rem, 6vw, 4.5rem) var(--home-pad) 0;
+}
+
+/* 标题行跟「最近的坐标」同一套：h2 顶上站着。
+   原来它缩在卡片里当一颗小标签，读者得先看进卡片才知道这块在讲什么。 */
+.root .promoHead {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+
+  h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0;
+    font-size: clamp(1.375rem, 2.8vw, 1.875rem);
+    letter-spacing: -0.03em;
+    color: var(--home-ink);
+  }
+}
+
+/* 材质跟导航栏对齐：半透明底 + 1px hairline + 背景模糊。
+   之前的紫→青→粉流动渐变描边、双层光球、网格纹理全撤掉 ——
+   整页只有这一块是"实心盒子"，越描越像贴上去的海报。
+   盒子感靠边线和材质，不靠颜色。 */
+.promoCard {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 16.5rem;
+  align-items: center;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  overflow: hidden;
+  padding: clamp(1.6rem, 3.2vw, 2.6rem);
+  border-radius: 20px;
+  border: 1px solid var(--home-line);
+  background: var(--home-surface);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  transition:
+    transform 0.45s cubic-bezier(0.2, 0.7, 0.3, 1),
+    border-color 0.45s ease,
+    box-shadow 0.45s ease;
+
+  /* 左上角只留一抹紫光，压住暗色下大片同色的问题，又不抢主体 */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      46% 90% at 6% -12%,
+      color-mix(in srgb, var(--home-a1) 16%, transparent),
+      transparent 70%
+    );
+  }
+
+  &:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in srgb, var(--home-a1) 34%, var(--home-line));
+    box-shadow: 0 32px 70px -50px var(--home-a1);
+  }
+}
+
+/* 亮色下 --home-surface 和白底几乎同色，卡片会彻底隐形。
+   掺 4% 文字色压出一档极浅的灰，边界靠这层差和 hairline，
+   不再靠紫色 —— 但也不至于看不出这是一块面板。 */
+:global([data-theme='light']) .promoCard {
+  background: color-mix(in srgb, var(--sl-color-text) 4%, var(--sl-color-bg));
+}
+
+.promoMain {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+
+.promoDot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--home-live);
+  animation: ping 2.4s ease-out infinite;
+}
+
+.root .promoMain h3 {
+  margin: 0;
+  /* 比上面的 h2 低一档，层级才是顺的：区块标题 > 卡片标题。
+     再大就会和「正在做的事」撞车，两个短标题同字号看着像重复。 */
+  font-size: clamp(1.35rem, 2.2vw, 1.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  font-weight: 780;
+  color: var(--home-ink);
+
+  em {
+    font-style: normal;
+    background: linear-gradient(100deg, var(--home-a1), var(--home-a2), var(--home-a3));
+    background-size: 220% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: gradientShift 7s ease-in-out infinite;
+  }
+}
+
+.promoDesc {
+  max-width: 42ch;
+  margin: 1rem 0 0;
+  font-size: 0.9375rem;
+  line-height: 1.82;
+  color: var(--home-ink-2);
+}
+
+/* 三条卖点从竖排长句改成横排胶囊：
+   原来 01/02/03 堆成三行，卡片里信息密度太高，跟着盒子一起"重"。
+   编号换成一颗小点 —— 和轨道上的卫星、列表条目的光点同一个符号。 */
+.root .promoPoints {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 1.25rem 0 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    height: 1.9rem;
+    padding: 0 0.75rem;
+    border-radius: 99px;
+    border: 1px solid var(--home-line);
+    font-size: 0.75rem;
+    line-height: 1;
+    color: var(--home-ink-2);
+    overflow-wrap: anywhere;
+
+    &::before {
+      content: '';
+      flex: none;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--home-a1);
+      opacity: 0.8;
+    }
+  }
+}
+
+.root .promoMain a.btn {
+  margin-top: 1.6rem;
+}
+
+/* ── 右侧轨道 ──
+   品牌色只活在光环、虚线环和两颗卫星上，不再铺满整块卡片。 */
+.promoOrbit {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 1;
+  pointer-events: none;
+
+  /* 鲸鱼背后的一团光，比原来的 15rem 实心光斑收得多 */
+  &::before {
+    content: '';
+    position: absolute;
+    width: 62%;
+    height: 62%;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--home-a1) 40%, transparent),
+      transparent 68%
+    );
+    opacity: 0.55;
+    filter: blur(26px);
+  }
+}
+
+.ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px dashed color-mix(in srgb, var(--home-a1) 40%, transparent);
+
+  /* 卫星点挂在环上，跟着环一起转，不必单独算轨迹 */
+  i {
+    position: absolute;
+    top: -2.5px;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    margin-left: -2.5px;
+    border-radius: 50%;
+    background: var(--home-a1);
+    box-shadow: 0 0 10px 1px var(--home-a1);
+  }
+}
+
+.ringIn {
+  width: 62%;
+  height: 62%;
+  animation: orbit 34s linear infinite;
+}
+
+.ringOut {
+  width: 88%;
+  height: 88%;
+  border-color: color-mix(in srgb, var(--home-a1) 26%, transparent);
+  animation: orbit 54s linear infinite reverse;
+
+  i {
+    width: 4px;
+    height: 4px;
+    background: var(--home-a2);
+    box-shadow: 0 0 10px 1px var(--home-a2);
+  }
+}
+
+@keyframes orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.promoMark {
+  position: relative;
+  z-index: 1;
+  width: 8.25rem;
+  height: auto;
+  filter: drop-shadow(0 18px 36px var(--home-glow));
+}
+
+/* ── 更多入口 ── */
+.root .moreLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  max-width: var(--home-maxw);
+  margin: 0 auto;
+  padding: clamp(2.5rem, 5vw, 3.5rem) var(--home-pad) 0;
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.8125rem;
+    color: var(--home-ink-2);
+    transition: color 0.2s ease;
+
+    span {
+      padding: 0 0.4rem;
+      border-radius: 99px;
+      background: var(--sl-color-gray-6);
+      font-size: 0.6875rem;
+      color: var(--home-ink-3);
+      font-variant-numeric: tabular-nums;
+    }
+
+    &:hover {
+      color: var(--home-a1);
+    }
+  }
+}
+
+/* ── 页脚 ── */
+.foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1.25rem;
+  max-width: var(--home-maxw);
+  margin: 0 auto;
+  padding: 4rem var(--home-pad) 6.25rem;
+  font-size: 0.75rem;
+  color: var(--home-ink-3);
+}
+
+/* ── 滚动淡入（仅在 JS 就绪时启用，避免无 JS 白屏） ──
+   用 data 属性而非类名：类名会被 CSS Module 哈希化，脚本里拼不回来。 */
+:global(html.home-js) [data-reveal] {
+  opacity: 0;
+  transform: translateY(26px);
+  transition:
+    opacity 0.7s cubic-bezier(0.2, 0.7, 0.3, 1),
+    transform 0.7s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+:global(html.home-js) [data-reveal][data-in] {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero h1 em,
+  .tag i,
+  .promoDot,
+  .ring,
+  .root .promoMain h3 em {
+    animation: none;
+  }
+
+  :global(html.home-js) [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ── 响应式 ── */
+@media (max-width: 68rem) {
+  .projects {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* 中等宽度先把轨道收窄，正文才有地方放三个胶囊 */
+@media (max-width: 58rem) {
+  .promoCard {
+    grid-template-columns: minmax(0, 1fr) 13rem;
+  }
+
+  .promoMark {
+    width: 6.75rem;
+  }
+}
+
+@media (max-width: 48rem) {
+  .consts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem 1.15rem;
+  }
+
+  .const b {
+    font-size: 1.625rem;
+  }
+
+  /* 窄屏放弃右侧轨道，把宽度全给文案 */
+  .promoCard {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .promoOrbit {
+    display: none;
+  }
+}
+
+@media (max-width: 40rem) {
+  .hero {
+    padding-top: calc(var(--sl-nav-height) + 2.5rem);
+    text-align: left;
+  }
+
+  .hero p {
+    margin-inline: 0;
+    font-size: 0.9375rem;
+  }
+
+  .acts {
+    justify-content: flex-start;
+  }
+
+  .root a.btn {
+    height: 2.75rem;
+    padding: 0 1.125rem;
+  }
+
+  .secHead {
+    align-items: center;
+  }
+
+  .item {
+    grid-template-columns: 7px minmax(0, 1fr);
+    row-gap: 0.3rem;
+    gap: 0.9rem;
+    padding-block: 1rem;
+
+    h3 {
+      font-size: 0.9375rem;
+    }
+  }
+
+  .meta {
+    grid-column: 2;
+  }
+
+  .projects {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .foot {
+    padding-bottom: 4rem;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

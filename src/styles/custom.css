@@ -5,4 +5,130 @@
   /* --sl-text-5xl: 3.5rem; */
   /* <h1> 标签的大小，主要在 template: 'splash' 的页面中 */
   --sl-text-h1: 2rem;
+
+  /* ── 首页「星辰」主题 token ──
+     只在这里集中定义颜色，组件内一律用变量引用。
+     :root 为暗色（Starlight 默认），[data-theme='light'] 为亮色。 */
+  --home-a1: hsl(258 100% 72%);
+  --home-a2: hsl(190 100% 60%);
+  --home-a3: hsl(330 100% 72%);
+  /* 粒子与连线的基色，写成 rgb 三元组供 canvas 拼接 */
+  --home-star: 139 139 255;
+  --home-glow: hsl(258 95% 70% / 0.16);
+  --home-surface: hsl(228 22% 11% / 0.66);
+  --home-live: hsl(160 84% 62%);
 }
+
+[data-theme='light'] {
+  --home-a1: hsl(258 92% 54%);
+  --home-a2: hsl(196 90% 42%);
+  --home-a3: hsl(326 84% 56%);
+  --home-star: 91 91 245;
+  --home-glow: hsl(258 90% 62% / 0.14);
+  --home-surface: hsl(232 40% 98.4%);
+  --home-live: hsl(160 84% 32%);
+}
+
+/* ── 顶部导航：透明磨砂 ──
+   盖掉 Starlight 的实色 --sl-color-bg-nav，改成半透明底色 + 背景模糊。
+   用 --sl-color-bg 混透明而不是写死 rgba，亮暗两套主题自动跟随。 */
+header.header {
+  background-color: color-mix(in srgb, var(--sl-color-bg) 62%, transparent);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  backdrop-filter: blur(18px) saturate(180%);
+  border-bottom-color: color-mix(in srgb, var(--sl-color-text) 8%, transparent);
+}
+
+/* 不支持 backdrop-filter 的浏览器退回实色，避免文字压在内容上看不清 */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  header.header {
+    background-color: var(--sl-color-bg-nav);
+  }
+}
+
+/* ── Novapix AI 品牌标志（components/NovapixLogo） ──
+   配色取自 nova-pix-ai 的品牌色阶：亮色 700→400，暗色 500→200（原色压黑底会发闷）。
+   星星是标志里唯一跳出色阶的地方，固定一支粉色。
+   这些类写在全局而不是组件内：hover 触发点在外层链接 / 卡片上，跨组件 scoped 样式够不到。 */
+.nvp-logo {
+  display: block;
+  flex: none;
+  --nvp-a: #8f55e6;
+  --nvp-b: #ddd1f6;
+  --nvp-spark: #f9a8d4;
+}
+
+[data-theme='light'] .nvp-logo {
+  --nvp-a: #6323b8;
+  --nvp-b: #a47df0;
+  --nvp-spark: #f472b6;
+}
+
+.nvp-logo .nvp-stop-a {
+  stop-color: var(--nvp-a);
+}
+
+.nvp-logo .nvp-stop-b {
+  stop-color: var(--nvp-b);
+}
+
+.nvp-logo .nvp-spark {
+  fill: var(--nvp-spark);
+}
+
+/* 喷水的像素一格格往上冒，身子跟着轻微起伏。
+   transform-box: fill-box 让 translateY 以元素自身为中心算，否则会按整个 SVG 视口算。 */
+.nvp-hover:hover .nvp-pixel,
+.nvp-logo.nvp-animated .nvp-pixel {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: nvp-bubble 1.5s ease-out infinite;
+  animation-delay: calc(var(--i, 0) * 0.22s);
+}
+
+.nvp-hover:hover .nvp-body,
+.nvp-logo.nvp-animated .nvp-body {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: nvp-bob 1.6s ease-in-out infinite;
+}
+
+@keyframes nvp-bubble {
+  0% {
+    transform: translateY(8px) scale(0.6);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  70% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-5px) scale(0.9);
+    opacity: 0;
+  }
+}
+
+@keyframes nvp-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-1.5px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nvp-hover:hover .nvp-pixel,
+  .nvp-logo.nvp-animated .nvp-pixel,
+  .nvp-hover:hover .nvp-body,
+  .nvp-logo.nvp-animated .nvp-body {
+    animation: none;
+    transform: none;
+    opacity: 1;
+  }
+}
+

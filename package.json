@@ -7,6 +7,7 @@
     "start": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
+    "gen:dates": "node scripts/gen-article-dates.mjs",
     "astro": "astro"
   },
   "dependencies": {

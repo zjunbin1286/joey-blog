@@ -2,6 +2,7 @@
 import type { Props } from '@astrojs/starlight/props'
 import Default from '@astrojs/starlight/components/SocialIcons.astro'
 import { Image } from 'astro:assets'
+import NovapixLogo from '../NovapixLogo/index.astro'
 
 import avatar from '../../assets/my-avatar.png'
 import './index.scss'
@@ -11,8 +12,16 @@ import './index.scss'
   <Image src={avatar} alt="Joey" loading="lazy" />
   关于我
 </a>
+<a
+  href="https://novapix-ai.online/"
+  class="nav-novapix nvp-hover"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  <NovapixLogo size={20} />
+  <span class="nav-novapix-text">Novapix AI</span>
+</a>
 <a href="/collection">🌈 作品集</a>
 <a href="/special-column">✍ 文章专栏</a>
-<a href="/community-article">🏂 社区转发</a>
 <a href="/project-solution">🔧 问题记录</a>
 <Default {...Astro.props}><slot /></Default>

@@ -135,6 +135,15 @@ export default defineConfig({
       customCss: [
         './src/styles/custom.css',
       ],
+      // 首次访问默认深色主题。Starlight 的 ThemeProvider 读 localStorage，
+      // 这里在它之前写入一次；用户之后手动切到「跟随系统」不会被反复改回。
+      head: [
+        {
+          tag: 'script',
+          content:
+            "try{if(!localStorage.getItem('starlight-theme')&&!localStorage.getItem('joey-theme-init')){localStorage.setItem('starlight-theme','dark');localStorage.setItem('joey-theme-init','1')}}catch(e){}",
+        },
+      ],
       // 重写组件
       components: {
         SocialIcons: './src/components/NavBar/index.astro',

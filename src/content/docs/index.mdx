@@ -1,94 +1,14 @@
 ---
-title: 欢迎来到我的站点
+title: 前端技术笔记
 description: Joey 的前端技术博客，记录 JavaScript、Vue、React、Node 等文章，以及在真实项目开发中遇到的问题和解决方案。
 template: splash
-hero:
-  tagline: 不去后悔当初觉得正确的决定。热爱生活，不断前进💖
-  image:
-    file: ../../assets/houston.webp
-  actions:
-    - text: 开始阅读
-      # link: /guides/example/
-      link: /articles/javascript
-      icon: right-arrow
-    - text: 我的 Github
-      link: https://github.com/zjunbin1286
-      icon: external
-      variant: minimal
-banner:
-  content: |
-    📢 站点上线我的作品集栏目，请快点来看看吧！
-    <a href="/collection">点击查看！</a>
+pagefind: false
+# Starlight 默认拼成「标题 | 站点名」，首页标签页只保留站点名
+head:
+  - tag: title
+    content: Joey
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
-import { LinkCard } from '@astrojs/starlight/components';
-import { Icon } from '@astrojs/starlight/components';
+import Home from '../../pages/components/_Home/index.astro';
 
-{/* ## 快捷跳转 */}
-<CardGrid>
-  <LinkCard
-    title="✍ 文章专栏"
-    href="/special-column"
-    icon="open-book"
-    description='我的文章专栏，内容包括JavaScript、Vue、React、Node、HTML&CSS等'>
-    更多你想分享的信息。
-  </LinkCard>
-  <LinkCard
-    title="🌈 作品集"
-    href="/collection"
-    icon="open-book"
-    description='收录了我的项目，包括在线多人协同文档、npm镜像源管理器、KeepAlive缓存组件等'
-  >
-    一些你想着重展示的有趣内容。
-  </LinkCard>
-  <LinkCard
-    title="🔧 工作实际开发中的问题记录"
-    href="/project-solution"
-    icon="open-book"
-    description='在工作项目中遇到问题以及如何解决的方案'>
-    更多你想分享的信息。
-  </LinkCard>
-  <LinkCard
-    title="🏂 社区转发"
-    href="/community-article"
-    icon="open-book"
-    description='专门收录来自各个社区有趣、有技术含量的文章'>
-    更多你想分享的信息。
-  </LinkCard>
-  <LinkCard
-    title="🎈 站点导航"
-    href="/site-navigation"
-    description='涵盖了编程、设计、辅助工具、开发文档、技术社区、科技、等各个领域的优质网站'>
-    更多你想分享的信息。
-  </LinkCard>
-  {/* <LinkCard
-    title="🎏 小游戏集合"
-    href="/special-column"
-    description='各类小游戏集合，包括经典的贪吃蛇、2048、俄罗斯方块、扫雷等'>
-    更多你想分享的信息。
-  </LinkCard> */}
-</CardGrid>
-
-## 我的内容
-
-<CardGrid stagger>
-	<Card title="作品集" icon="pencil">
-		收录了我的项目，包括React、Vue、Vite、HTML、CSS、NodeCLI等，查看更多详情 [点击前往](/collection).
-	</Card>
-	<Card title="文章专栏" icon="open-book">
-		包含的类别有 React、Vue、Vite、HTML、CSS等，查看更多详情 [点击前往](/special-column).
-	</Card>
-  <Card title="工作实际开发中的问题记录" icon="setting">
-		在项目中遇到问题以及如何解决的方案 [点击前往](/project-solution).
-	</Card>
-  <Card title="社区转发" icon="nix">
-		专门收录来自各个社区有趣、看了有收获的文章 [点击前往](/community-article).
-	</Card>
-    <Card title="站点导航" icon="nix">
-		涵盖了编程、设计、辅助工具、开发文档、技术社区、科技、等各个领域的优质网站 [点击前往](/site-navigation).
-	</Card>
-  {/* <Card title="小游戏集合" icon="nix">
-		各类小游戏集合，包括经典的贪吃蛇、2048、俄罗斯方块、扫雷等 [点击前往](/community-article).
-	</Card> */}
-</CardGrid>
+<Home />

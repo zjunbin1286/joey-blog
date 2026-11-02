@@ -1,0 +1,623 @@
+---
+import { getCollection } from 'astro:content';
+import styles from './styles.module.scss';
+import articleDates from '../../../data/article-dates.json';
+import { listData } from '../_Collections/data';
+import NovapixLogo from '../../../components/NovapixLogo/index.astro';
+
+/** 兼容 legacy collection 的 entry 形状（id 是否带扩展名各版本不一致） */
+interface DocEntry {
+  id: string;
+  slug?: string;
+  body?: string;
+  data: {
+    title: string;
+    description?: string;
+    draft?: boolean;
+    sidebar?: { hidden?: boolean };
+  };
+}
+
+const stripExt = (id: string) => id.replace(/\.mdx?$/, '');
+const slugOf = (entry: DocEntry) => entry.slug ?? stripExt(entry.id);
+
+const docs = ((await getCollection('docs')) as unknown as DocEntry[]).filter((entry) => {
+  if (entry.data.draft) return false;
+  if (entry.data.sidebar?.hidden) return false;
+  return true;
+});
+
+/** 技术笔记：articles/ 下的正文，排除各目录的 index 落地页 */
+const articles = docs
+  .filter((entry) => {
+    const slug = slugOf(entry);
+    return slug.startsWith('articles/') && !/(^|\/)index$/.test(slug);
+  })
+  .map((entry) => {
+    const slug = slugOf(entry);
+    const text = (entry.body ?? '').replace(/\s+/g, '');
+    return {
+      title: entry.data.title,
+      href: `/${slug}/`,
+      date: (articleDates as Record<string, string>)[slug] ?? '',
+      minutes: Math.max(1, Math.round(text.length / 350)),
+    };
+  })
+  .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
+
+const solutions = docs.filter((entry) => {
+  const slug = slugOf(entry);
+  return slug.startsWith('project-solution/') && !slug.endsWith('example');
+});
+
+const latest = articles.slice(0, 5);
+
+/** 开源项目：去掉 description 开头的 emoji，截断过长描述。
+    Novapix AI 在下方有独立专题区块，这里排除掉，避免同一屏出现两次。 */
+const projects = listData
+  .filter((item) => !/novapix-ai\.online/i.test(item.url))
+  .slice(0, 6)
+  .map((item) => {
+    const plain = item.description
+      .replace(/^[\p{Extended_Pictographic}\uFE0F\s]+/u, '')
+      .trim();
+    return {
+      title: item.title.replace(/（.*?）$/, ''),
+      url: item.url,
+      external: /^https?:\/\//.test(item.url),
+      desc: plain.length > 72 ? `${plain.slice(0, 72).replace(/[\s,，。；;:：]$/, '')}…` : plain,
+    };
+  });
+
+const year = new Date().getFullYear();
+const experience = year - 2021;
+const lastUpdated = articles[0]?.date ?? '';
+
+const stats = [
+  { value: articles.length, suffix: '', label: '篇文章' },
+  { value: listData.length, suffix: '', label: '个开源项目' },
+  { value: solutions.length, suffix: '', label: '份问题记录' },
+  { value: experience, suffix: '年', label: '前端经验' },
+];
+
+const extraLinks = [
+  { label: '工作问题记录', href: '/project-solution', count: solutions.length },
+  { label: '社区转发', href: '/community-article' },
+  { label: '站点导航', href: '/site-navigation' },
+  { label: '关于我', href: '/about-me' },
+];
+---
+
+<script is:inline>
+  // 在元素渲染前打标记，避免 reveal 动效出现闪动；无 JS 时内容照常可见
+  document.documentElement.classList.add('home-js');
+</script>
+
+<div class={`${styles.root} not-content`} id="home-root">
+  <canvas class={styles.canvas} id="home-stars" aria-hidden="true"></canvas>
+  <div class={styles.veil} aria-hidden="true"></div>
+
+  <div class={styles.inner}>
+    <header class={styles.hero}>
+      <span class={styles.tag}>
+        <i aria-hidden="true"></i>持续写作中 · 第 {experience} 年
+      </span>
+      <h1>
+        在星图上<em>写下坐标</em>
+      </h1>
+      <p>
+        {articles.length} 篇技术笔记、{listData.length} 个开源项目、{solutions.length} 份踩坑记录。
+        这些不是教程，是我在这张图上留下的坐标。
+      </p>
+      <div class={styles.acts}>
+        <a
+          class={`${styles.btn} ${styles.primary}`}
+          href="https://github.com/zjunbin1286"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          前往 GitHub
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <path
+              d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"
+            ></path>
+          </svg>
+        </a>
+        <a class={styles.btn} href="https://novapix-ai.online/" target="_blank" rel="noopener noreferrer">
+          <NovapixLogo size={18} />
+          开始 AI 创作
+        </a>
+      </div>
+    </header>
+
+    <div class={styles.consts}>
+      {
+        stats.map((stat) => (
+          <div class={styles.const}>
+            <b>
+              <span data-count={stat.value}>{stat.value}</span>
+              {stat.suffix && <i>{stat.suffix}</i>}
+            </b>
+            <span>{stat.label}</span>
+          </div>
+        ))
+      }
+    </div>
+
+    <section class={styles.promo} data-reveal>
+      <div class={styles.promoHead}>
+        <h2>
+          <i class={styles.promoDot} aria-hidden="true"></i>
+          正在做的事
+        </h2>
+      </div>
+
+      <div class={`${styles.promoCard} nvp-hover`}>
+        <div class={styles.promoMain}>
+          <h3>Novapix <em>AI</em></h3>
+          <p class={styles.promoDesc}>
+            描述一句需求，它先给你铺出整版设计——拿到的是每个字都能改的源文件，不是一张图。
+            抠图、扩图、换风格、和团队一起收尾，全在同一个画布上。
+          </p>
+          <ul class={styles.promoPoints}>
+            <li>整版可编辑</li>
+            <li>8 种 AI 图像能力</li>
+            <li>多人协作带锁</li>
+          </ul>
+          <a
+            class={`${styles.btn} ${styles.primary}`}
+            href="https://novapix-ai.online/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            前往 novapix-ai.online
+            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path
+                d="M4 12 12 4M12 4H6M12 4v6"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"></path>
+            </svg>
+          </a>
+        </div>
+
+        <div class={styles.promoOrbit} aria-hidden="true">
+          <span class={`${styles.ring} ${styles.ringIn}`}><i></i></span>
+          <span class={`${styles.ring} ${styles.ringOut}`}><i></i></span>
+          <NovapixLogo size={132} class={styles.promoMark} />
+        </div>
+      </div>
+    </section>
+
+    <section class={styles.sec} data-reveal>
+      <div class={styles.secHead}>
+        <h2>最近的坐标</h2>
+        <a href="/special-column">全部 {articles.length} 篇 →</a>
+      </div>
+      <div class={styles.list}>
+        {
+          latest.map((item) => (
+            <a class={styles.item} href={item.href}>
+              <h3>{item.title}</h3>
+              <span class={styles.meta}>
+                {item.date.replace(/-/g, '.')} · {item.minutes} 分钟
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class={styles.sec} data-reveal>
+      <div class={styles.secHead}>
+        <h2>开源项目</h2>
+        <a href="/collection">全部 {listData.length} 个 →</a>
+      </div>
+      <div class={styles.projects}>
+        {
+          projects.map((project) => (
+            <a
+              class={styles.card}
+              data-spot
+              href={project.url}
+              target={project.external ? '_blank' : undefined}
+              rel={project.external ? 'noopener noreferrer' : undefined}
+            >
+              <h3>{project.title}</h3>
+              <p>{project.desc}</p>
+              <span class={styles.status}>
+                <i aria-hidden="true"></i>maintained
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+
+    <nav class={styles.moreLinks} aria-label="更多栏目" data-reveal>
+      {
+        extraLinks.map((link) => (
+          <a href={link.href}>
+            {link.label}
+            {link.count ? <span>{link.count}</span> : null}
+          </a>
+        ))
+      }
+    </nav>
+
+    <footer class={styles.foot}>
+      <span>© {year} Joey · Built with Astro</span>
+      <span>上次更新 · {lastUpdated || '—'}</span>
+    </footer>
+  </div>
+</div>
+
+<script>
+  const root = document.getElementById('home-root');
+  const canvas = document.getElementById('home-stars') as HTMLCanvasElement | null;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ── 星空粒子 ── */
+  if (root && canvas) {
+    const ctx = canvas.getContext('2d');
+    let width = 0;
+    let height = 0;
+    /* core / spin 让每颗粒子的收束半径和盘旋速度略有差别，
+       否则所有粒子会停在同一个圆上，看起来像画了个圈。
+       hx / hy 是出生点：鼠标离开后粒子按这个坐标慢慢缓回去。 */
+    let points: {
+      x: number;
+      y: number;
+      hx: number;
+      hy: number;
+      vx: number;
+      vy: number;
+      r: number;
+      core: number;
+      spin: number;
+    }[] = [];
+    const mouse = { x: -9999, y: -9999 };
+    let raf = 0;
+    /* 0 = 光标在画面里，纯吸引；1 = 光标走了，完全放开。
+       用指数趋近而不是直接切换，否则离开瞬间粒子会"啪"地弹回去。 */
+    let release = 0;
+    const RELEASE_EASE = 0.02;
+    const HOME_EASE = 0.012;
+
+    const starRGB = () =>
+      getComputedStyle(document.documentElement).getPropertyValue('--home-star').trim() ||
+      '139 139 255';
+
+    /* 鼠标引力参数：
+       PULL_R 是引力半径，越远拉力越弱；CORE_R 以内改成斥力，
+       让粒子在光标周围停成一圈光晕，而不是全部坍缩到一个点。 */
+    const PULL_R = 260;
+    const CORE_R = 40;
+    const PULL = 0.05;
+    const PUSH = 0.05;
+    const SWIRL = 0.6;
+    const MAX_SPEED = 1.4;
+
+    // 主题切换时刷新一次即可，不必每帧都读计算样式
+    let rgb = starRGB();
+    new MutationObserver(() => {
+      rgb = starRGB();
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+    const build = () => {
+      const count = Math.min(110, Math.max(30, Math.round(width / 13)));
+      points = Array.from({ length: count }, () => {
+        const x = Math.random() * width;
+        const y = Math.random() * height;
+        return {
+          x,
+          y,
+          hx: x,
+          hy: y,
+          vx: (Math.random() - 0.5) * 0.28,
+          vy: (Math.random() - 0.5) * 0.28,
+          r: Math.random() * 1.5 + 0.7,
+          core: 0.55 + Math.random() * 0.6,
+          spin: 0.35 + Math.random() * 0.55,
+        };
+      });
+    };
+
+    const resize = () => {
+      if (!ctx) return;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      width = root.clientWidth;
+      height = Math.min(root.clientHeight, 900);
+      canvas.style.height = `${height}px`;
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      build();
+      if (reduceMotion) draw(true);
+    };
+
+    const draw = (once = false) => {
+      if (!ctx) return;
+      ctx.clearRect(0, 0, width, height);
+
+      if (!once) {
+        // 光标在画面里 release 落回 0（重新吸引），离开则慢慢升到 1（开始散开）
+        release += ((mouse.x < -9000 ? 1 : 0) - release) * RELEASE_EASE;
+      }
+
+      for (const p of points) {
+        if (!once) {
+          const dx = mouse.x - p.x;
+          const dy = mouse.y - p.y;
+          const dist = Math.hypot(dx, dy);
+
+          if (dist < PULL_R && dist > 0.001) {
+            const nx = dx / dist;
+            const ny = dy / dist;
+
+            if (dist > CORE_R) {
+              // 引力：线性弹簧，离得越远拉力越大，到 PULL_R 处衰减为 0
+              const f = PULL * (dist / PULL_R);
+              p.vx += nx * f;
+              p.vy += ny * f;
+              // 切向分量，让粒子绕光标盘旋而不是直冲
+              p.vx += -ny * f * SWIRL * p.spin * 2;
+              p.vy += nx * f * SWIRL * p.spin * 2;
+            } else {
+              // 核心斥力：太近了往回推，形成稳定的光环
+              const core = CORE_R * p.core;
+              const f = PUSH * (1 - dist / core);
+              p.vx -= nx * f;
+              p.vy -= ny * f;
+            }
+          }
+
+          p.vx *= 0.985;
+          p.vy *= 0.985;
+
+          // 引力会持续加速，限速避免粒子被甩出画面
+          const speed = Math.hypot(p.vx, p.vy);
+          if (speed > MAX_SPEED) {
+            p.vx = (p.vx / speed) * MAX_SPEED;
+            p.vy = (p.vy / speed) * MAX_SPEED;
+          }
+
+          p.x += p.vx;
+          p.y += p.vy;
+
+          /* 光标走了以后，位置向出生点做指数缓动。
+             不用弹簧力，省得过冲、来回荡；三秒左右散回原来的分布，
+             同时把残余速度抹掉，粒子不会带着惯性飘走。 */
+          if (release > 0.002) {
+            const k = HOME_EASE * release;
+            p.x += (p.hx - p.x) * k;
+            p.y += (p.hy - p.y) * k;
+            const drag = 1 - 0.06 * release;
+            p.vx *= drag;
+            p.vy *= drag;
+          }
+
+          if (p.vx * p.vx + p.vy * p.vy < 0.004) {
+            p.vx += (Math.random() - 0.5) * 0.05;
+            p.vy += (Math.random() - 0.5) * 0.05;
+          }
+          if (p.x < -20) p.x = width + 20;
+          if (p.x > width + 20) p.x = -20;
+          if (p.y < -20) p.y = height + 20;
+          if (p.y > height + 20) p.y = -20;
+        }
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgb(${rgb} / 0.62)`;
+        ctx.fill();
+      }
+
+      for (let i = 0; i < points.length; i += 1) {
+        for (let j = i + 1; j < points.length; j += 1) {
+          const a = points[i];
+          const b = points[j];
+          const dx = a.x - b.x;
+          const dy = a.y - b.y;
+          const d2 = dx * dx + dy * dy;
+          if (d2 < 16900) {
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.strokeStyle = `rgb(${rgb} / ${(0.3 * (1 - Math.sqrt(d2) / 130)).toFixed(3)})`;
+            ctx.lineWidth = 0.7;
+            ctx.stroke();
+          }
+        }
+      }
+
+      if (!once) raf = requestAnimationFrame(() => draw());
+    };
+
+    resize();
+
+    if (reduceMotion) {
+      draw(true);
+    } else {
+      cancelAnimationFrame(raf);
+      draw();
+
+      // 页面不可见时暂停，省电
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          cancelAnimationFrame(raf);
+          raf = 0;
+        } else if (!raf) {
+          draw();
+        }
+      });
+
+      window.addEventListener(
+        'mousemove',
+        (event) => {
+          const rect = canvas.getBoundingClientRect();
+          /* 滚到下面的区块时，光标还在 window 里、却已经不在星图上了，
+             这种情况同样按"离开"处理，否则粒子会一直赖在边缘不下来。 */
+          const inside =
+            event.clientX >= rect.left &&
+            event.clientX <= rect.right &&
+            event.clientY >= rect.top &&
+            event.clientY <= rect.bottom;
+          mouse.x = inside ? event.clientX - rect.left : -9999;
+          mouse.y = inside ? event.clientY - rect.top : -9999;
+        },
+        { passive: true }
+      );
+      /* mouseleave 不冒泡，挂在 window 上根本收不到 —— 之前光标移出窗口后
+         坐标停在最后一帧，粒子就一直聚在那儿不散。挂 document 才有效。
+         mouseout 里 relatedTarget 为空能兜住「切到别的窗口」这种不触发 leave 的情况。 */
+      const resetMouse = () => {
+        mouse.x = -9999;
+        mouse.y = -9999;
+      };
+      document.addEventListener('mouseleave', resetMouse);
+      document.addEventListener('mouseout', (event) => {
+        if (!event.relatedTarget) resetMouse();
+      });
+      window.addEventListener('blur', resetMouse);
+    }
+
+    let resizeTimer = 0;
+    window.addEventListener(
+      'resize',
+      () => {
+        window.clearTimeout(resizeTimer);
+        resizeTimer = window.setTimeout(resize, 160);
+      },
+      { passive: true }
+    );
+  }
+
+  /* ── 数字滚动 ── */
+  const counters = document.querySelectorAll<HTMLElement>('[data-count]');
+
+  const countUp = (el: HTMLElement) => {
+    if (el.dataset.done) return;
+    el.dataset.done = '1';
+    const target = Number(el.dataset.count ?? el.textContent ?? 0);
+    if (!Number.isFinite(target) || reduceMotion) {
+      el.textContent = String(target);
+      return;
+    }
+    const duration = 1100;
+    const start = performance.now();
+    const tick = (now: number) => {
+      const progress = Math.max(0, Math.min((now - start) / duration, 1));
+      const eased = 1 - Math.pow(1 - progress, 3);
+      el.textContent = String(Math.round(target * eased));
+      if (progress < 1) requestAnimationFrame(tick);
+    };
+    el.textContent = '0';
+    requestAnimationFrame(tick);
+  };
+
+  /* ── 滚动淡入 + 计数器触发 ──
+     不用 IntersectionObserver：它依赖浏览器合成帧，无头渲染/部分场景下不回调。
+     直接按 getBoundingClientRect 判定，行为更可预测。 */
+  const reveals = document.querySelectorAll<HTMLElement>('[data-reveal]');
+
+  if (reduceMotion) {
+    reveals.forEach((el) => el.setAttribute('data-in', ''));
+    counters.forEach((el) => countUp(el));
+  } else {
+    let ticking = false;
+
+    const check = () => {
+      ticking = false;
+      const limit = window.innerHeight * 0.92;
+
+      for (const el of reveals) {
+        if (el.hasAttribute('data-in')) continue;
+        const top = el.getBoundingClientRect().top;
+        if (top < limit) el.setAttribute('data-in', '');
+      }
+
+      for (const el of counters) {
+        if (el.dataset.done) continue;
+        const top = el.getBoundingClientRect().top;
+        if (top < limit) countUp(el);
+      }
+    };
+
+    const requestCheck = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(check);
+    };
+
+    window.addEventListener('scroll', requestCheck, { passive: true });
+    window.addEventListener('resize', requestCheck, { passive: true });
+    // 首屏内容不依赖滚动，加载后立即判定一次
+    requestAnimationFrame(check);
+    window.setTimeout(check, 300);
+  }
+
+  /* ── 卡片光斑跟随鼠标 ── */
+  document.querySelectorAll<HTMLElement>('[data-spot]').forEach((el) => {
+    el.addEventListener('pointermove', (event) => {
+      const rect = el.getBoundingClientRect();
+      el.style.setProperty('--mx', `${event.clientX - rect.left}px`);
+      el.style.setProperty('--my', `${event.clientY - rect.top}px`);
+    });
+  });
+</script>
+
+<style is:global>
+  /* 首页铺满：清掉 Starlight splash 的内容容器留白。
+     这些规则只随本组件所在页面加载，不会影响其他页面。 */
+  main > .content-panel {
+    padding: 0;
+    border-top: 0;
+  }
+
+  main > .content-panel .sl-container {
+    max-width: none;
+    margin-inline: 0;
+  }
+
+  main > .content-panel .sl-container > * + * {
+    margin-top: 0;
+  }
+
+  /* 首页要顶到底：清掉 Starlight markdown 容器给首元素加的外边距 */
+  main > .content-panel:has(#home-root) .sl-container > #home-root,
+  main > .content-panel:has(#home-root) .sl-markdown-content > #home-root {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  /* starlight-image-zoom 是未定义的自定义元素，默认 display:inline，
+     包裹首页内容时会被行高撑出空白条。 */
+  main > .content-panel:has(#home-root) starlight-image-zoom {
+    display: block;
+  }
+
+  /* 首页让星空顶到 fixed header 后面，磨砂导航才有内容可以透过；
+     正文的nav高度补偿在 .hero 的 padding-top 里。 */
+  body:has(#home-root) .main-frame {
+    padding-top: 0;
+  }
+
+  /* Starlight 会给 .sl-markdown-content 里的相邻块元素补 1rem 的 margin-top，
+     这条规则会一路命中首页内部的绝对定位层（canvas 后面那层 veil 被推下 16px，
+     露出一条底色白条）。根节点已挂 not-content 让整棵子树退出 markdown 样式，
+     这里再按 ID 兜一层，保证首页内部间距完全由组件自己决定。 */
+  #home-root > * {
+    margin-top: 0;
+  }
+
+  /* splash 默认还会渲染一个页面标题栏，首页由自定义 hero 承担，这里隐藏 */
+  main > .content-panel:not(:has(#home-root)) {
+    display: none;
+  }
+
+  /* Starlight 自带的编辑链接 / 更新时间 / 上下篇导航在首页没有意义 */
+  main > .content-panel:has(#home-root) .sl-container > footer {
+    display: none;
+  }
+</style>
