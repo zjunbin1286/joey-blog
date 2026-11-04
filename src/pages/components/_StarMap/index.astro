@@ -89,7 +89,7 @@ const pad = (n: number) => String(n).padStart(2, '0')
     viewBox={`0 0 ${WORLD.w} ${WORLD.h}`}
     preserveAspectRatio="xMidYMid meet"
     role="img"
-    aria-label="智慧星图：八个技术专栏按星座排布，每颗星对应一篇笔记"
+    aria-label="观星台：八个技术专栏按星座排布，每颗星对应一篇笔记"
   >
     <defs>
       <radialGradient id="starmap-glow">
@@ -178,13 +178,34 @@ const pad = (n: number) => String(n).padStart(2, '0')
     </g>
   </svg>
 
-  <div class={styles.head}>
-    <p class={styles.kicker}>SMART STARMAP</p>
-    <h1 class={styles.title}>智慧星图</h1>
-    <p class={styles.lead}>
-      {nodes.length} 个专栏，{totalNotes} 篇笔记，{totalStars} 颗星。星点位置取自真实赤经赤纬，
-      大小按星等。点一颗星，去看那篇笔记。
-    </p>
+  <div class={styles.side} data-side>
+    <div class={styles.head} data-head>
+      <p class={styles.kicker}>STAR ATLAS</p>
+      <h1 class={styles.title}>观星台</h1>
+      <p class={styles.lead}>
+        {nodes.length} 个专栏，{totalNotes} 篇笔记，{totalStars} 颗星。星点位置取自真实赤经赤纬，
+        大小按星等。点一颗星，去看那篇笔记。
+      </p>
+    </div>
+
+    <nav class={styles.rail} aria-label="选择星座" data-rail>
+      <p class={styles.railCap}>Constellations</p>
+      <ul>
+        {
+          nodes.map((n, i) => (
+            <li>
+              <a href={`/articles/${n.key}/`} data-chip={n.key}>
+                <i class={styles.idx} aria-hidden="true">
+                  {pad(i + 1)}
+                </i>
+                <span class={styles.chipName}>{n.cn}</span>
+                <em>{n.arts.length}</em>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
   </div>
 
   <button class={styles.reset} type="button" data-reset hidden>
@@ -242,22 +263,6 @@ const pad = (n: number) => String(n).padStart(2, '0')
     ))
   }
 
-  <nav class={styles.rail} aria-label="选择星座">
-    <span class={styles.railHint}>滚轮缩放 · 拖拽平移</span>
-    <ul>
-      {
-        nodes.map((n) => (
-          <li>
-            <a href={`/articles/${n.key}/`} data-chip={n.key}>
-              <span class={styles.chipDot} aria-hidden="true"></span>
-              {n.cn}
-              <em>{n.arts.length}</em>
-            </a>
-          </li>
-        ))
-      }
-    </ul>
-  </nav>
 </div>
 
 <script>
@@ -266,6 +271,9 @@ const pad = (n: number) => String(n).padStart(2, '0')
   const labels = document.getElementById('starmap-labels')
   const world = document.getElementById('starmap-world')
   const resetBtn = document.querySelector('[data-reset]') as HTMLButtonElement | null
+  const railEl = document.querySelector('[data-rail]') as HTMLElement | null
+  const sideEl = document.querySelector('[data-side]') as HTMLElement | null
+  const headEl = document.querySelector('[data-head]') as HTMLElement | null
 
   if (root && svg && labels && world) {
     const W = Number.parseFloat(svg.getAttribute('viewBox')!.split(/\s+/)[2])
@@ -292,33 +300,73 @@ const pad = (n: number) => String(n).padStart(2, '0')
       labels.setAttribute('font-size', (14.5 / s).toFixed(2))
     }
 
-    /** 初始视角：桌面装下整个世界；竖屏改成按高度铺满，靠左右拖动浏览 */
-    const fit = (): View => {
-      const { w: vw, h: vh } = viewport()
-      const aspect = vw / vh
-      if (vw < 720) {
-        const w = H * aspect
-        return { x: (W - w) / 2, y: 78, w, h: H }
+    /** 星点实际占的范围（世界坐标），四周给星座名留出余量。只算一次 */
+    let boxCache: { x: number; y: number; w: number; h: number } | null = null
+    const skyBox = () => {
+      if (boxCache) return boxCache
+      let b = { x: 0, y: 0, width: W, height: H }
+      try {
+        const raw = (world as unknown as SVGGElement).getBBox()
+        if (raw.width > 0 && raw.height > 0) b = raw
+      } catch {
+        // 拿不到就退回整块画布
       }
-      const worldAspect = W / H
-      const w = worldAspect > aspect ? W : H * aspect
-      const h = w / aspect
-      return { x: (W - w) / 2, y: (H - h) / 2 + 72, w, h }
+      const m = 62
+      boxCache = { x: b.x - m, y: b.y - m, w: b.width + m * 2, h: b.height + m * 2 }
+      return boxCache
     }
 
-    /** 聚焦某个星座：让星座直径占满短边的 85%，并给右侧面板让出位置 */
+    /** 初始视角：桌面把星图铺在索引栏右边；竖屏按高度铺满，靠左右拖动浏览 */
+    const fit = (): View => {
+      const { w: vw, h: vh } = viewport()
+      if (vw < 720) {
+        const w = H * (vw / vh)
+        return { x: (W - w) / 2, y: 78, w, h: H }
+      }
+      // 按星点实际占的范围（不是整块世界画布）来适配，左边给索引栏让位，
+      // 这样图形能顶满，又不会钻到文字底下
+      const box = skyBox()
+      const left = (railEl ? railEl.getBoundingClientRect().right : 0) + 24
+      const pad = 18
+      const availW = Math.max(320, vw - left - pad)
+      const availH = Math.max(320, vh - pad * 2)
+      const s = Math.min(availW / box.w, availH / box.h)
+      return {
+        x: box.x - (left + (availW - box.w * s) / 2) / s,
+        y: box.y - (pad + (availH - box.h * s) / 2) / s,
+        w: vw / s,
+        h: vh / s,
+      }
+    }
+
+    /** 星座聚焦时落在「左侧索引 — 右侧面板」这条中线上 */
+    const lanes = () => {
+      const { w: vw } = viewport()
+      const left = railEl ? railEl.getBoundingClientRect().right + 26 : 0
+      const right = vw <= 960 ? vw : vw - 376
+      return { left, target: (left + right) / 2 }
+    }
+
+    /** 聚焦某个星座：让星座直径占满短边的 85%，并给两侧面板让出位置 */
     const focusOn = (cx: number, cy: number): View => {
       const { w: vw, h: vh } = viewport()
       const aspect = vw / vh
-      const narrow = vw <= 960
+      const stack = vw <= 960
       const w = Math.max(300, Math.min(900, (360 * vw) / (Math.min(vw, vh) * 0.85)))
       const h = w / aspect
-      const shiftX = narrow ? 0 : Math.min(184, vw * 0.15) * (w / vw)
-      const shiftY = narrow ? h * 0.2 : 0
+      const shiftX = ((vw / 2 - lanes().target) * w) / vw
+      const shiftY = stack ? h * 0.2 : 0
       return { x: cx - w / 2 + shiftX, y: cy - h / 2 + shiftY, w, h }
     }
 
     const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2)
+
+    /** 聚焦时索引要顶上去，位移量 = 标题高度 + 两者间距 */
+    const syncLift = () => {
+      if (!sideEl || !headEl) return
+      const gap = Number.parseFloat(getComputedStyle(sideEl).rowGap) || 0
+      sideEl.style.setProperty('--rail-lift', `${headEl.getBoundingClientRect().height + gap}px`)
+    }
 
     const flyTo = (target: View, duration = 720) => {
       cancelAnimationFrame(raf)
@@ -478,10 +526,12 @@ const pad = (n: number) => String(n).padStart(2, '0')
     })
 
     window.addEventListener('resize', () => {
+      syncLift()
       if (!activeKey) view = fit()
       apply()
     })
 
+    syncLift()
     view = fit()
     apply()
   }

@@ -1,4 +1,4 @@
-/* 智慧星图
+/* 观星台（/starmap）
    颜色全部走 src/styles/custom.css 里的 --star-* 变量（亮暗两套），
    组件里不写死任何色值，切主题时星图自己会换皮：
    暗色 = 深空，亮色 = 纸质星图。 */
@@ -176,15 +176,39 @@
   opacity: 0.14;
 }
 
-/* ── 标题 ── */
+/* ── 左侧栏：标题 + 星座索引 ── */
+
+/* 标题和索引排在同一列里，聚焦时标题淡出、索引留在原位，
+   所以索引不会跟着标题一起消失，也不会跳位置。 */
+.side {
+  position: absolute;
+  z-index: 3;
+  left: clamp(1.2rem, 4vw, 3.2rem);
+  top: clamp(1.4rem, 4vh, 3rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.4rem, 3.4vh, 2.3rem);
+  pointer-events: none;
+
+  /* 一层跟着背景色走的柔光，把文字底下的星点压下去。
+     没有边框、没有卡片，只是让这一栏"淡出"到背景里。 */
+  &::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset: -1.5rem -7rem -2rem -4rem;
+    pointer-events: none;
+    background: linear-gradient(
+      90deg,
+      var(--star-bg) 0%,
+      var(--star-bg) 56%,
+      transparent 100%
+    );
+  }
+}
 
 .head {
-  position: absolute;
-  top: clamp(1.4rem, 4vh, 3rem);
-  left: clamp(1.2rem, 4vw, 3.2rem);
-  z-index: 3;
-  max-width: min(24rem, 62vw);
-  pointer-events: none;
+  max-width: min(23rem, 54vw);
   transition: opacity 0.4s ease;
 }
 
@@ -431,85 +455,129 @@
   }
 }
 
-/* ── 底部星座栏 ── */
+/* ── 星座索引（左侧，无边框） ──
+   一条 1px 的竖向细线当地脚线，每项左侧长出一小段高亮就是激活态，
+   不加任何边框和底色，尽量不打扰星图本身。 */
 
 .rail {
-  position: absolute;
-  z-index: 4;
-  left: 0;
-  right: 0;
-  bottom: clamp(0.9rem, 2.5vh, 1.6rem);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  padding-inline: 1rem;
-  pointer-events: none;
+  pointer-events: auto;
+  width: max-content;
+  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
 
   ul {
+    position: relative;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.3rem;
-    margin: 0 auto;
-    padding: 0.35rem;
+    flex-direction: column;
+    gap: 0.04rem;
+    margin: 0;
+    padding: 0 0 0 0.95rem;
     list-style: none;
-    border-radius: 99px;
-    border: 1px solid var(--star-hairline);
-    background: var(--star-panel);
-    backdrop-filter: blur(18px) saturate(160%);
-    pointer-events: auto;
+
+    /* 地脚线：一次性画到底，激活项的高亮压在它上面 */
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.7rem;
+      bottom: 0.7rem;
+      width: 1px;
+      background: var(--star-hairline);
+    }
   }
 
   a {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    height: 1.85rem;
-    padding: 0 0.65rem;
-    border-radius: 99px;
-    font-size: 0.72rem;
-    color: var(--star-ink-2);
+    position: relative;
+    display: flex;
+    align-items: baseline;
+    gap: 0.45rem;
+    width: 7.8rem;
+    padding: 0.34rem 0;
+    color: var(--star-ink-3);
     text-decoration: none;
-    white-space: nowrap;
-    transition:
-      background 0.18s ease,
-      color 0.18s ease;
+    transition: color 0.22s ease;
+
+    /* 激活条：从 0 长到 1.15rem，hover 只长一半 */
+    &::before {
+      content: '';
+      position: absolute;
+      left: -0.95rem;
+      top: 50%;
+      width: 1px;
+      height: 0;
+      background: var(--star-accent);
+      transform: translateY(-50%);
+      transition: height 0.26s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
 
     em {
+      margin-left: auto;
       font-family: var(--sl-font-mono, ui-monospace, monospace);
-      font-size: 0.6rem;
+      font-size: 0.625rem;
       font-style: normal;
+      font-variant-numeric: tabular-nums;
       color: var(--star-ink-3);
+      transition: color 0.22s ease;
     }
 
     &:hover {
-      background: var(--star-hover);
-      color: var(--star-ink);
+      color: var(--star-ink-2);
+
+      &::before {
+        height: 0.6rem;
+      }
     }
 
     &[aria-current='true'] {
-      background: var(--star-hover);
       color: var(--star-ink);
-    }
 
-    &[aria-current='true'] em {
-      color: var(--star-ink-2);
+      &::before {
+        height: 1.15rem;
+      }
+
+      .idx,
+      em {
+        color: var(--star-accent);
+      }
     }
   }
 }
 
-.railHint {
+.railCap {
+  margin: 0 0 0.5rem;
+  font-family: var(--sl-font-mono, ui-monospace, monospace);
   font-size: 0.625rem;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
   color: var(--star-ink-3);
 }
 
-.chipDot {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: currentColor;
+.idx {
+  flex: none;
+  width: 1.3rem;
+  font-family: var(--sl-font-mono, ui-monospace, monospace);
+  font-size: 0.625rem;
+  font-style: normal;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  color: var(--star-ink-3);
+  transition: color 0.22s ease;
+}
+
+.chipName {
+  font-size: 0.8125rem;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+/* 聚焦后标题淡出，索引顺势顶到原来看标题的位置，左上角不留空档。
+   --rail-lift 由脚本按标题实际高度算出来（见 index.astro）。 */
+.page[data-focus='true'] .rail {
+  transform: translateY(calc(-1 * var(--rail-lift, 0px)));
+}
+
+/* 聚焦后其余项退到背景里，和星图的淡出保持同一个语气 */
+.page[data-focus='true'] .rail a:not([aria-current='true']) {
+  color: var(--star-ink-3);
   opacity: 0.55;
 }
 
@@ -538,25 +606,44 @@
     }
   }
 
-  .rail {
-    bottom: 0.5rem;
-
-    ul {
-      border-radius: 14px;
-    }
-
-    a {
-      height: 1.7rem;
-      padding: 0 0.5rem;
-      font-size: 0.68rem;
-    }
+  /* 窄屏索引收窄成纯名字，只留编号列宽的空间 */
+  .side {
+    gap: 1.1rem;
   }
 
-  .lead {
+  .railCap {
     display: none;
   }
 
-  .railHint {
+  .rail {
+    ul {
+      padding-left: 0.75rem;
+    }
+
+    a {
+      width: auto;
+      padding: 0.55rem 0;
+
+      &::before {
+        left: -0.75rem;
+      }
+    }
+
+    em {
+      margin-left: 0.4rem;
+      font-size: 0.55rem;
+    }
+  }
+
+  .idx {
+    display: none;
+  }
+
+  .chipName {
+    font-size: 0.75rem;
+  }
+
+  .lead {
     display: none;
   }
 
@@ -572,7 +659,8 @@
 
   .cons,
   .links line,
-  .starName {
+  .starName,
+  .rail {
     transition: none;
   }
 }
