@@ -18,6 +18,17 @@
   --home-surface: hsl(228 22% 11% / 0.66);
   --home-live: hsl(160 84% 62%);
 
+  /* 「前往观星台」按钮：实底 / 内部星云 / 两段边光 / 外圈光晕。
+     底色刻意压得很深（比页面底只高一点点），视觉重量交给边光和星点，
+     才不会糊成一块紫色渐变。 */
+  --home-sky-fill: hsl(248 30% 10%);
+  --home-sky-mist: hsl(262 100% 78% / 0.5);
+  --home-sky-edge: hsl(258 100% 80%);
+  --home-sky-edge-2: hsl(190 100% 68%);
+  --home-sky-glow: hsl(258 100% 68% / 0.4);
+  /* 顶部那道玻璃高光的浓度，hover 时翻倍 */
+  --home-sky-sheen: 9%;
+
   /* ── 观星台 token ──
      暗色走「深空」，亮色走「纸质星图」，两套都只在这里定义。
      --star-grid / --star-bgstars / --star-glow-strength 是开关型变量：
@@ -47,6 +58,15 @@
   --home-glow: hsl(258 90% 62% / 0.14);
   --home-surface: hsl(232 40% 98.4%);
   --home-live: hsl(160 84% 32%);
+
+  /* 亮色下同样的按钮要收着点：白底上紫光容易显脏，压低星云、边光统一走紫（不要青） */
+  --home-sky-fill: hsl(258 64% 97%);
+  --home-sky-mist: hsl(258 92% 58% / 0.13);
+  --home-sky-edge: hsl(262 92% 55%);
+  --home-sky-edge-2: hsl(258 78% 62%);
+  --home-sky-glow: hsl(258 92% 56% / 0.2);
+  /* 白底上一点紫就够，浓了整枚按钮会变成紫色药丸 */
+  --home-sky-sheen: 6%;
 
   /* 观星台：纸质星图 */
   --star-bg: hsl(42 42% 95.5%);
