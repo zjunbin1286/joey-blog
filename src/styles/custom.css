@@ -29,6 +29,16 @@
   /* 顶部那道玻璃高光的浓度，hover 时翻倍 */
   --home-sky-sheen: 9%;
 
+  /* 「开始 AI 创作」按钮：像素画布。紫→粉是 logo 自己的配色区间（#8f55e6 → #f9a8d4），
+     跟观星台的紫→青拉开，两枚按钮并排时不会混成一色。
+     点阵浓度给得很低，是底纹不是主角。 */
+  --home-pixel-fill: hsl(272 30% 10%);
+  --home-pixel-edge-a: hsl(268 100% 78%);
+  --home-pixel-edge-b: hsl(330 100% 78%);
+  --home-pixel-dot: hsl(286 100% 86% / 0.15);
+  --home-pixel-glow: hsl(300 100% 70% / 0.32);
+  --home-pixel-sheen: 8%;
+
   /* ── 观星台 token ──
      暗色走「深空」，亮色走「纸质星图」，两套都只在这里定义。
      --star-grid / --star-bgstars / --star-glow-strength 是开关型变量：
@@ -67,6 +77,15 @@
   --home-sky-glow: hsl(258 92% 56% / 0.2);
   /* 白底上一点紫就够，浓了整枚按钮会变成紫色药丸 */
   --home-sky-sheen: 6%;
+
+  /* AI 按钮亮色：底几乎就是白，靠粉调描边和点阵区分，
+     不去跟观星台抢那一层淡紫 */
+  --home-pixel-fill: hsl(292 58% 97.4%);
+  --home-pixel-edge-a: hsl(268 78% 56%);
+  --home-pixel-edge-b: hsl(330 80% 62%);
+  --home-pixel-dot: hsl(286 68% 54% / 0.14);
+  --home-pixel-glow: hsl(300 76% 58% / 0.16);
+  --home-pixel-sheen: 5%;
 
   /* 观星台：纸质星图 */
   --star-bg: hsl(42 42% 95.5%);

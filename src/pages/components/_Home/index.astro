@@ -132,9 +132,16 @@ const extraLinks = [
           </span>
           <span class={styles.skyText}>前往观星台</span>
         </a>
-        <a class={styles.btn} href="https://novapix-ai.online/" target="_blank" rel="noopener noreferrer">
-          <NovapixLogo size={18} />
-          开始 AI 创作
+        <a
+          class={`${styles.btn} ${styles.pixel} nvp-hover`}
+          href="https://novapix-ai.online/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span class={styles.pixelIco}>
+            <NovapixLogo size={18} />
+          </span>
+          <span class={styles.pixelText}>开始 AI 创作</span>
         </a>
       </div>
     </header>

@@ -329,6 +329,172 @@
   }
 }
 
+/* ── 开始 AI 创作：像素画布 ──
+   和观星台那枚同族不同型：那边是深空 + 会绕圈的轨道光，这边是像素画布 ——
+   1.2px 紫→粉的斜向渐变描边（光固定从左上打过来，不转），
+   底下一层 7px 的点阵，hover 时整片格子匀速向上冒一格，像像素从底下喷出来。
+   图标上的喷水动画直接复用 .nvp-hover，不用另写。 */
+.root a.pixel {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-color: transparent;
+  /* 同样用不透明实色：掺透明的底会让背景那层粒子连线从按钮里穿过去 */
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--home-pixel-edge-a) var(--home-pixel-sheen), transparent),
+      transparent 70%
+    ),
+    var(--home-pixel-fill);
+  color: var(--home-ink);
+  box-shadow:
+    0 12px 30px -22px var(--home-pixel-glow),
+    0 0 18px -12px var(--home-pixel-glow);
+  transition:
+    color 0.22s ease,
+    background 0.32s ease,
+    box-shadow 0.36s ease,
+    transform 0.22s ease;
+
+  /* 描边：135° 的紫→粉渐变环。不跟着转 —— 观星台那圈是会动的轨道光，
+     这圈要读起来像一条打在边上的静态高光，两枚按钮才区分得开。
+     mask 两层 xor 差集把中间挖空，只留 1.2px。 */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    padding: 1.2px;
+    border-radius: inherit;
+    background: linear-gradient(
+      135deg,
+      var(--home-pixel-edge-a),
+      color-mix(in srgb, var(--home-pixel-edge-a) 42%, var(--home-pixel-edge-b)) 55%,
+      var(--home-pixel-edge-b)
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    /* 常态收到 0.5：这条渐变环是纯色不透明的，比观星台那种带 alpha 的 conic
+       平均更实，0.6 时会比它更抢眼。hover 再放到最亮。 */
+    opacity: 0.5;
+    transition: opacity 0.32s ease;
+  }
+
+  /* 点阵：7px 一格。inset 往外多铺一圈，向上滚动时才不会露边。
+     间距和 pixelDrift 的位移必须是同一个数值，否则循环接缝处会跳。
+     mask 让点阵在两端浓、文字后面淡到几乎没有 —— 铺满整圈的话，
+     1px 的点被抗锯齿糊开，字背后会像蒙了一层碎屑。 */
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -14px;
+    z-index: -1;
+    background-image: radial-gradient(circle, var(--home-pixel-dot) 0 1px, transparent 1.35px);
+    background-size: 7px 7px;
+    -webkit-mask: linear-gradient(
+      90deg,
+      #000 0 6%,
+      rgba(0, 0, 0, 0.34) 24%,
+      rgba(0, 0, 0, 0.34) 76%,
+      #000 94%
+    );
+    mask: linear-gradient(
+      90deg,
+      #000 0 6%,
+      rgba(0, 0, 0, 0.34) 24%,
+      rgba(0, 0, 0, 0.34) 76%,
+      #000 94%
+    );
+    opacity: 0.85;
+    transition: opacity 0.4s ease;
+  }
+
+  /* 图标外面垫一层粉光，hover 才亮起来；喷水交给 .nvp-hover */
+  .pixelIco {
+    position: relative;
+    display: grid;
+    place-items: center;
+    flex: none;
+    transition:
+      transform 0.45s cubic-bezier(0.34, 0.9, 0.34, 1),
+      filter 0.36s ease;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      background: radial-gradient(
+        circle,
+        color-mix(in srgb, var(--home-pixel-edge-b) 36%, transparent),
+        transparent 68%
+      );
+      opacity: 0;
+      transition: opacity 0.36s ease;
+    }
+
+    :global(.nvp-logo) {
+      position: relative;
+    }
+  }
+
+  .pixelText {
+    position: relative;
+    letter-spacing: 0.01em;
+  }
+
+  &:hover {
+    border-color: transparent;
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--home-pixel-edge-a) calc(var(--home-pixel-sheen) * 2.2), transparent),
+        transparent 70%
+      ),
+      var(--home-pixel-fill);
+    box-shadow:
+      0 18px 40px -20px var(--home-pixel-glow),
+      0 0 26px -8px var(--home-pixel-glow);
+    transform: translateY(-2px);
+
+    &::before {
+      opacity: 1;
+    }
+
+    &::after {
+      opacity: 1;
+      animation: pixelDrift 1.6s linear infinite;
+    }
+
+    .pixelIco {
+      transform: translateY(-1px) scale(1.06);
+      filter: drop-shadow(0 0 5px color-mix(in srgb, var(--home-pixel-edge-b) 60%, transparent));
+
+      &::before {
+        opacity: 0.72;
+      }
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+/* 位移必须正好等于点阵的 7px 间距，循环才无缝 */
+@keyframes pixelDrift {
+  to {
+    transform: translateY(-7px);
+  }
+}
+
 @keyframes skyTwinkle {
   0%,
   100% {
@@ -929,6 +1095,16 @@
 
   .root a.sky:hover .skyIco {
     animation: none;
+    transform: none;
+  }
+
+  /* AI 按钮：点阵定格不滚，图标保持静态（喷水动画本身在 custom.css 里已降级） */
+  .root a.pixel::after {
+    animation: none;
+    transform: none;
+  }
+
+  .root a.pixel:hover .pixelIco {
     transform: none;
   }
 
