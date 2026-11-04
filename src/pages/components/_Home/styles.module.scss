@@ -170,12 +170,6 @@
    边框是一条沿胶囊轨道跑的渐变光带，里面浮着一层会呼吸的星尘。
    两层都是绝对定位伪元素 + 负 z-index，叠在按钮底色之上、文字之下
    （父级 isolation: isolate 把负 z-index 收在自己这一层，不会漏到页面背景后面）。 */
-@property --sky-spin {
-  syntax: '<angle>';
-  initial-value: 0deg;
-  inherits: false;
-}
-
 .root a.sky {
   position: relative;
   isolation: isolate;
@@ -197,29 +191,20 @@
     box-shadow 0.36s ease,
     transform 0.22s ease;
 
-  /* 边光：一整圈淡紫→淡青的微光打底，再叠两段更亮的弧，靠 --sky-spin 转角度，
-     像两颗星沿胶囊的轨道绕行；转到哪儿边框都有一点光，不会整圈忽明忽暗。
-     mask 两层 xor 差集把中间整块挖掉，只剩 1.4px 的一圈。 */
+  /* 底边：一整圈 15% 的紫→青细边，只当轨道，不参与运动。
+     流光交给下面 .skyEdge 里那两段 SVG 描边 —— conic 转角度在 4:1 的胶囊上
+     长边慢、端弧快，环又只有 1.4px，怎么调都读不出「在走」。 */
   &::before {
     content: '';
     position: absolute;
     inset: 0;
     z-index: -1;
-    padding: 1.4px;
+    padding: 2px;
     border-radius: inherit;
-    background: conic-gradient(
-      from var(--sky-spin, 0deg),
-      color-mix(in srgb, var(--home-sky-edge) 26%, transparent) 0deg,
-      color-mix(in srgb, var(--home-sky-edge) 55%, transparent) 18deg,
-      var(--home-sky-edge) 34deg,
-      color-mix(in srgb, var(--home-sky-edge) 55%, transparent) 50deg,
-      color-mix(in srgb, var(--home-sky-edge) 22%, transparent) 78deg,
-      color-mix(in srgb, var(--home-sky-edge-2) 22%, transparent) 172deg,
-      color-mix(in srgb, var(--home-sky-edge-2) 55%, transparent) 194deg,
-      var(--home-sky-edge-2) 212deg,
-      color-mix(in srgb, var(--home-sky-edge-2) 55%, transparent) 230deg,
-      color-mix(in srgb, var(--home-sky-edge-2) 22%, transparent) 258deg,
-      color-mix(in srgb, var(--home-sky-edge) 26%, transparent) 360deg
+    background: linear-gradient(
+      100deg,
+      color-mix(in srgb, var(--home-sky-edge) 15%, transparent),
+      color-mix(in srgb, var(--home-sky-edge-2) 15%, transparent)
     );
     -webkit-mask:
       linear-gradient(#000 0 0) content-box,
@@ -230,8 +215,72 @@
       linear-gradient(#000 0 0);
     mask-composite: exclude;
     opacity: 0.85;
-    animation: skySpin 7s linear infinite;
     transition: opacity 0.36s ease;
+  }
+
+  /* 亮色下按钮底和页面底几乎同色，15% 的底边几乎看不见，
+     边框就成了「两段流光 + 大片缺口」。这里单独压深一档，
+     让暗处也有一条完整的边界。 */
+  :global([data-theme='light']) &::before {
+    background: linear-gradient(
+      100deg,
+      color-mix(in srgb, var(--home-sky-edge) 34%, transparent),
+      color-mix(in srgb, var(--home-sky-edge-2) 34%, transparent)
+    );
+  }
+
+  /* 流光：SVG 描边沿胶囊路径匀速推进，一周 8s。
+     dash 长度和路径周长由脚本按真实尺寸算好后写进 --sky-dash / --sky-gap / --sky-p，
+     这里只管画 —— 不用 viewBox 拉伸，是因为拉伸会把胶囊的圆角压成椭圆，描边会跑偏。
+     两段各占 1/4 周长、相隔半圈，一紫一青；负 delay 直接错开相位，不必另算起始 offset。
+     stroke-linecap: round 给头尾圆角，drop-shadow 让光往按钮内侧溢出一点，
+     否则 2px 的线压在那团紫雾前面还是「看不见」。 */
+  .skyEdge {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    border-radius: inherit;
+
+    svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    rect {
+      fill: none;
+      stroke-width: 1.6;
+      stroke-linecap: round;
+      stroke-dasharray: var(--sky-dash, 0) var(--sky-gap, 0);
+      /* 尺寸没量到之前不画，否则会先从左上角拉一条斜线出来 */
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    /* isReady 是脚本加的裸类名，必须 :global ——
+       写成 &.isReady 会被一起 hash 成 _isReady_xxx，永远匹配不上，
+       描边就一直停在 opacity: 0。 */
+    /* 压到 0.72：100% 不透明的实线看着像一圈霓虹灯管，
+       这个按钮的调性是深空里的一点微光，不是灯带。 */
+    &:global(.isReady) rect {
+      opacity: 0.72;
+    }
+
+    rect[data-edge='a'] {
+      stroke: var(--home-sky-edge);
+      filter: drop-shadow(0 0 3.5px color-mix(in srgb, var(--home-sky-edge) 55%, transparent));
+      animation: skyDash var(--sky-speed, 8s) linear infinite;
+    }
+
+    rect[data-edge='b'] {
+      stroke: var(--home-sky-edge-2);
+      filter: drop-shadow(0 0 3.5px color-mix(in srgb, var(--home-sky-edge-2) 55%, transparent));
+      animation: skyDash var(--sky-speed, 8s) linear infinite;
+      /* 负 delay 正好错开半圈；和 --sky-speed 成对设置，hover 提速时相位才不会偏 */
+      animation-delay: var(--sky-offset, -4s);
+    }
   }
 
   /* 星尘：几颗极小的亮点 + 两团柔光，整体缓慢横移，
@@ -306,6 +355,12 @@
 
     &::before {
       opacity: 1;
+    }
+
+    /* hover 时整圈提速，反馈更直接；方向不变，offset 跟着走一半 */
+    .skyEdge {
+      --sky-speed: 4.5s;
+      --sky-offset: -2.25s;
     }
 
     &::after {
@@ -468,6 +523,12 @@
       opacity: 1;
     }
 
+    /* hover 时整圈提速，反馈更直接；方向不变，offset 跟着走一半 */
+    .skyEdge {
+      --sky-speed: 4.5s;
+      --sky-offset: -2.25s;
+    }
+
     &::after {
       opacity: 1;
       animation: pixelDrift 1.6s linear infinite;
@@ -505,9 +566,10 @@
   }
 }
 
-@keyframes skySpin {
+/* 跑完整整一圈：offset 从 0 退到 -周长，dash 就沿 rect 路径顺时针前进 */
+@keyframes skyDash {
   to {
-    --sky-spin: 360deg;
+    stroke-dashoffset: calc(var(--sky-p, 0px) * -1);
   }
 }
 
@@ -1076,10 +1138,18 @@
     animation: none;
   }
 
-  /* 观星台按钮：边光定格在一段固定的亮弧上，星尘不动 */
-  .root a.sky::before {
+  /* 观星台按钮：两段流光停在对称位置，星尘不动。
+     B 段默认靠 -4s 的负 delay 错开半圈，动画停掉后要手工补回这半个周长，
+     否则两条描边会叠在起点上，只剩一种颜色。 */
+  .root a.sky .skyEdge rect {
     animation: none;
-    --sky-spin: 20deg;
+  }
+
+  .root a.sky .skyEdge rect[data-edge='b'] {
+    stroke-dashoffset: calc(var(--sky-p, 0px) * -0.5);
+  }
+
+  .root a.sky::before {
     opacity: 1;
   }
 

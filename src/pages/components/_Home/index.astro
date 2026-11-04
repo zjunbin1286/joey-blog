@@ -122,7 +122,13 @@ const extraLinks = [
             ></path>
           </svg>
         </a>
-        <a class={`${styles.btn} ${styles.sky}`} href="/starmap/">
+        <a class={`${styles.btn} ${styles.sky}`} href="/starmap/" data-sky-track>
+          <span class={styles.skyEdge} data-sky-edge aria-hidden="true">
+            <svg>
+              <rect data-edge="a" />
+              <rect data-edge="b" />
+            </svg>
+          </span>
           <span class={styles.skyIco} aria-hidden="true">
             <svg width="15" height="15" viewBox="0 0 16 16" fill="none">
               <path
@@ -268,6 +274,53 @@ const extraLinks = [
   const root = document.getElementById('home-root');
   const canvas = document.getElementById('home-stars') as HTMLCanvasElement | null;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ── 观星台按钮的轨道流光 ──
+     SVG 的 rect 必须按真实像素画：如果用 viewBox 拉伸，胶囊的圆角会被压成椭圆，
+     描边就会跑到按钮轮廓外面。按钮宽度跟着文字走，所以尺寸要实测、并用
+     ResizeObserver 跟着字体/缩放的变动重算。 */
+  const skyTrack = document.querySelector<HTMLElement>('[data-sky-track]');
+  if (skyTrack) {
+    const edge = skyTrack.querySelector<HTMLElement>('[data-sky-edge]');
+    const svg = edge?.querySelector('svg');
+    const rects = edge ? Array.from(edge.querySelectorAll('rect')) : [];
+    const paintTrack = () => {
+      if (!edge || !svg || !rects.length) return;
+      const w = skyTrack.clientWidth;
+      const h = skyTrack.clientHeight;
+      if (!w || !h) return;
+
+      /* 线宽要和样式里的 stroke-width 对上：坐标内缩半个线宽，描边才正好压在边框上 */
+      const stroke = 1.6;
+      const inset = stroke / 2;
+      const rw = w - stroke;
+      const rh = h - stroke;
+      const r = rh / 2;
+      /* 圆角矩形的周长：两条直边 + 两个半圆 */
+      const perim = 2 * (rw - rh) + Math.PI * rh;
+      const dash = perim * 0.26;
+
+      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+      for (const rect of rects) {
+        rect.setAttribute('x', String(inset));
+        rect.setAttribute('y', String(inset));
+        rect.setAttribute('width', String(rw));
+        rect.setAttribute('height', String(rh));
+        rect.setAttribute('rx', String(r));
+      }
+      edge.style.setProperty('--sky-p', `${perim}px`);
+      edge.style.setProperty('--sky-dash', `${dash}px`);
+      edge.style.setProperty('--sky-gap', `${perim - dash}px`);
+      edge.classList.add('isReady');
+    };
+
+    paintTrack();
+    if (typeof ResizeObserver !== 'undefined') {
+      new ResizeObserver(paintTrack).observe(skyTrack);
+    } else {
+      window.addEventListener('resize', paintTrack);
+    }
+  }
 
   /* ── 星空粒子 ── */
   if (root && canvas) {
