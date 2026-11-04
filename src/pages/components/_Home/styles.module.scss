@@ -230,11 +230,11 @@
   }
 
   /* 流光：SVG 描边沿胶囊路径匀速推进，一周 8s。
-     dash 长度和路径周长由脚本按真实尺寸算好后写进 --sky-dash / --sky-gap / --sky-p，
-     这里只管画 —— 不用 viewBox 拉伸，是因为拉伸会把胶囊的圆角压成椭圆，描边会跑偏。
-     两段各占 1/4 周长、相隔半圈，一紫一青；负 delay 直接错开相位，不必另算起始 offset。
-     stroke-linecap: round 给头尾圆角，drop-shadow 让光往按钮内侧溢出一点，
-     否则 2px 的线压在那团紫雾前面还是「看不见」。 */
+     每个光点用三层同心的 dash 叠出来 —— core 短而亮、mid 居中、halo 长而淡，
+     三层中心对齐，拼出「中心最亮、向两端渐隐」的光点，而不是一整圈均匀的霓虹灯管。
+     dash 长度和初始偏移都按 --sky-p（脚本写入的真实周长）算，这里只管画。
+     不用 viewBox 拉伸：拉伸会把胶囊圆角压成椭圆、描边跑出轮廓。
+     一紫一青两个光点相隔半圈，负 delay 错开相位。 */
   .skyEdge {
     position: absolute;
     inset: 0;
@@ -251,34 +251,66 @@
 
     rect {
       fill: none;
-      stroke-width: 1.6;
+      stroke-width: 2;
       stroke-linecap: round;
-      stroke-dasharray: var(--sky-dash, 0) var(--sky-gap, 0);
       /* 尺寸没量到之前不画，否则会先从左上角拉一条斜线出来 */
       opacity: 0;
       transition: opacity 0.4s ease;
     }
 
+    /* 三层各占 8% / 14% / 20% 周长，中心统一落在 0.10 周长处。
+       --sky-o 是各层把中心对齐到同一点所需的初始偏移，供 keyframes 的 from 取用。 */
+    rect[data-tier='core'] {
+      stroke-dasharray: calc(var(--sky-p, 0px) * 0.08) calc(var(--sky-p, 0px) * 0.92);
+      --sky-o: calc(var(--sky-p, 0px) * -0.06);
+    }
+    rect[data-tier='mid'] {
+      stroke-dasharray: calc(var(--sky-p, 0px) * 0.14) calc(var(--sky-p, 0px) * 0.86);
+      --sky-o: calc(var(--sky-p, 0px) * -0.03);
+    }
+    rect[data-tier='halo'] {
+      stroke-dasharray: calc(var(--sky-p, 0px) * 0.2) calc(var(--sky-p, 0px) * 0.8);
+      --sky-o: 0px;
+    }
+
     /* isReady 是脚本加的裸类名，必须 :global ——
-       写成 &.isReady 会被一起 hash 成 _isReady_xxx，永远匹配不上，
-       描边就一直停在 opacity: 0。 */
-    /* 压到 0.72：100% 不透明的实线看着像一圈霓虹灯管，
-       这个按钮的调性是深空里的一点微光，不是灯带。 */
-    &:global(.isReady) rect {
-      opacity: 0.72;
+       写成 &.isReady 会被一起 hash 成 _isReady_xxx，永远匹配不上，描边就停在 opacity: 0。 */
+    &:global(.isReady) rect[data-tier='core'] {
+      opacity: 1;
+    }
+    &:global(.isReady) rect[data-tier='mid'] {
+      opacity: 0.45;
+    }
+    &:global(.isReady) rect[data-tier='halo'] {
+      opacity: 0.18;
     }
 
-    rect[data-edge='a'] {
+    /* a 段（紫）：core 掺白提亮成一颗亮核，mid/halo 回到本色；
+       b 段（青）同构。drop-shadow 只挂在 core 上，光晕从核向外自然晕开。 */
+    rect[data-edge='a'][data-tier='core'] {
+      stroke: color-mix(in srgb, var(--home-sky-edge) 80%, white);
+      filter: drop-shadow(0 0 4px color-mix(in srgb, var(--home-sky-edge) 78%, transparent));
+    }
+    rect[data-edge='a'][data-tier='mid'],
+    rect[data-edge='a'][data-tier='halo'] {
       stroke: var(--home-sky-edge);
-      filter: drop-shadow(0 0 3.5px color-mix(in srgb, var(--home-sky-edge) 55%, transparent));
-      animation: skyDash var(--sky-speed, 8s) linear infinite;
     }
 
-    rect[data-edge='b'] {
+    rect[data-edge='b'][data-tier='core'] {
+      stroke: color-mix(in srgb, var(--home-sky-edge-2) 80%, white);
+      filter: drop-shadow(0 0 4px color-mix(in srgb, var(--home-sky-edge-2) 78%, transparent));
+    }
+    rect[data-edge='b'][data-tier='mid'],
+    rect[data-edge='b'][data-tier='halo'] {
       stroke: var(--home-sky-edge-2);
-      filter: drop-shadow(0 0 3.5px color-mix(in srgb, var(--home-sky-edge-2) 55%, transparent));
+    }
+
+    /* 三层同相位推进；b 段负 delay 正好错开半圈，
+       和 --sky-speed 成对设置，hover 提速时相位才不会偏 */
+    rect {
       animation: skyDash var(--sky-speed, 8s) linear infinite;
-      /* 负 delay 正好错开半圈；和 --sky-speed 成对设置，hover 提速时相位才不会偏 */
+    }
+    rect[data-edge='b'] {
       animation-delay: var(--sky-offset, -4s);
     }
   }
@@ -566,10 +598,15 @@
   }
 }
 
-/* 跑完整整一圈：offset 从 0 退到 -周长，dash 就沿 rect 路径顺时针前进 */
+/* 跑完整整一圈：offset 从各层的 --sky-o 匀速退到 --sky-o - 周长，
+   dash 就沿 rect 路径顺时针前进。from/to 都带 --sky-o，三层位移同为 -周长，
+   光点中心在运动全程保持对齐。 */
 @keyframes skyDash {
+  from {
+    stroke-dashoffset: var(--sky-o, 0px);
+  }
   to {
-    stroke-dashoffset: calc(var(--sky-p, 0px) * -1);
+    stroke-dashoffset: calc(var(--sky-o, 0px) - var(--sky-p, 0px));
   }
 }
 
@@ -1140,13 +1177,13 @@
 
   /* 观星台按钮：两段流光停在对称位置，星尘不动。
      B 段默认靠 -4s 的负 delay 错开半圈，动画停掉后要手工补回这半个周长，
-     否则两条描边会叠在起点上，只剩一种颜色。 */
+     否则两个光点会叠在起点上。offset 以各层 --sky-o 为基准，三层一起平移半圈。 */
   .root a.sky .skyEdge rect {
     animation: none;
   }
 
   .root a.sky .skyEdge rect[data-edge='b'] {
-    stroke-dashoffset: calc(var(--sky-p, 0px) * -0.5);
+    stroke-dashoffset: calc(var(--sky-o, 0px) - var(--sky-p, 0px) * 0.5);
   }
 
   .root a.sky::before {
