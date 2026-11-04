@@ -384,7 +384,9 @@
   list-style: none;
   margin: 0.5rem 0 0;
   padding: 0;
-  overflow-y: auto;
+  /* 横向也要藏住：只写 overflow-y 时 x 会跟着变 auto，
+     标题里带 emoji 的长句会把列表撑出一条横向滚动条 */
+  overflow: hidden auto;
   flex: 1;
 
   li + li {
@@ -415,6 +417,7 @@
     span {
       font-size: 0.755rem;
       line-height: 1.55;
+      overflow-wrap: anywhere;
     }
 
     &:hover {
@@ -496,6 +499,12 @@
     text-decoration: none;
     transition: color 0.22s ease;
 
+    /* 内容整体右移靠子元素做位移，这样左边那条激活线还能咬在地脚线上，
+       不会跟着一起飘。 */
+    > * {
+      transition: transform 0.26s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
     /* 激活条：从 0 长到 1.15rem，hover 只长一半 */
     &::before {
       content: '';
@@ -519,11 +528,16 @@
       transition: color 0.22s ease;
     }
 
+    /* hover 直接用激活态的文字颜色，暗色下才看得出指到哪一行 */
     &:hover {
-      color: var(--star-ink-2);
+      color: var(--star-ink);
 
       &::before {
         height: 0.6rem;
+      }
+
+      > * {
+        transform: translateX(0.24rem);
       }
     }
 
@@ -537,6 +551,10 @@
       .idx,
       em {
         color: var(--star-accent);
+      }
+
+      > * {
+        transform: translateX(0.4rem);
       }
     }
   }
@@ -575,10 +593,16 @@
   transform: translateY(calc(-1 * var(--rail-lift, 0px)));
 }
 
-/* 聚焦后其余项退到背景里，和星图的淡出保持同一个语气 */
+/* 聚焦后其余项退到背景里，和星图的淡出保持同一个语气；
+   但鼠标扫过时要把这一行还原，否则看不出指到哪 */
 .page[data-focus='true'] .rail a:not([aria-current='true']) {
   color: var(--star-ink-3);
   opacity: 0.55;
+
+  &:hover {
+    color: var(--star-ink);
+    opacity: 1;
+  }
 }
 
 /* ── 窄屏 ── */
