@@ -793,15 +793,12 @@
   }
 }
 
-/* ── 卡片：把「开始 AI 创作」那枚像素画布放大成一整块面板 ──
-   同一套材质往下递进：同底色、同 135° 紫→粉描边、同点阵。
-   按钮是画布上的一个小格子，卡片是承载它的那张画布，
-   所以点阵这里放大到 10px、压到 0.42 亮度，只当纹理不当主角 ——
-   7px 铺满整块 900px 的卡片，1px 的点会被抗锯齿糊成一片麻点。
-   描边同样常亮一档（0.4），hover 才推到最亮，和按钮的节奏对齐。 */
+/* 材质跟导航栏对齐：半透明底 + 1px hairline + 背景模糊。
+   之前的紫→青→粉流动渐变描边、双层光球、网格纹理全撤掉 ——
+   整页只有这一块是"实心盒子"，越描越像贴上去的海报。
+   盒子感靠边线和材质，不靠颜色。 */
 .promoCard {
   position: relative;
-  isolation: isolate;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 16.5rem;
   align-items: center;
@@ -809,85 +806,40 @@
   overflow: hidden;
   padding: clamp(1.6rem, 3.2vw, 2.6rem);
   border-radius: 20px;
-  /* 不透明实色：掺透明的底会让首屏那层粒子连线从卡片里穿过去 */
-  background:
-    linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--home-pixel-edge-a) var(--home-pixel-sheen), transparent),
-      transparent 70%
-    ),
-    var(--home-pixel-fill);
-  box-shadow: 0 24px 60px -46px var(--home-pixel-glow);
+  border: 1px solid var(--home-line);
+  background: var(--home-surface);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
   transition:
     transform 0.45s cubic-bezier(0.2, 0.7, 0.3, 1),
+    border-color 0.45s ease,
     box-shadow 0.45s ease;
 
-  /* 点阵：右上角（鲸鱼那边）浓，左下角（正文那边）淡到没有。
-     左侧压着三行正文，点铺到字后面会读成脏污，
-     所以用径向 mask 从 84% 38% 往外散，而不是整片平铺。 */
+  /* 左上角只留一抹紫光，压住暗色下大片同色的问题，又不抢主体 */
   &::before {
     content: '';
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background-image: radial-gradient(circle, var(--home-pixel-dot) 0 1px, transparent 1.3px);
-    background-size: 10px 10px;
-    -webkit-mask: radial-gradient(
-      112% 104% at 84% 38%,
-      #000 0%,
-      rgba(0, 0, 0, 0.55) 42%,
-      transparent 76%
+    background: radial-gradient(
+      46% 90% at 6% -12%,
+      color-mix(in srgb, var(--home-a1) 16%, transparent),
+      transparent 70%
     );
-    mask: radial-gradient(
-      112% 104% at 84% 38%,
-      #000 0%,
-      rgba(0, 0, 0, 0.55) 42%,
-      transparent 76%
-    );
-    opacity: 0.42;
-    transition: opacity 0.42s ease;
-  }
-
-  /* 描边：和按钮同一条 135° 渐变环，用 mask 差集只留 1.2px。
-     常亮 0.4 —— 卡片面积大，环太实会像贴了一圈霓虹灯管。 */
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    pointer-events: none;
-    padding: 1.2px;
-    border-radius: inherit;
-    background: linear-gradient(
-      135deg,
-      var(--home-pixel-edge-a),
-      color-mix(in srgb, var(--home-pixel-edge-a) 42%, var(--home-pixel-edge-b)) 55%,
-      var(--home-pixel-edge-b)
-    );
-    -webkit-mask:
-      linear-gradient(#000 0 0) content-box,
-      linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    mask:
-      linear-gradient(#000 0 0) content-box,
-      linear-gradient(#000 0 0);
-    mask-composite: exclude;
-    opacity: 0.4;
-    transition: opacity 0.4s ease;
   }
 
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 34px 74px -44px var(--home-pixel-glow);
-
-    &::before {
-      opacity: 0.62;
-    }
-
-    &::after {
-      opacity: 0.88;
-    }
+    border-color: color-mix(in srgb, var(--home-a1) 34%, var(--home-line));
+    box-shadow: 0 32px 70px -50px var(--home-a1);
   }
+}
+
+/* 亮色下 --home-surface 和白底几乎同色，卡片会彻底隐形。
+   掺 4% 文字色压出一档极浅的灰，边界靠这层差和 hairline，
+   不再靠紫色 —— 但也不至于看不出这是一块面板。 */
+:global([data-theme='light']) .promoCard {
+  background: color-mix(in srgb, var(--sl-color-text) 4%, var(--sl-color-bg));
 }
 
 .promoMain {
