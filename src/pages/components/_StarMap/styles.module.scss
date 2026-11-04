@@ -382,10 +382,12 @@
 
 .arts {
   list-style: none;
-  margin: 0.5rem 0 0;
+  /* 容器左右各外扩 0.6rem：行的底色因此能比文字宽出一圈，
+     而文字仍和上面的简介对齐（行内 padding 把外扩量补回来）。
+     注意外扩必须加在滚动容器上，加在行上会被 overflow 裁掉。 */
+  margin: 0.5rem -0.6rem 0;
   padding: 0;
-  /* 横向也要藏住：只写 overflow-y 时 x 会跟着变 auto，
-     标题里带 emoji 的长句会把列表撑出一条横向滚动条 */
+  /* 横向也要藏住：只写 overflow-y 时 x 会跟着变 auto */
   overflow: hidden auto;
   flex: 1;
 
@@ -398,8 +400,7 @@
     grid-template-columns: 1.4rem minmax(0, 1fr);
     gap: 0.45rem;
     align-items: baseline;
-    padding: 0.5rem 0.35rem;
-    margin-inline: -0.35rem;
+    padding: 0.5rem 0.6rem;
     border-radius: 7px;
     color: var(--star-ink-2);
     text-decoration: none;
