@@ -17,6 +17,26 @@
   --home-glow: hsl(258 95% 70% / 0.16);
   --home-surface: hsl(228 22% 11% / 0.66);
   --home-live: hsl(160 84% 62%);
+
+  /* ── 智慧星图 token ──
+     暗色走「深空」，亮色走「纸质星图」，两套都只在这里定义。
+     --star-grid / --star-bgstars / --star-glow-strength 是开关型变量：
+     亮色把背景星点关掉、网格打开，暗色反过来。 */
+  --star-bg: hsl(234 34% 5%);
+  --star-ink: hsl(230 30% 96%);
+  --star-ink-2: hsl(230 16% 66%);
+  --star-ink-3: hsl(230 14% 44%);
+  --star-line: hsl(232 62% 80% / 0.2);
+  --star-accent: hsl(258 100% 76%);
+  --star-panel: hsl(234 28% 9% / 0.86);
+  --star-hairline: hsl(230 30% 96% / 0.12);
+  --star-hover: hsl(230 30% 96% / 0.07);
+  --star-glow: hsl(236 100% 90%);
+  --star-glow-strength: 1;
+  --star-grid: transparent;
+  --star-bgstars: 1;
+  --star-nebula-a: hsl(258 70% 60% / 0.1);
+  --star-nebula-b: hsl(210 80% 55% / 0.09);
 }
 
 [data-theme='light'] {
@@ -27,6 +47,54 @@
   --home-glow: hsl(258 90% 62% / 0.14);
   --home-surface: hsl(232 40% 98.4%);
   --home-live: hsl(160 84% 32%);
+
+  /* 智慧星图：纸质星图 */
+  --star-bg: hsl(42 42% 95.5%);
+  --star-ink: hsl(40 14% 14%);
+  --star-ink-2: hsl(40 8% 36%);
+  --star-ink-3: hsl(40 8% 56%);
+  --star-line: hsl(40 14% 14% / 0.3);
+  --star-accent: hsl(258 92% 50%);
+  --star-panel: hsl(42 46% 97% / 0.95);
+  --star-hairline: hsl(40 14% 14% / 0.14);
+  --star-hover: hsl(40 14% 14% / 0.05);
+  --star-glow: hsl(40 20% 26%);
+  --star-glow-strength: 0.2;
+  --star-grid: hsl(40 14% 14% / 0.05);
+  --star-bgstars: 0;
+  --star-nebula-a: transparent;
+  --star-nebula-b: transparent;
+}
+
+/* ── 智慧星图页：整页交给画布 ──
+   Starlight 会在内容区自动渲染一个 h1 标题面板（就是 frontmatter 的 title），
+   星图页要占满一屏，所以把那个只含标题的面板整块去掉，内容区也不留内边距。
+   用 body:has(#starmap) 限定，只对这一页生效。 */
+body:has(#starmap) .content-panel:has(#_top) {
+  display: none;
+}
+
+body:has(#starmap) .content-panel {
+  padding: 0;
+  border-top: 0;
+}
+
+body:has(#starmap) .content-panel .sl-container {
+  max-width: none;
+}
+
+body:has(#starmap) .sl-container > * + * {
+  margin-top: 0;
+}
+
+/* 星图就是整页内容，页脚不再单独占一块，否则会出现滚动条 */
+body:has(#starmap) .content-panel footer {
+  display: none;
+}
+
+/* Starlight 给 main 留了 27px 底边距，星图页要精确占满一屏 */
+body:has(#starmap) main {
+  padding-bottom: 0;
 }
 
 /* ── 顶部导航：透明磨砂 ──

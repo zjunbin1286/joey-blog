@@ -1,0 +1,578 @@
+/* 智慧星图
+   颜色全部走 src/styles/custom.css 里的 --star-* 变量（亮暗两套），
+   组件里不写死任何色值，切主题时星图自己会换皮：
+   暗色 = 深空，亮色 = 纸质星图。 */
+
+.page {
+  position: relative;
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+  height: calc(100dvh - var(--sl-nav-height, 4rem));
+  min-height: 32rem;
+  overflow: hidden;
+  background: var(--star-bg);
+  color: var(--star-ink);
+  isolation: isolate;
+  user-select: none;
+
+  /* 亮色下铺一层极淡的方格纸，暗色下 --star-grid 是 transparent，画不出来 */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(var(--star-grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--star-grid) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  /* 暗色下一层极弱的星云，避免纯黑发死 */
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(46% 42% at 24% 18%, var(--star-nebula-a), transparent 70%),
+      radial-gradient(40% 38% at 82% 76%, var(--star-nebula-b), transparent 72%);
+  }
+}
+
+.sky {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: grab;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+/* ── 星与线 ── */
+
+.bgstars {
+  opacity: var(--star-bgstars, 1);
+
+  circle {
+    fill: var(--star-glow);
+  }
+}
+
+.cons {
+  transition: opacity 0.4s ease;
+}
+
+.page[data-focus='true'] .cons[data-active='false'] {
+  opacity: 0.14;
+}
+
+.links line {
+  stroke: var(--star-line);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  transition: opacity 0.4s ease;
+}
+
+.star {
+  cursor: pointer;
+
+  .core {
+    fill: var(--star-ink);
+    transition: fill 0.2s ease;
+  }
+
+  &:hover .core {
+    fill: var(--star-accent);
+  }
+
+  &:focus-visible {
+    outline: none;
+  }
+
+  &:focus-visible .core {
+    stroke: var(--star-accent);
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+  }
+}
+
+.small .core {
+  opacity: 0.55;
+}
+
+.glow {
+  fill: url(#starmap-glow);
+  opacity: var(--star-glow-strength, 1);
+}
+
+.ring {
+  fill: none;
+  stroke: var(--star-ink-3);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+  vector-effect: non-scaling-stroke;
+}
+
+/* ── 文字 ── */
+
+.labels {
+  pointer-events: none;
+}
+
+.consLabel {
+  pointer-events: auto;
+  cursor: pointer;
+
+  &:hover .consName {
+    fill: var(--star-accent);
+  }
+
+  &:hover .latin {
+    fill: var(--star-accent);
+  }
+}
+
+.consName {
+  font-size: 1em;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  fill: var(--star-ink);
+  transition: fill 0.2s ease;
+}
+
+.latin {
+  font-family: var(--sl-font-mono, ui-monospace, monospace);
+  font-size: 0.62em;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  fill: var(--star-ink-3);
+  transition: fill 0.2s ease;
+}
+
+.starName {
+  font-size: 0.62em;
+  letter-spacing: 0.08em;
+  fill: var(--star-ink-2);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.starNameEmpty {
+  fill: var(--star-ink-3);
+}
+
+.page[data-focus='true'] .starName {
+  opacity: 1;
+}
+
+.page[data-focus='true'] .consLabel[data-active='false'] {
+  opacity: 0.14;
+}
+
+/* ── 标题 ── */
+
+.head {
+  position: absolute;
+  top: clamp(1.4rem, 4vh, 3rem);
+  left: clamp(1.2rem, 4vw, 3.2rem);
+  z-index: 3;
+  max-width: min(24rem, 62vw);
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+/* 聚焦后标题让位给星座本身，否则会和星座名叠在一起 */
+.page[data-focus='true'] .head {
+  opacity: 0;
+}
+
+.kicker {
+  margin: 0;
+  font-family: var(--sl-font-mono, ui-monospace, monospace);
+  font-size: 0.625rem;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--star-ink-3);
+}
+
+.title {
+  margin: 0.55rem 0 0;
+  font-size: clamp(1.9rem, 3.6vw, 2.75rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.15;
+  color: var(--star-ink);
+}
+
+.lead {
+  margin: 0.85rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.85;
+  color: var(--star-ink-2);
+}
+
+/* ── 返回全景 ── */
+
+.reset {
+  position: absolute;
+  top: clamp(1.1rem, 3vh, 1.8rem);
+  right: clamp(1.1rem, 3vw, 2rem);
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 2.25rem;
+  padding: 0 0.9rem;
+  border-radius: 99px;
+  border: 1px solid var(--star-hairline);
+  background: var(--star-panel);
+  backdrop-filter: blur(14px);
+  color: var(--star-ink-2);
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+
+  svg {
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+
+  &:hover {
+    color: var(--star-ink);
+    border-color: var(--star-ink-3);
+  }
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+/* ── 聚焦面板 ── */
+
+.panel {
+  position: absolute;
+  z-index: 4;
+  top: clamp(4.2rem, 12vh, 6rem);
+  right: clamp(1rem, 3vw, 2rem);
+  width: 21rem;
+  max-height: calc(100% - 8.5rem);
+  display: flex;
+  flex-direction: column;
+  padding: 1.15rem 1.2rem 1rem;
+  border-radius: 16px;
+  border: 1px solid var(--star-hairline);
+  background: var(--star-panel);
+  backdrop-filter: blur(20px) saturate(160%);
+  box-shadow: 0 24px 60px -30px hsl(0 0% 0% / 0.55);
+  animation: panelIn 0.42s cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+@keyframes panelIn {
+  from {
+    opacity: 0;
+    transform: translateX(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.panelTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.panelName {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--star-ink);
+}
+
+.panelLatin {
+  margin: 0.25rem 0 0;
+  font-family: var(--sl-font-mono, ui-monospace, monospace);
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--star-ink-3);
+}
+
+.close {
+  flex: none;
+  width: 1.6rem;
+  height: 1.6rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  background: none;
+  color: var(--star-ink-3);
+  font-size: 1.05rem;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+
+  &:hover {
+    color: var(--star-ink);
+    border-color: var(--star-hairline);
+  }
+}
+
+.panelDesc {
+  margin: 0.7rem 0 0;
+  font-size: 0.755rem;
+  line-height: 1.75;
+  color: var(--star-ink-2);
+}
+
+.panelCount {
+  margin: 0.85rem 0 0;
+  padding-bottom: 0.55rem;
+  border-bottom: 1px solid var(--star-hairline);
+  font-family: var(--sl-font-mono, ui-monospace, monospace);
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--star-ink-3);
+}
+
+.arts {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  overflow-y: auto;
+  flex: 1;
+
+  li + li {
+    border-top: 1px solid var(--star-hairline);
+  }
+
+  a {
+    display: grid;
+    grid-template-columns: 1.4rem minmax(0, 1fr);
+    gap: 0.45rem;
+    align-items: baseline;
+    padding: 0.5rem 0.35rem;
+    margin-inline: -0.35rem;
+    border-radius: 7px;
+    color: var(--star-ink-2);
+    text-decoration: none;
+    transition:
+      background 0.18s ease,
+      color 0.18s ease;
+
+    i {
+      font-family: var(--sl-font-mono, ui-monospace, monospace);
+      font-size: 0.6rem;
+      font-style: normal;
+      color: var(--star-ink-3);
+    }
+
+    span {
+      font-size: 0.755rem;
+      line-height: 1.55;
+    }
+
+    &:hover {
+      background: var(--star-hover);
+      color: var(--star-ink);
+    }
+
+    &:hover i {
+      color: var(--star-ink-2);
+    }
+  }
+}
+
+.more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.7rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--star-hairline);
+  font-size: 0.72rem;
+  color: var(--star-ink-3);
+  text-decoration: none;
+  transition: color 0.2s ease;
+
+  svg {
+    width: 0.85rem;
+    height: 0.85rem;
+    transition: transform 0.2s ease;
+  }
+
+  &:hover {
+    color: var(--star-accent);
+  }
+
+  &:hover svg {
+    transform: translateX(3px);
+  }
+}
+
+/* ── 底部星座栏 ── */
+
+.rail {
+  position: absolute;
+  z-index: 4;
+  left: 0;
+  right: 0;
+  bottom: clamp(0.9rem, 2.5vh, 1.6rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding-inline: 1rem;
+  pointer-events: none;
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.3rem;
+    margin: 0 auto;
+    padding: 0.35rem;
+    list-style: none;
+    border-radius: 99px;
+    border: 1px solid var(--star-hairline);
+    background: var(--star-panel);
+    backdrop-filter: blur(18px) saturate(160%);
+    pointer-events: auto;
+  }
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    height: 1.85rem;
+    padding: 0 0.65rem;
+    border-radius: 99px;
+    font-size: 0.72rem;
+    color: var(--star-ink-2);
+    text-decoration: none;
+    white-space: nowrap;
+    transition:
+      background 0.18s ease,
+      color 0.18s ease;
+
+    em {
+      font-family: var(--sl-font-mono, ui-monospace, monospace);
+      font-size: 0.6rem;
+      font-style: normal;
+      color: var(--star-ink-3);
+    }
+
+    &:hover {
+      background: var(--star-hover);
+      color: var(--star-ink);
+    }
+
+    &[aria-current='true'] {
+      background: var(--star-hover);
+      color: var(--star-ink);
+    }
+
+    &[aria-current='true'] em {
+      color: var(--star-ink-2);
+    }
+  }
+}
+
+.railHint {
+  font-size: 0.625rem;
+  letter-spacing: 0.06em;
+  color: var(--star-ink-3);
+}
+
+.chipDot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.55;
+}
+
+/* ── 窄屏 ── */
+
+@media (max-width: 60rem) {
+  .panel {
+    top: auto;
+    right: auto;
+    left: 50%;
+    bottom: 0.6rem;
+    transform: translateX(-50%);
+    width: calc(100vw - 1.2rem);
+    max-height: 46vh;
+    animation: panelUp 0.38s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  @keyframes panelUp {
+    from {
+      opacity: 0;
+      transform: translate(-50%, 16px);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+  }
+
+  .rail {
+    bottom: 0.5rem;
+
+    ul {
+      border-radius: 14px;
+    }
+
+    a {
+      height: 1.7rem;
+      padding: 0 0.5rem;
+      font-size: 0.68rem;
+    }
+  }
+
+  .lead {
+    display: none;
+  }
+
+  .railHint {
+    display: none;
+  }
+
+  .title {
+    font-size: 1.6rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel {
+    animation: none;
+  }
+
+  .cons,
+  .links line,
+  .starName {
+    transition: none;
+  }
+}
