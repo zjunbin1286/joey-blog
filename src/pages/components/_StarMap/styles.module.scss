@@ -125,6 +125,110 @@
   opacity: 0.55;
 }
 
+/* ── 一闪一闪 ──
+   每颗星的周期/相位在 index.astro 里用确定性随机算好（写成 --tw-dur / --tw-delay），
+   再用 data-tw 在三套不规则的关键帧里轮换。周期不同 + 负延迟错相位 + 曲线不重样，
+   凑在一起就看不出周期，像真的星空。 */
+.star {
+  /* 星点只做明暗：亮度在 72%–100% 之间晃，不缩放，点击位置才稳 */
+  animation-name: twinkleA;
+  animation-duration: var(--tw-dur, 4.6s);
+  animation-delay: var(--tw-delay, 0s);
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+
+  &[data-tw='1'] {
+    animation-name: twinkleB;
+  }
+
+  &[data-tw='2'] {
+    animation-name: twinkleC;
+  }
+}
+
+/* 光晕单独再来一次缩放呼吸，幅度比星点大，看着才是"在发光"而不是"在变暗"。
+   只动 scale 不动 opacity —— 亮色主题下 glow-strength 只有 0.2，
+   一旦接管 opacity 会把这个开关废掉。 */
+.glow {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: glowBreath var(--tw-dur, 4.6s) var(--tw-delay, 0s) ease-in-out infinite;
+}
+
+@keyframes glowBreath {
+  0%,
+  100% {
+    transform: scale(0.86);
+  }
+  38% {
+    transform: scale(1.18);
+  }
+  62% {
+    transform: scale(1.02);
+  }
+}
+
+@keyframes twinkleA {
+  0%,
+  100% {
+    opacity: 0.74;
+  }
+  18% {
+    opacity: 1;
+  }
+  34% {
+    opacity: 0.82;
+  }
+  58% {
+    opacity: 0.95;
+  }
+  76% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes twinkleB {
+  0%,
+  100% {
+    opacity: 0.9;
+  }
+  22% {
+    opacity: 0.7;
+  }
+  41% {
+    opacity: 1;
+  }
+  63% {
+    opacity: 0.82;
+  }
+  85% {
+    opacity: 0.95;
+  }
+}
+
+@keyframes twinkleC {
+  0%,
+  100% {
+    opacity: 0.82;
+  }
+  13% {
+    opacity: 0.7;
+  }
+  29% {
+    opacity: 1;
+  }
+  47% {
+    opacity: 0.88;
+  }
+  68% {
+    opacity: 0.78;
+  }
+  88% {
+    opacity: 0.94;
+  }
+}
+
 .glow {
   fill: url(#starmap-glow);
   opacity: var(--star-glow-strength, 1);
@@ -776,6 +880,17 @@
 @media (prefers-reduced-motion: reduce) {
   .panel {
     animation: none;
+  }
+
+  /* 星点定格在最亮的那一帧，别让整片天一直在闪 */
+  .star {
+    animation: none;
+    opacity: 1;
+  }
+
+  .glow {
+    animation: none;
+    transform: none;
   }
 
   .cons,

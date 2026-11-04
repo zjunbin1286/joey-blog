@@ -40,6 +40,20 @@ const bgStars = Array.from({ length: 170 }, () => ({
   o: 0.14 + rand() * 0.5,
 }))
 
+/** 确定性伪随机（同一个输入永远同一串数），用来给每颗星配闪烁节奏：
+    构建一次就定死，刷新页面不会整片乱跳。 */
+const hash = (a: number, b: number, c: number) => {
+  const x = Math.sin(a * 12.9898 + b * 78.233 + c * 37.719) * 43758.5453
+  return x - Math.floor(x)
+}
+
+/** 一颗星的闪烁参数：周期 3.4–7.4s、相位用负延迟错开、三套曲线轮着用 */
+const twinkleOf = (ci: number, i: number, salt = 0) => ({
+  variant: (ci * 2 + i + salt) % 3,
+  dur: (3.4 + hash(ci, i + salt, 1) * 4).toFixed(2),
+  delay: (-hash(ci, i + salt, 2) * 7.4).toFixed(2),
+})
+
 const nodes = constellations.map((c, ci) => {
   const arts = articlesOf(c.key)
 
@@ -54,6 +68,7 @@ const nodes = constellations.map((c, ci) => {
       absX: c.cx + p.x,
       absY: c.cy + p.y,
       art: arts[i] ?? null,
+      tw: twinkleOf(ci, i),
       // 星名朝星座外侧散开，避免挤在中间
       labelX: c.cx + p.x + dx * (r + 26),
       labelY: c.cy + p.y + dy * (r + 30),
@@ -70,6 +85,7 @@ const nodes = constellations.map((c, ci) => {
       absX: c.cx + Math.cos(a) * rr,
       absY: c.cy + Math.sin(a) * rr,
       r: 3.4,
+      tw: twinkleOf(ci, i, 5),
     }
   })
 
@@ -136,7 +152,13 @@ const pad = (n: number) => String(n).padStart(2, '0')
             <g class={styles.stars}>
               {n.stars.map((s) =>
                 s.art ? (
-                  <a class={styles.star} href={s.art.url} aria-label={`${n.cn} ${s.cn}：${s.art.title}`}>
+                  <a
+                    class={styles.star}
+                    href={s.art.url}
+                    data-tw={s.tw.variant}
+                    style={`--tw-dur:${s.tw.dur}s;--tw-delay:${s.tw.delay}s`}
+                    aria-label={`${n.cn} ${s.cn}：${s.art.title}`}
+                  >
                     <circle class={styles.glow} cx={s.absX} cy={s.absY} r={s.r * 4.4} />
                     <circle class={styles.core} cx={s.absX} cy={s.absY} r={s.r} />
                   </a>
@@ -150,6 +172,8 @@ const pad = (n: number) => String(n).padStart(2, '0')
                 <a
                   class={`${styles.star} ${styles.small}`}
                   href={s.url}
+                  data-tw={s.tw.variant}
+                  style={`--tw-dur:${s.tw.dur}s;--tw-delay:${s.tw.delay}s`}
                   aria-label={`${n.cn} 伴星：${s.title}`}
                 >
                   <circle class={styles.glow} cx={s.absX} cy={s.absY} r={s.r * 4} />
