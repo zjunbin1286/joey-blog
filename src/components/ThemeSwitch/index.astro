@@ -1,0 +1,217 @@
+---
+/**
+ * 替换 Starlight 内置的 ThemeSelect（原生 <select>）。
+ *
+ * 原生 select 的下拉弹层由操作系统绘制，点击后的焦点框、每项之间的分隔线、
+ * 选中项的高亮全都改不动，所以这里换成自绘的三段式开关：
+ * 跟随系统 / 浅色 / 深色，三个图标一格，选中项背后一块强调色药丸。
+ * 交互、存储键（starlight-theme）与 Starlight 完全一致，主题初始化脚本不受影响。
+ */
+---
+
+<div class="theme-switch" role="radiogroup" aria-label="主题" data-theme-switch>
+  <button type="button" role="radio" aria-checked="false" aria-label="跟随系统" title="跟随系统" data-theme-value="auto">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path
+        d="M21 14h-1V7a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7H3a1 1 0 0 0-1 1v2a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-2a1 1 0 0 0-1-1ZM6 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v7H6V7Zm14 10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1h16v1Z"
+      ></path>
+    </svg>
+  </button>
+  <button type="button" role="radio" aria-checked="false" aria-label="浅色" title="浅色" data-theme-value="light">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path
+        d="M5 12a1 1 0 0 0-1-1H3a1 1 0 0 0 0 2h1a1 1 0 0 0 1-1Zm.64 5-.71.71a1 1 0 0 0 0 1.41 1 1 0 0 0 1.41 0l.71-.71A1 1 0 0 0 5.64 17ZM12 5a1 1 0 0 0 1-1V3a1 1 0 0 0-2 0v1a1 1 0 0 0 1 1Zm5.66 2.34a1 1 0 0 0 .7-.29l.71-.71a1 1 0 1 0-1.41-1.41l-.66.71a1 1 0 0 0 0 1.41 1 1 0 0 0 .66.29Zm-12-.29a1 1 0 0 0 1.41 0 1 1 0 0 0 0-1.41l-.71-.71a1.004 1.004 0 1 0-1.43 1.41l.73.71ZM21 11h-1a1 1 0 0 0 0 2h1a1 1 0 0 0 0-2Zm-2.64 6A1 1 0 0 0 17 18.36l.71.71a1 1 0 0 0 1.41 0 1 1 0 0 0 0-1.41l-.76-.66ZM12 6.5a5.5 5.5 0 1 0 5.5 5.5A5.51 5.51 0 0 0 12 6.5Zm0 9a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Zm0 3.5a1 1 0 0 0-1 1v1a1 1 0 0 0 2 0v-1a1 1 0 0 0-1-1Z"
+      ></path>
+    </svg>
+  </button>
+  <button type="button" role="radio" aria-checked="false" aria-label="深色" title="深色" data-theme-value="dark">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path
+        d="M21.64 13a1 1 0 0 0-1.05-.14 8.049 8.049 0 0 1-3.37.73 8.15 8.15 0 0 1-8.14-8.1 8.59 8.59 0 0 1 .25-2A1 1 0 0 0 8 2.36a10.14 10.14 0 1 0 14 11.69 1 1 0 0 0-.36-1.05Zm-9.5 6.69A8.14 8.14 0 0 1 7.08 5.22v.27a10.15 10.15 0 0 0 10.14 10.14 9.784 9.784 0 0 0 2.1-.22 8.11 8.11 0 0 1-7.18 4.32v-.04Z"
+      ></path>
+    </svg>
+  </button>
+</div>
+
+<style>
+  .theme-switch {
+    --pad: 2px;
+    --slot: calc((100% - var(--pad) * 2) / 3);
+    /* 轨道用「导航底色 + 一点点正文色」，两套主题都不用写死色值：
+       亮色是 97% 白底上压一层浅灰，暗色是深底上浮起一层稍亮的灰。 */
+    background: color-mix(in srgb, var(--sl-color-gray-1) 8%, var(--sl-color-bg-nav));
+    position: relative;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    width: 5.5rem;
+    height: 1.9375rem;
+    padding: var(--pad);
+    border-radius: 999px;
+    isolation: isolate;
+    /* 移动菜单里社交图标为空时靠右站，和右侧的其它控件对齐 */
+    margin-inline-start: auto;
+  }
+
+  /* 选中的那块药丸，靠 --i（0/1/2）平移过去，跟按钮一样宽 */
+  .theme-switch::before {
+    content: '';
+    position: absolute;
+    top: var(--pad);
+    bottom: var(--pad);
+    left: var(--pad);
+    width: var(--slot);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--sl-color-text-accent) 16%, transparent);
+    transform: translateX(calc(var(--i, 0) * 100%));
+    transition: transform 0.34s cubic-bezier(0.32, 0.72, 0, 1);
+    z-index: -1;
+  }
+
+  /* 首帧还没定位到当前项时不播动画，否则一进页面药丸会从左往右滑一段 */
+  .theme-switch:not([data-ready])::before {
+    transition: none;
+  }
+
+  button {
+    display: grid;
+    place-items: center;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: none;
+    color: var(--sl-color-gray-3);
+    cursor: pointer;
+    transition: color 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button svg {
+    display: block;
+    width: 1rem;
+    height: 1rem;
+  }
+
+  /* 月牙是实心块，同样尺寸下看着比太阳、笔记本大一圈，收一点做视觉配平 */
+  button[data-theme-value='dark'] svg {
+    width: 0.9375rem;
+    height: 0.9375rem;
+  }
+
+  button:hover {
+    color: var(--sl-color-gray-2);
+  }
+
+  button[aria-checked='true'] {
+    color: var(--sl-color-text-accent);
+  }
+
+  /* 只有键盘操作才描边：鼠标点完不会留下一圈框，正是原生 select 最难看的地方。
+     outline 而不是 border，不会把按钮顶开。 */
+  button:focus-visible {
+    outline: 2px solid var(--sl-color-text-accent);
+    outline-offset: 1px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .theme-switch::before {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  type Theme = 'auto' | 'light' | 'dark'
+
+  const KEY = 'starlight-theme'
+  const roots = Array.from(document.querySelectorAll<HTMLElement>('[data-theme-switch]'))
+
+  if (roots.length) {
+    const mq = window.matchMedia('(prefers-color-scheme: light)')
+    const systemTheme = (): 'light' | 'dark' => (mq.matches ? 'light' : 'dark')
+    const resolve = (theme: Theme): 'light' | 'dark' =>
+      theme === 'auto' ? systemTheme() : theme
+
+    /** 读当前模式：'light' / 'dark' 是显式选择，'' 是跟随系统 */
+    const read = (): Theme => {
+      let raw: string | null = null
+      try {
+        raw = localStorage.getItem(KEY)
+      } catch {
+        /* 隐私模式下拿不到，退回 DOM 上的实际主题 */
+      }
+      if (raw === 'light' || raw === 'dark') return raw
+      if (raw === '') return 'auto'
+      return document.documentElement.dataset.theme === 'light' ? 'light' : 'dark'
+    }
+
+    /** 只更新 UI，不写存储 */
+    const paint = (theme: Theme) => {
+      for (const root of roots) {
+        const btns = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-theme-value]'))
+        btns.forEach((btn, i) => {
+          const active = btn.dataset.themeValue === theme
+          btn.setAttribute('aria-checked', String(active))
+          // 单选组只有一个 tab 停靠点，方向键切换
+          btn.tabIndex = active ? 0 : -1
+          if (active) root.style.setProperty('--i', String(i))
+        })
+      }
+    }
+
+    const setTheme = (theme: Theme) => {
+      document.documentElement.dataset.theme = resolve(theme)
+      try {
+        localStorage.setItem(KEY, theme === 'auto' ? '' : theme)
+      } catch {
+        /* 存储不可用时至少本次生效 */
+      }
+      paint(theme)
+    }
+
+    for (const root of roots) {
+      root.addEventListener('click', (event) => {
+        const btn = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-theme-value]')
+        if (btn?.dataset.themeValue) setTheme(btn.dataset.themeValue as Theme)
+      })
+
+      root.addEventListener('keydown', (event) => {
+        const step: Record<string, number> = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }
+        if (!(event.key in step) && event.key !== 'Home' && event.key !== 'End') return
+        const btns = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-theme-value]'))
+        if (!btns.length) return
+        const current = btns.findIndex((b) => b.getAttribute('aria-checked') === 'true')
+        const next =
+          event.key === 'Home'
+            ? 0
+            : event.key === 'End'
+              ? btns.length - 1
+              : (Math.max(current, 0) + step[event.key] + btns.length) % btns.length
+        event.preventDefault()
+        btns[next].focus()
+        if (btns[next].dataset.themeValue) setTheme(btns[next].dataset.themeValue as Theme)
+      })
+    }
+
+    // 跟随系统时，系统切换深浅色要跟着走
+    mq.addEventListener('change', () => {
+      if (read() === 'auto') document.documentElement.dataset.theme = systemTheme()
+    })
+
+    // 多标签页之间同步
+    window.addEventListener('storage', (event) => {
+      if (event.key !== KEY) return
+      const theme = read()
+      document.documentElement.dataset.theme = resolve(theme)
+      paint(theme)
+    })
+
+    paint(read())
+
+    // 首帧定好位再打开过渡，避免页面一加载药丸从最左滑过去
+    requestAnimationFrame(() => {
+      for (const root of roots) root.dataset.ready = '1'
+    })
+  }
+</script>

@@ -148,6 +148,8 @@ export default defineConfig({
       components: {
         SocialIcons: './src/components/NavBar/index.astro',
         Footer: './src/components/Footer/index.astro',
+        // 原生 select 的下拉弹层由系统绘制，焦点框改不动，换成自绘的三段式开关
+        ThemeSelect: './src/components/ThemeSwitch/index.astro',
       },
       // 渲染代码块的配置
       expressiveCode: {
