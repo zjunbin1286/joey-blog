@@ -73,6 +73,24 @@
   opacity: 0.14;
 }
 
+/* 点别的星座就切过去，所以淡化的时候也要给个"可以点"的回应 */
+.page[data-focus='true'] .cons[data-active='false']:hover {
+  opacity: 0.5;
+}
+
+/* 整片星座的点击热区。fill: none 必须配 pointer-events: all 才有命中，
+   透明 fill 在各浏览器下算不算"画过"并不一致。 */
+.hit {
+  fill: none;
+  pointer-events: all;
+  cursor: pointer;
+}
+
+/* 已经在这个星座里了，点空白不该有任何承诺 */
+.page[data-focus='true'] .cons[data-active='true'] .hit {
+  cursor: default;
+}
+
 .links line {
   stroke: var(--star-line);
   stroke-width: 1;
@@ -174,6 +192,10 @@
 
 .page[data-focus='true'] .consLabel[data-active='false'] {
   opacity: 0.14;
+}
+
+.page[data-focus='true'] .consLabel[data-active='false']:hover {
+  opacity: 0.62;
 }
 
 /* ── 左侧栏：标题 + 星座索引 ── */
@@ -571,8 +593,68 @@
   }
 }
 
-.railCap {
+/* 标题行：返回箭头 + CONSTELLATIONS 标签 */
+.railHead {
+  display: flex;
+  align-items: center;
   margin: 0 0 0.5rem;
+}
+
+/* 返回全景。只在聚焦时出现：总览时宽度收成 0，不占位，
+   也不会被 Tab 键点到（visibility: hidden）。 */
+.back {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 0;
+  height: 1.05rem;
+  margin-right: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--star-ink-2);
+  opacity: 0;
+  visibility: hidden;
+  cursor: pointer;
+  transition:
+    width 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
+    margin-right 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 0.2s ease,
+    color 0.2s ease,
+    visibility 0s linear 0.3s;
+
+  svg {
+    width: 0.85rem;
+    height: 0.85rem;
+  }
+
+  &:hover {
+    color: var(--star-ink);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--star-accent);
+    outline-offset: 2px;
+  }
+}
+
+.page[data-focus='true'] .back {
+  width: 1.05rem;
+  margin-right: 0.45rem;
+  opacity: 1;
+  visibility: visible;
+  transition:
+    width 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
+    margin-right 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 0.22s ease 0.1s,
+    color 0.2s ease,
+    visibility 0s;
+}
+
+.railCap {
+  margin: 0;
   font-family: var(--sl-font-mono, ui-monospace, monospace);
   font-size: 0.625rem;
   letter-spacing: 0.2em;

@@ -73,7 +73,15 @@ const nodes = constellations.map((c, ci) => {
     }
   })
 
-  return { ...c, stars, companions, arts, index: ci }
+  // 点击热区的半径：贴着这一片星点画，别外扩太多。
+  // 外扩过头会盖住邻居的星区，点在 A 的边缘反而跳去 B。
+  const reach = Math.max(
+    60,
+    ...stars.map((s) => Math.hypot(s.x, s.y)),
+    ...companions.map((s) => Math.hypot(s.absX - c.cx, s.absY - c.cy))
+  )
+
+  return { ...c, stars, companions, arts, index: ci, hitR: reach + 24 }
 })
 
 const totalNotes = nodes.reduce((sum, n) => sum + n.arts.length, 0)
@@ -111,6 +119,9 @@ const pad = (n: number) => String(n).padStart(2, '0')
       {
         nodes.map((n) => (
           <g class={styles.cons} data-key={n.key} data-active="true" data-cx={n.cx} data-cy={n.cy}>
+            {/* 整片星座的点击热区：放在最底层，星点仍然压在上面可以单独点 */}
+            <circle class={styles.hit} cx={n.cx} cy={n.cy} r={n.hitR} aria-hidden="true" />
+
             <g class={styles.links} aria-hidden="true">
               {n.links.map(([a, b]) => (
                 <line
@@ -184,12 +195,24 @@ const pad = (n: number) => String(n).padStart(2, '0')
       <h1 class={styles.title}>观星台</h1>
       <p class={styles.lead}>
         {nodes.length} 个专栏，{totalNotes} 篇笔记，{totalStars} 颗星。星点位置取自真实赤经赤纬，
-        大小按星等。点一颗星，去看那篇笔记。
+        大小按星等。点星座进入专栏，再点星点看那一篇。
       </p>
     </div>
 
     <nav class={styles.rail} aria-label="选择星座" data-rail>
-      <p class={styles.railCap}>Constellations</p>
+      <div class={styles.railHead}>
+        <button class={styles.back} type="button" data-rail-back aria-label="返回全景" title="返回全景（Esc）">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path
+              d="M13 8H3M7 3.6 2.8 8 7 12.4"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"></path>
+          </svg>
+        </button>
+        <p class={styles.railCap}>Constellations</p>
+      </div>
       <ul>
         {
           nodes.map((n, i) => (
@@ -439,6 +462,7 @@ const pad = (n: number) => String(n).padStart(2, '0')
       btn.addEventListener('click', () => reset())
     })
     resetBtn?.addEventListener('click', () => reset())
+    document.querySelector('[data-rail-back]')?.addEventListener('click', () => reset())
 
     // 点击星座名也能聚焦
     document.querySelectorAll('g[data-label]').forEach((g) => {
@@ -447,11 +471,25 @@ const pad = (n: number) => String(n).padStart(2, '0')
       el.style.cursor = 'pointer'
     })
 
+    // 点星座本体（热区或任意星点）：
+    // 当前不在这个星座里就飞进去；已经在这个星座里，就让星点链接照常跳文章。
+    // 这样才能「总览 → 选星座 → 选文章」两级走，而不会一点星就离开星图。
+    world.querySelectorAll('g[data-key]').forEach((g) => {
+      const key = g.getAttribute('data-key')!
+      g.addEventListener('click', (event) => {
+        if (activeKey === key) return
+        event.preventDefault()
+        event.stopPropagation()
+        focusKey(key)
+      })
+    })
+
     // 拖拽平移 + 滚轮缩放
     let dragging = false
     let moved = 0
     let lastX = 0
     let lastY = 0
+    let dragId: number | null = null
 
     const toWorld = (clientX: number, clientY: number) => {
       const rect = svg.getBoundingClientRect()
@@ -467,10 +505,13 @@ const pad = (n: number) => String(n).padStart(2, '0')
     svg.addEventListener('pointerdown', (event) => {
       if (event.button !== 0) return
       dragging = true
+      dragId = event.pointerId
       moved = 0
       lastX = event.clientX
       lastY = event.clientY
-      svg.setPointerCapture(event.pointerId)
+      // 这里刻意不 setPointerCapture：一旦捕获，随后的 pointerup 和由它派生的 click
+      // 都会被改派到 <svg> 自己身上，星座热区、星点、星座名就再也收不到点击了。
+      // 等真的开始拖动（见 pointermove）再捕获。
     })
 
     svg.addEventListener('pointermove', (event) => {
@@ -480,15 +521,23 @@ const pad = (n: number) => String(n).padStart(2, '0')
       moved += Math.abs(dx) + Math.abs(dy)
       lastX = event.clientX
       lastY = event.clientY
+      // 拖出去也别让指针丢了，松手前把捕获补上
+      if (moved > 6 && dragId !== null && !svg.hasPointerCapture(dragId)) {
+        svg.setPointerCapture(dragId)
+      }
       const s = scaleOf(view)
       view = { ...view, x: view.x - dx / s, y: view.y - dy / s }
       apply()
     })
 
-    svg.addEventListener('pointerup', () => {
+    const endDrag = () => {
       dragging = false
-      // 拖拽结束时吞掉随后的 click，避免误触星点跳转
-    })
+      if (dragId !== null && svg.hasPointerCapture(dragId)) svg.releasePointerCapture(dragId)
+      dragId = null
+    }
+
+    svg.addEventListener('pointerup', endDrag)
+    svg.addEventListener('pointercancel', endDrag)
 
     svg.addEventListener('click', (event) => {
       if (moved > 6) {
