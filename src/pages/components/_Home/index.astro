@@ -181,20 +181,15 @@ const extraLinks = [
             <li>多人协作带锁</li>
           </ul>
           <a
-            class={`${styles.btn} ${styles.primary}`}
+            class={`${styles.btn} ${styles.pixel} nvp-hover`}
             href="https://novapix-ai.online/"
             target="_blank"
             rel="noopener noreferrer"
           >
-            前往 novapix-ai.online
-            <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path
-                d="M4 12 12 4M12 4H6M12 4v6"
-                stroke="currentColor"
-                stroke-width="1.6"
-                stroke-linecap="round"
-                stroke-linejoin="round"></path>
-            </svg>
+            <span class={styles.pixelIco}>
+              <NovapixLogo size={16} />
+            </span>
+            <span class={styles.pixelText}>前往 novapix-ai.online</span>
           </a>
         </div>
 
