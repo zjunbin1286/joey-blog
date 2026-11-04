@@ -291,6 +291,15 @@ const pad = (n: number) => String(n).padStart(2, '0')
               <a href={a.url}>
                 <i>{pad(i + 1)}</i>
                 <span>{a.title}</span>
+                <svg class={styles.go} viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path
+                    d="M3 8h8M7.5 4.5 11 8l-3.5 3.5"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
               </a>
             </li>
           ))}

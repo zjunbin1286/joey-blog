@@ -512,49 +512,101 @@
      而文字仍和上面的简介对齐（行内 padding 把外扩量补回来）。
      注意外扩必须加在滚动容器上，加在行上会被 overflow 裁掉。 */
   margin: 0.5rem -0.6rem 0;
-  padding: 0;
+  padding: 0 0 0.2rem;
   /* 横向也要藏住：只写 overflow-y 时 x 会跟着变 auto */
   overflow: hidden auto;
   flex: 1;
 
-  li + li {
-    border-top: 1px solid var(--star-hairline);
-  }
-
   a {
+    position: relative;
     display: grid;
-    grid-template-columns: 1.4rem minmax(0, 1fr);
-    gap: 0.45rem;
+    grid-template-columns: 1.35rem minmax(0, 1fr) 0.8rem;
+    gap: 0.5rem;
     align-items: baseline;
-    padding: 0.5rem 0.6rem;
-    border-radius: 7px;
+    padding: 0.56rem 0.6rem;
+    border-radius: 8px;
     color: var(--star-ink-2);
     text-decoration: none;
     transition:
       background 0.18s ease,
       color 0.18s ease;
 
+    /* 分隔线从标题左缘起（0.6 + 1.35 + 0.5），不穿到编号前面；
+       压在行上而不是 <li> 上，hover 时才能跟着底色一起隐掉 */
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 2.45rem;
+      right: 0.6rem;
+      height: 1px;
+      background: var(--star-hairline);
+      transition: opacity 0.18s ease;
+    }
+
     i {
       font-family: var(--sl-font-mono, ui-monospace, monospace);
       font-size: 0.6rem;
       font-style: normal;
+      font-variant-numeric: tabular-nums;
       color: var(--star-ink-3);
+      transition: color 0.18s ease;
     }
 
     span {
-      font-size: 0.755rem;
-      line-height: 1.55;
+      font-size: 0.765rem;
+      line-height: 1.6;
       overflow-wrap: anywhere;
+    }
+
+    /* 箭头常态占着列宽但不显示，hover 才滑进来：
+       不留位置的话，一悬停标题就会左右跳一下 */
+    .go {
+      width: 0.8rem;
+      height: 0.8rem;
+      align-self: center;
+      color: var(--star-ink-3);
+      opacity: 0;
+      transform: translateX(-3px);
+      transition:
+        opacity 0.2s ease,
+        transform 0.24s cubic-bezier(0.2, 0.8, 0.2, 1),
+        color 0.18s ease;
     }
 
     &:hover {
       background: var(--star-hover);
       color: var(--star-ink);
+
+      &::after {
+        opacity: 0;
+      }
+
+      i {
+        color: var(--star-accent);
+      }
+
+      .go {
+        opacity: 1;
+        transform: translateX(0);
+        color: var(--star-accent);
+      }
     }
 
-    &:hover i {
-      color: var(--star-ink-2);
+    &:focus-visible {
+      outline: 2px solid var(--star-accent);
+      outline-offset: -2px;
     }
+  }
+
+  /* 第一行顶上不画线，交给上面那条「N 篇笔记」的分隔线 */
+  > li:first-child a::after {
+    opacity: 0;
+  }
+
+  /* 悬停某一行时连它下面那条线也收掉，不然 1px 会横切过圆角底边 */
+  > li:has(+ li > a:hover) > a::after {
+    opacity: 0;
   }
 }
 
@@ -897,6 +949,12 @@
   .links line,
   .starName,
   .rail {
+    transition: none;
+  }
+
+  .arts a,
+  .arts a::after,
+  .arts a .go {
     transition: none;
   }
 }
