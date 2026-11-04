@@ -9,7 +9,9 @@
  */
 ---
 
-<div class="theme-switch" role="radiogroup" aria-label="主题" data-theme-switch>
+<!-- 没选过主题时默认暗色：先把「深色」渲染成选中态，脚本跑起来再按实际存储纠正，
+     这样就算 JS 没执行 / 存储不可用，页面也是暗色开局，不会先闪一下浅色。 -->
+<div class="theme-switch" role="radiogroup" aria-label="主题" data-theme-switch style="--i: 2">
   <button type="button" role="radio" aria-checked="false" aria-label="跟随系统" title="跟随系统" data-theme-value="auto">
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       <path
@@ -24,7 +26,7 @@
       ></path>
     </svg>
   </button>
-  <button type="button" role="radio" aria-checked="false" aria-label="深色" title="深色" data-theme-value="dark">
+  <button type="button" role="radio" aria-checked="true" aria-label="深色" title="深色" data-theme-value="dark">
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       <path
         d="M21.64 13a1 1 0 0 0-1.05-.14 8.049 8.049 0 0 1-3.37.73 8.15 8.15 0 0 1-8.14-8.1 8.59 8.59 0 0 1 .25-2A1 1 0 0 0 8 2.36a10.14 10.14 0 1 0 14 11.69 1 1 0 0 0-.36-1.05Zm-9.5 6.69A8.14 8.14 0 0 1 7.08 5.22v.27a10.15 10.15 0 0 0 10.14 10.14 9.784 9.784 0 0 0 2.1-.22 8.11 8.11 0 0 1-7.18 4.32v-.04Z"
@@ -133,17 +135,21 @@
     const resolve = (theme: Theme): 'light' | 'dark' =>
       theme === 'auto' ? systemTheme() : theme
 
-    /** 读当前模式：'light' / 'dark' 是显式选择，'' 是跟随系统 */
+    /**
+     * 读当前模式：'light' / 'dark' 是显式选择，'' 是用户主动选的「跟随系统」。
+     * 没存过（或存储不可用）一律按暗色 —— 站点的默认主题就是暗色，
+     * 不能因为系统是浅色就把首次访问的人送到亮色页面去。
+     */
     const read = (): Theme => {
       let raw: string | null = null
       try {
         raw = localStorage.getItem(KEY)
       } catch {
-        /* 隐私模式下拿不到，退回 DOM 上的实际主题 */
+        /* 隐私模式下拿不到，走下面的默认值 */
       }
       if (raw === 'light' || raw === 'dark') return raw
       if (raw === '') return 'auto'
-      return document.documentElement.dataset.theme === 'light' ? 'light' : 'dark'
+      return 'dark'
     }
 
     /** 只更新 UI，不写存储 */
@@ -207,7 +213,10 @@
       paint(theme)
     })
 
-    paint(read())
+    const initial = read()
+    // 存储不可用时 Starlight 会退回系统偏好，这里把「没选过 = 暗色」补齐
+    if (initial === 'dark') document.documentElement.dataset.theme = 'dark'
+    paint(initial)
 
     // 首帧定好位再打开过渡，避免页面一加载药丸从最左滑过去
     requestAnimationFrame(() => {
