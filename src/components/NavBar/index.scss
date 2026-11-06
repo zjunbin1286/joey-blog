@@ -21,6 +21,17 @@
   }
 }
 
+/* 观星台入口：四角星图标与文字居中对齐，和首页按钮上那颗星同一个图形 */
+.nav-starmap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+
+  svg {
+    flex: none;
+  }
+}
+
 /* 顶部导航项较多，中等宽度下缩小字号，靠腾出的空间避免文字折行。
    注意：这个文件是全局 SCSS（不是 CSS Module），里面写 :global() 会被原样
    输出成无效选择器 —— 必须用 `header.header` 这种元素+类组合，
