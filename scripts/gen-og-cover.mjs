@@ -118,7 +118,7 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" 
   <rect x="88" y="452" width="560" height="1.5" fill="url(#rule)"/>
 
   <text x="88" y="512" font-family="Microsoft YaHei, PingFang SC, Noto Sans SC, sans-serif" font-size="26" fill="#7c7596">一行一行，把踩过的坑写成笔记</text>
-  <text x="1112" y="512" text-anchor="end" font-family="Microsoft YaHei, PingFang SC, Noto Sans SC, sans-serif" font-size="26" fill="#7c7596">joeybin.cn</text>
+  <text x="1112" y="512" text-anchor="end" font-family="Microsoft YaHei, PingFang SC, Noto Sans SC, sans-serif" font-size="26" fill="#7c7596">zhujunbin.cloud</text>
 </svg>`;
 
 const out = join(root, 'public/og-cover.png');

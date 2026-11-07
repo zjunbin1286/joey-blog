@@ -37,7 +37,7 @@ export async function GET(context: APIContext) {
   return rss({
     title: 'Joey 的前端笔记',
     description: 'JavaScript、Vue、React、Node 与工程实践的文章更新。',
-    site: context.site ?? 'https://joeybin.cn',
+    site: context.site ?? 'https://zhujunbin.cloud',
     items,
     customData: '<language>zh-cn</language>',
   });

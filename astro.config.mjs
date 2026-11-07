@@ -10,7 +10,7 @@ import vercel from '@astrojs/vercel';
 // https://astro.build/config
 export default defineConfig({
   // canonical、sitemap、RSS 里的绝对地址都靠它，必须写真实域名
-  site: 'https://joeybin.cn',
+  site: 'https://zhujunbin.cloud',
   // 整站仍是构建期生成的静态 HTML，只有 api/ 下标了 prerender=false 的路由
   // 交给 Vercel Function 按需执行（浏览数计数就靠它）
   output: 'static',
@@ -65,10 +65,10 @@ export default defineConfig({
           },
         },
         // 分享卡片：Starlight 只输出 og:title/description 等，图片得自己补
-        { tag: 'meta', attrs: { property: 'og:image', content: 'https://joeybin.cn/og-cover.png' } },
+        { tag: 'meta', attrs: { property: 'og:image', content: 'https://zhujunbin.cloud/og-cover.png' } },
         { tag: 'meta', attrs: { property: 'og:image:width', content: '1200' } },
         { tag: 'meta', attrs: { property: 'og:image:height', content: '630' } },
-        { tag: 'meta', attrs: { name: 'twitter:image', content: 'https://joeybin.cn/og-cover.png' } },
+        { tag: 'meta', attrs: { name: 'twitter:image', content: 'https://zhujunbin.cloud/og-cover.png' } },
       ],
       // 重写组件
       components: {

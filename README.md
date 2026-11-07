@@ -1,6 +1,6 @@
 # joey 的个人站点博客
 
-点击前往个人博客：[joeybin.cn](https://joeybin.cn/)
+点击前往个人博客：[zhujunbin.cloud](https://zhujunbin.cloud/)
 
 ### 1、博客功能板块
 **✍ 文章专栏**：内容包括 JavaScript、Vue、React、Node、HTML&CSS 等；
