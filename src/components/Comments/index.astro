@@ -34,8 +34,9 @@ import { commentsEnabled, giscus } from '../../data/comments';
           /* Giscus 在 iframe 里，主题改了得 postMessage 通知它，
              否则切到亮色后评论区还是黑的 */
           var sync = function () {
-            if (!box.querySelector('iframe')) return;
-            box.contentWindow.postMessage(
+            var frame = box.querySelector('iframe');
+            if (!frame || !frame.contentWindow) return;
+            frame.contentWindow.postMessage(
               {
                 giscus: {
                   setConfig: {
@@ -60,6 +61,11 @@ import { commentsEnabled, giscus } from '../../data/comments';
           Array.prototype.forEach.call(box.attributes, function (attr) {
             if (attr.name.indexOf('data-') === 0) s.setAttribute(attr.name, attr.value);
           });
+          /* 属性是照抄的，初始主题按当前页面主题覆盖，避免亮色用户先看到一帧深色 */
+          s.setAttribute(
+            'data-theme',
+            document.documentElement.dataset.theme === 'light' ? 'light' : 'dark'
+          );
           box.appendChild(s);
           window.addEventListener('message', function (e) {
             if (e.origin === 'https://giscus.app') sync();

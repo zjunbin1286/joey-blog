@@ -12,9 +12,13 @@
  */
 export const giscus = {
   repo: 'zjunbin1286/joey-blog',
-  repoId: '',
-  category: '评论',
-  categoryId: '',
+  repoId: 'R_kgDONX0HIw',
+  /**
+   * 用的仓库自带的 Announcements 分类：只有维护者能发起讨论、读者只能评论，
+   * 正好符合「文章评论区」的语义，也不用额外建分类（GitHub 没开放建分类的 API）。
+   */
+  category: 'Announcements',
+  categoryId: 'DIC_kwDONX0HI84DKme7',
   /** pathname：同一篇文章不同域名下也算同一个讨论串 */
   mapping: 'pathname',
 } as const;
