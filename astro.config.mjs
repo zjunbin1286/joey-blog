@@ -4,12 +4,16 @@ import react from '@astrojs/react';
 import tailwind from '@astrojs/tailwind';
 import starlightImageZoom from 'starlight-image-zoom'
 import mdx from '@astrojs/mdx';
+import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
+  // canonical、sitemap、RSS 里的绝对地址都靠它，必须写真实域名
+  site: 'https://joeybin.cn',
   integrations: [
     starlight({
       title: 'Joey',
+      description: 'Joey 的前端笔记：JavaScript、Vue、React、Node 与工程实践。',
       favicon: '/avatar.png',
       social: {
         github: 'https://github.com/zjunbin1286',
@@ -39,6 +43,21 @@ export default defineConfig({
           content:
             "try{if(!localStorage.getItem('starlight-theme')&&!localStorage.getItem('joey-theme-init')){localStorage.setItem('starlight-theme','dark');localStorage.setItem('joey-theme-init','1')}}catch(e){}",
         },
+        // 订阅入口：浏览器/阅读器靠这行发现 feed
+        {
+          tag: 'link',
+          attrs: {
+            rel: 'alternate',
+            type: 'application/rss+xml',
+            title: 'Joey 的前端笔记',
+            href: '/rss.xml',
+          },
+        },
+        // 分享卡片：Starlight 只输出 og:title/description 等，图片得自己补
+        { tag: 'meta', attrs: { property: 'og:image', content: 'https://joeybin.cn/og-cover.png' } },
+        { tag: 'meta', attrs: { property: 'og:image:width', content: '1200' } },
+        { tag: 'meta', attrs: { property: 'og:image:height', content: '630' } },
+        { tag: 'meta', attrs: { name: 'twitter:image', content: 'https://joeybin.cn/og-cover.png' } },
       ],
       // 重写组件
       components: {
@@ -58,6 +77,7 @@ export default defineConfig({
     }),
     react(),
     tailwind(),
-    mdx()
+    mdx(),
+    sitemap(),
   ],
 });
