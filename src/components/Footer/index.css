@@ -3,3 +3,18 @@
   align-items: center;
   justify-content: center;
 }
+
+/* 全站总访问量：跟在默认页脚最后一行，居中小字。
+   选择器必须带 p —— 首页页脚里也有一个 .site-views（span），
+   这里的 margin 会把它顶歪、把「上次更新」挤到下一行 */
+p.site-views {
+  margin: 0 auto 2rem;
+  font-size: var(--sl-text-xs);
+  color: var(--sl-color-gray-3);
+  text-align: center;
+}
+
+/* 接口没配好时组件是 hidden，这一行留着会多出一条空白，直接收掉 */
+p.site-views:has([hidden]) {
+  display: none;
+}

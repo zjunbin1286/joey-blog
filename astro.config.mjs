@@ -5,11 +5,16 @@ import tailwind from '@astrojs/tailwind';
 import starlightImageZoom from 'starlight-image-zoom'
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
+import vercel from '@astrojs/vercel';
 
 // https://astro.build/config
 export default defineConfig({
   // canonical、sitemap、RSS 里的绝对地址都靠它，必须写真实域名
   site: 'https://joeybin.cn',
+  // 整站仍是构建期生成的静态 HTML，只有 api/ 下标了 prerender=false 的路由
+  // 交给 Vercel Function 按需执行（浏览数计数就靠它）
+  output: 'static',
+  adapter: vercel(),
   integrations: [
     starlight({
       title: 'Joey',

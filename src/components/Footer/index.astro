@@ -1,6 +1,7 @@
 ---
 import Default from '@astrojs/starlight/components/Footer.astro'
 import Comments from '../Comments/index.astro'
+import SiteViews from '../SiteViews/index.astro'
 import './index.css'
 
 /* Starlight 0.32 起 props 里只剩 class，路由信息都在 locals 上。
@@ -25,3 +26,10 @@ const isArticle = /^(articles|project-solution)\//.test(slug) && !/(^|\/)index$/
 
 {/* 别塞进上面那个三元里的 Fragment —— 编译后兄弟节点会被丢掉，只剩第一个 */}
 {!isHomePage && isArticle && <Comments />}
+
+{/* 全站总访问量，放整页最底下。取不到数字时 :has 会把整行收掉 */}
+{!isHomePage && (
+  <p class="site-views">
+    <SiteViews />
+  </p>
+)}

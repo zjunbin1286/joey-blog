@@ -1052,6 +1052,18 @@
   color: var(--home-ink-3);
 }
 
+/* 右侧这一格放「访问量 + 上次更新」。访问量取不到时是 hidden，
+   flex 不会给它留空位，所以只剩「上次更新」也不难看。
+   flex-shrink 必须归零：否则作为 .foot 的 flex item 会被压到 min-content，
+   两个 span 就各自换行了。 */
+.footMeta {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 1.25rem;
+  white-space: nowrap;
+}
+
 /* ── 滚动淡入（仅在 JS 就绪时启用，避免无 JS 白屏） ──
    用 data 属性而非类名：类名会被 CSS Module 哈希化，脚本里拼不回来。 */
 :global(html.home-js) [data-reveal] {

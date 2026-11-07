@@ -1,0 +1,43 @@
+---
+/**
+ * 全站总访问量
+ *
+ * 数字来自 /api/views（Vercel Function + Upstash 计数）。
+ * 接口未配置或请求失败时整块保持 hidden —— 页面上只会「少一行」，不会出现
+ * 「本站访问 — 次」这种空壳。颜色和字号跟随父级，放到哪都不会突兀。
+ */
+---
+<span class="site-views" data-site-views hidden>
+  本站访问 <b data-site-views-count>0</b> 次
+</span>
+
+<script>
+  const boxes = document.querySelectorAll<HTMLElement>('[data-site-views]');
+
+  if (boxes.length) {
+    fetch('/api/views', { headers: { accept: 'application/json' } })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!data || typeof data.views !== 'number') return;
+        const text = data.views.toLocaleString('zh-CN');
+        boxes.forEach((box) => {
+          const target = box.querySelector<HTMLElement>('[data-site-views-count]');
+          if (!target) return;
+          target.textContent = text;
+          box.hidden = false;
+        });
+      })
+      // 静默失败：统计不该给页面添乱
+      .catch(() => {});
+  }
+</script>
+
+<style>
+  .site-views {
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .site-views b {
+    font-weight: 600;
+  }
+</style>

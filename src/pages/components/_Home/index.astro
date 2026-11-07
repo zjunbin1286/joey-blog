@@ -4,6 +4,7 @@ import styles from './styles.module.scss';
 import articleDates from '../../../data/article-dates.json';
 import { listData } from '../_Collections/data';
 import NovapixLogo from '../../../components/NovapixLogo/index.astro';
+import SiteViews from '../../../components/SiteViews/index.astro';
 
 /** 兼容 legacy collection 的 entry 形状（id 是否带扩展名各版本不一致） */
 interface DocEntry {
@@ -260,7 +261,10 @@ const extraLinks = [
 
     <footer class={styles.foot}>
       <span>© {year} Joey · Built with Astro</span>
-      <span>上次更新 · {lastUpdated || '—'}</span>
+      <span class={styles.footMeta}>
+        <SiteViews />
+        <span>上次更新 · {lastUpdated || '—'}</span>
+      </span>
     </footer>
   </div>
 </div>

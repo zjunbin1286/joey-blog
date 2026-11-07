@@ -1,5 +1,7 @@
 # build output
 dist/
+# Vercel adapter 的构建产物（里面含函数代码，别提交）
+.vercel/
 # generated types
 .astro/
 
