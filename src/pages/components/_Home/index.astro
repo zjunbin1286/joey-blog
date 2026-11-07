@@ -70,9 +70,17 @@ const projects = listData
     };
   });
 
-const year = new Date().getFullYear();
+/* 站点自报的日期一律按北京时间算：Vercel 构建机是 UTC，
+   直接 new Date() 取年月日会差一天（凌晨构建会显示前一天） */
+const today = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Shanghai' }).format(new Date());
+
+const year = Number(today.slice(0, 4));
 const experience = year - 2021;
-const lastUpdated = articles[0]?.date ?? '';
+
+/* 页脚「上次更新」= 本次构建日期。这是静态站，每次提交都会重新构建并部署，
+   所以它就等于站点最近一次真正更新的时间。
+   早先这里取的是「最新一篇文章的日期」，文章停更后这个数字就永远停在 2025-03-22 了。 */
+const lastUpdated = today;
 
 const stats = [
   { value: articles.length, suffix: '', label: '篇文章' },
