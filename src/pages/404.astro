@@ -1,0 +1,165 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+
+/**
+ * 404：Starlight 默认页是英文模板 + 一行字，这里换成和站点同调的「星海迷路」版。
+ * 用 splash 模板避免出现空的侧边栏。
+ */
+---
+
+<StarlightPage
+  frontmatter={{
+    title: '页面走丢了',
+    description: '这个地址没有对应的页面。',
+    template: 'splash',
+  }}
+>
+  <div class="lost not-content">
+    <div class="sky" aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+
+    <p class="code">404</p>
+    <h2>这颗星不在星图上</h2>
+    <p class="desc">
+      地址可能敲错了，也可能是文章搬家了。<br />
+      换个方向重新出发：
+    </p>
+
+    <nav>
+      <a class="primary" href="/">回到首页</a>
+      <a href="/timeline">翻翻归档</a>
+      <a href="/starmap">去观星台</a>
+    </nav>
+  </div>
+</StarlightPage>
+
+<style>
+  .lost {
+    position: relative;
+    max-width: 40rem;
+    padding: 4rem 0 6rem;
+    overflow: hidden;
+  }
+
+  /* 背景星点：12 颗，位置写死，不用 canvas，404 页没必要为动效付钱 */
+  .sky {
+    position: absolute;
+    inset: -2rem 0 auto;
+    height: 20rem;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .sky span {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--sl-color-text-accent);
+    opacity: 0.35;
+    animation: twinkle 4s ease-in-out infinite;
+  }
+
+  .sky span:nth-child(1) { left: 6%; top: 30%; }
+  .sky span:nth-child(2) { left: 18%; top: 68%; animation-delay: -0.6s; }
+  .sky span:nth-child(3) { left: 27%; top: 12%; animation-delay: -1.4s; }
+  .sky span:nth-child(4) { left: 39%; top: 54%; animation-delay: -2.1s; }
+  .sky span:nth-child(5) { left: 48%; top: 22%; animation-delay: -0.9s; }
+  .sky span:nth-child(6) { left: 57%; top: 76%; animation-delay: -2.8s; }
+  .sky span:nth-child(7) { left: 66%; top: 38%; animation-delay: -1.9s; }
+  .sky span:nth-child(8) { left: 74%; top: 8%; animation-delay: -3.2s; }
+  .sky span:nth-child(9) { left: 83%; top: 62%; animation-delay: -0.3s; }
+  .sky span:nth-child(10) { left: 91%; top: 26%; animation-delay: -2.4s; }
+  .sky span:nth-child(11) { left: 12%; top: 88%; animation-delay: -1.1s; }
+  .sky span:nth-child(12) { left: 68%; top: 92%; animation-delay: -3.6s; }
+
+  @keyframes twinkle {
+    0%,
+    100% {
+      opacity: 0.18;
+      transform: scale(0.8);
+    }
+    50% {
+      opacity: 0.7;
+      transform: scale(1.15);
+    }
+  }
+
+  .code {
+    margin: 0 0 0.4rem;
+    font-size: clamp(3.6rem, 12vw, 5.4rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums;
+    background: linear-gradient(
+      135deg,
+      var(--sl-color-text-accent) 0%,
+      var(--sl-color-white) 62%,
+      var(--sl-color-text-accent) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  h2 {
+    margin: 0 0 0.9rem;
+    font-size: var(--sl-text-h3);
+    font-weight: 600;
+    color: var(--sl-color-white);
+  }
+
+  .desc {
+    margin: 0 0 2rem;
+    font-size: var(--sl-text-base);
+    line-height: 1.75;
+    color: var(--sl-color-gray-3);
+  }
+
+  nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+  }
+
+  nav a {
+    display: inline-flex;
+    align-items: center;
+    height: 2.35rem;
+    padding: 0 1.05rem;
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: 999px;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-text);
+    text-decoration: none;
+    transition:
+      background 0.22s ease,
+      border-color 0.22s ease;
+  }
+
+  nav a:hover {
+    background: var(--sl-color-gray-6);
+    border-color: var(--sl-color-gray-5);
+  }
+
+  nav a.primary {
+    background: var(--sl-color-text-accent);
+    border-color: var(--sl-color-text-accent);
+    color: var(--sl-color-bg);
+    font-weight: 500;
+  }
+
+  nav a.primary:hover {
+    background: color-mix(in srgb, var(--sl-color-text-accent) 86%, var(--sl-color-text));
+    border-color: transparent;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sky span {
+      animation: none;
+    }
+  }
+</style>
