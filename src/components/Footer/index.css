@@ -8,7 +8,8 @@
    选择器必须带 p —— 首页页脚里也有一个 .site-views（span），
    这里的 margin 会把它顶歪、把「上次更新」挤到下一行 */
 p.site-views {
-  margin: 0 auto 2rem;
+  /* 上面紧挨着评论区 / 默认页脚，不留间距会直接贴住，像被挤到页脚里 */
+  margin: 2.5rem auto 2rem;
   font-size: var(--sl-text-xs);
   color: var(--sl-color-gray-3);
   text-align: center;
