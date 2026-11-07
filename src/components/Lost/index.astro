@@ -1,49 +1,40 @@
 ---
-import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
-
 /**
- * 404：Starlight 默认页是英文模板 + 一行字，这里换成和站点同调的「星海迷路」版。
- * 用 splash 模板避免出现空的侧边栏。
+ * 404 页的正文部分。
+ * 页面本身走 Starlight 的内容条目 src/content/docs/404.mdx（内置 /404 路由会优先取它），
+ * 不要另外写 src/pages/404.astro —— 那会和内置路由撞车。
  */
 ---
 
-<StarlightPage
-  frontmatter={{
-    title: '页面走丢了',
-    description: '这个地址没有对应的页面。',
-    template: 'splash',
-  }}
->
-  <div class="lost not-content">
-    <div class="sky" aria-hidden="true">
-      <span></span><span></span><span></span><span></span><span></span><span></span>
-      <span></span><span></span><span></span><span></span><span></span><span></span>
-    </div>
-
-    <p class="code">404</p>
-    <h2>这颗星不在星图上</h2>
-    <p class="desc">
-      地址可能敲错了，也可能是文章搬家了。<br />
-      换个方向重新出发：
-    </p>
-
-    <nav>
-      <a class="primary" href="/">回到首页</a>
-      <a href="/timeline">翻翻归档</a>
-      <a href="/starmap">去观星台</a>
-    </nav>
+<div class="lost not-content">
+  <div class="sky" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span><span></span>
   </div>
-</StarlightPage>
+
+  <p class="code">404</p>
+  <h2>这颗星不在星图上</h2>
+  <p class="desc">
+    地址可能敲错了，也可能是文章搬家了。<br />
+    换个方向重新出发：
+  </p>
+
+  <nav>
+    <a class="primary" href="/">回到首页</a>
+    <a href="/timeline">翻翻归档</a>
+    <a href="/starmap">去观星台</a>
+  </nav>
+</div>
 
 <style>
   .lost {
     position: relative;
     max-width: 40rem;
-    padding: 4rem 0 6rem;
+    padding: 3rem 0 6rem;
     overflow: hidden;
   }
 
-  /* 背景星点：12 颗，位置写死，不用 canvas，404 页没必要为动效付钱 */
+  /* 背景星点：12 颗，位置写死，不用 canvas —— 404 页没必要为动效付钱 */
   .sky {
     position: absolute;
     inset: -2rem 0 auto;

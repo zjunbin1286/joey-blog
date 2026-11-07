@@ -1,18 +1,27 @@
 ---
-import type { Props } from '@astrojs/starlight/props'
 import Default from '@astrojs/starlight/components/Footer.astro'
+import Comments from '../Comments/index.astro'
 import './index.css'
 
-// 判断是否为首页
-const isHomePage = Astro.props.slug === ''
+/* Starlight 0.32 起 props 里只剩 class，路由信息都在 locals 上。
+   原来那行 Astro.props.slug === '' 恒为 false，首页的自定义页脚其实一直没生效。 */
+const { entry } = Astro.locals.starlightRoute
+const slug = entry.slug ?? ''
+const isHomePage = slug === ''
+
+// 只有正文页挂评论区；专栏落地页（articles/xxx/index）和各种 splash 页面不挂
+const isArticle = /^(articles|project-solution)\//.test(slug) && !/(^|\/)index$/.test(slug)
 ---
 
 {
   isHomePage ? (
     <footer class="footer-content">💖 热爱生活，不断前进</footer>
   ) : (
-    <Default {...Astro.props}>
+    <Default>
       <slot />
     </Default>
   )
 }
+
+{/* 别塞进上面那个三元里的 Fragment —— 编译后兄弟节点会被丢掉，只剩第一个 */}
+{!isHomePage && isArticle && <Comments />}

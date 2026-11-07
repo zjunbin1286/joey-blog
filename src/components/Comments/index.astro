@@ -1,0 +1,86 @@
+---
+import { commentsEnabled, giscus } from '../../data/comments';
+
+/**
+ * 评论区：Giscus（GitHub Discussions 驱动，纯静态站也能用）。
+ * 没填 repoId / categoryId 时整块不渲染 —— 开启步骤见 src/data/comments.ts。
+ */
+---
+
+{
+  commentsEnabled && (
+    <section class="comments" aria-labelledby="comments-heading">
+      <h2 id="comments-heading">评论</h2>
+      <div
+        class="giscus"
+        data-repo={giscus.repo}
+        data-repo-id={giscus.repoId}
+        data-category={giscus.category}
+        data-category-id={giscus.categoryId}
+        data-mapping={giscus.mapping}
+        data-strict="1"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="dark"
+        data-lang="zh-CN"
+        data-loading="lazy"
+      />
+      <script is:inline>
+        (function () {
+          var box = document.querySelector('.giscus');
+          if (!box) return;
+
+          /* Giscus 在 iframe 里，主题改了得 postMessage 通知它，
+             否则切到亮色后评论区还是黑的 */
+          var sync = function () {
+            if (!box.querySelector('iframe')) return;
+            box.contentWindow.postMessage(
+              {
+                giscus: {
+                  setConfig: {
+                    theme: document.documentElement.dataset.theme === 'light' ? 'light' : 'dark',
+                  },
+                },
+              },
+              'https://giscus.app'
+            );
+          };
+
+          new MutationObserver(sync).observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['data-theme'],
+          });
+
+          /* client.js 需要上面那一堆 data-* 才能初始化，这里照抄到 script 上 */
+          var s = document.createElement('script');
+          s.src = 'https://giscus.app/client.js';
+          s.async = true;
+          s.crossOrigin = 'anonymous';
+          Array.prototype.forEach.call(box.attributes, function (attr) {
+            if (attr.name.indexOf('data-') === 0) s.setAttribute(attr.name, attr.value);
+          });
+          box.appendChild(s);
+          window.addEventListener('message', function (e) {
+            if (e.origin === 'https://giscus.app') sync();
+          });
+        })();
+      </script>
+    </section>
+  )
+}
+
+<style>
+  .comments {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--sl-color-hairline);
+  }
+
+  h2 {
+    margin: 0 0 1.2rem;
+    font-size: var(--sl-text-h5);
+    font-weight: 600;
+    color: var(--sl-color-white);
+  }
+</style>
