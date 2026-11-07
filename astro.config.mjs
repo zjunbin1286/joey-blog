@@ -14,6 +14,12 @@ export default defineConfig({
     starlight({
       title: 'Joey',
       description: 'Joey 的前端笔记：JavaScript、Vue、React、Node 与工程实践。',
+      // 单语言中文站：让 <html lang>、Starlight 自带文案（搜索、目录、翻页、404）
+      // 全部走简体中文，不然页面上「On this page」「Previous」和正文中英混排
+      defaultLocale: 'root',
+      locales: {
+        root: { label: '简体中文', lang: 'zh-CN' },
+      },
       favicon: '/avatar.png',
       social: {
         github: 'https://github.com/zjunbin1286',
@@ -65,6 +71,8 @@ export default defineConfig({
         Footer: './src/components/Footer/index.astro',
         // 原生 select 的下拉弹层由系统绘制，焦点框改不动，换成自绘的三段式开关
         ThemeSelect: './src/components/ThemeSwitch/index.astro',
+        // 文章标题下补「字数 · 阅读时长」，从 Markdown 原文现算
+        PageTitle: './src/components/PageTitle/index.astro',
       },
       // 渲染代码块的配置
       expressiveCode: {

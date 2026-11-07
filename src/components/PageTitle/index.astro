@@ -1,0 +1,61 @@
+---
+import { readingStats } from '../../utils/reading';
+
+/**
+ * 覆盖 Starlight 的 PageTitle：标题下面补一行「字数 · 阅读时长」。
+ *
+ * 字数直接从 entry.body（Markdown 原文）现算，不引额外插件、也不落构建产物，
+ * 一篇笔记改完就自动同步。专栏落地页、首页这些不算文章，不显示。
+ */
+const { entry } = Astro.locals.starlightRoute;
+
+/* PAGE_TITLE_ID 是 Starlight 内部常量（值为 _top），没从包入口导出，这里写死。
+   目录锚点、SkipLink 都靠它，覆盖组件时必须保留。 */
+const PAGE_TITLE_ID = '_top';
+
+const isArticle =
+  /^(articles|project-solution)\//.test(entry.id) && !/(^|\/)index\.mdx?$/.test(entry.id);
+const stats = isArticle && entry.body ? readingStats(entry.body) : undefined;
+const words = stats ? stats.words.toLocaleString('en-US') : '';
+---
+
+<h1 id={PAGE_TITLE_ID}>{entry.data.title}</h1>
+{
+  stats && (
+    <p class="joey-stats">
+      <span>约 {words} 字</span>
+      <span class="dot" aria-hidden="true">·</span>
+      <span>阅读 {stats.minutes} 分钟</span>
+    </p>
+  )
+}
+
+<style>
+  h1 {
+    margin-top: 1rem;
+    font-size: var(--sl-text-h1);
+    line-height: var(--sl-line-height-headings);
+    font-weight: 600;
+    color: var(--sl-color-white);
+  }
+
+  .joey-stats {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.7rem 0 0;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-3);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .dot {
+    color: var(--sl-color-gray-4);
+  }
+
+  @media (min-width: 50rem) {
+    .joey-stats {
+      margin-bottom: 0.4rem;
+    }
+  }
+</style>
