@@ -166,7 +166,7 @@ const handlerChangeState = () => {
 说明：通过普通解构赋值拿出来的数据，是有问题的！这样的数据不再是响应式！是一次性的！
 因为 Pinia 其实是把 `state` 里的数据都做了 reactive 处理了（reactive直接使用普通的解构赋值的数据也不具备响应式）
 
-<font color='047ffd'>**解决方法**</font>：<font color='red'>**使用 Pinia 官方提供的 API**</font>，`storeToRefs`
+<span class="txt-blue">**解决方法**</span>：<span class="txt-red">**使用 Pinia 官方提供的 API**</span>，`storeToRefs`
 ```html
 <template>
   <div>

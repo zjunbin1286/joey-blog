@@ -239,3 +239,36 @@ header.header {
   }
 }
 
+
+/* ── 正文细节 ── */
+
+/* 正文里的链接默认只有颜色差别，Lighthouse 的 link-in-text-block 会判不通过。
+   加一条细下划线（不抢眼，hover 时加深），颜色和文字都能区分。 */
+.sl-markdown-content a:not(.not-content a) {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  text-decoration-color: color-mix(in srgb, currentColor 38%, transparent);
+}
+
+.sl-markdown-content a:hover {
+  text-decoration-color: currentColor;
+}
+
+/* 旧文里从原博客搬过来的 <font color='red'> 已换成这两个类：
+   写死颜色在暗色下对比度不够，这里按主题给两档，两边都能过 4.5:1。 */
+.txt-red {
+  color: hsl(0 78% 44%);
+}
+
+.txt-blue {
+  color: hsl(215 85% 42%);
+}
+
+[data-theme='dark'] .txt-red {
+  color: hsl(0 88% 76%);
+}
+
+[data-theme='dark'] .txt-blue {
+  color: hsl(210 100% 76%);
+}

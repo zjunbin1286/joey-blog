@@ -9,17 +9,17 @@ Session 认证机制需要配合 Cookie 才能实现。由于 **Cookie 默认不
 注意：
 
 * 当前端请求后端接口不存在跨域问题的时候，推荐使用 Session 身份认证机制。
-* 当前端<font color='047ffd'>需要跨域请求后端接口</font>的时候，不推荐使用 Session 身份认证机制，推荐使用 <font color='red'>JWT 认证机制</font>。
+* 当前端<span class="txt-blue">需要跨域请求后端接口</span>的时候，不推荐使用 Session 身份认证机制，推荐使用 <span class="txt-red">JWT 认证机制</span>。
 
 ## 2. 什么是 JWT
-JWT（英文全称：JSON Web Token）是目前<font color='047ffd'>**最流行**</font>的<font color='red'>跨域认证解决方案</font>。
+JWT（英文全称：JSON Web Token）是目前<span class="txt-blue">**最流行**</span>的<span class="txt-red">跨域认证解决方案</span>。
 
 ## 3. JWT 的工作原理
 ![image1.png](../../../../assets/node/10-learn-jwt/image1.png)
 总结：用户的信息通过 Token 字符串的形式，保存在客户端浏览器中。服务器通过**还原** Token 字符串的形式来认证用户的身份。
 
 ## 4. JWT 的组成部分
-JWT 通常由三部分组成，分别是 <font color='red'>Header</font>（头部）、<font color='red'>Payload</font>（有效荷载）、<font color='red'>Signature</font>（签名）。
+JWT 通常由三部分组成，分别是 <span class="txt-red">Header</span>（头部）、<span class="txt-red">Payload</span>（有效荷载）、<span class="txt-red">Signature</span>（签名）。
 
 三者之间使用英文的“.”分隔，格式如下：
 ```
@@ -35,15 +35,15 @@ Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0Ijox
 JWT 的三个组成部分，从前到后分别是 Header、Payload、Signature。
 其中：
 
-* <font color='red'>**Payload**</font> 部分才是<font color='red'>**真正的用户信息**</font>，它是用户信息经过加密之后生成的字符串。
-* Header 和 Signature 是<font color='047ffd'>安全性相关的部分</font>，只是为了保证 Token 的安全性。
+* <span class="txt-red">**Payload**</span> 部分才是<span class="txt-red">**真正的用户信息**</span>，它是用户信息经过加密之后生成的字符串。
+* Header 和 Signature 是<span class="txt-blue">安全性相关的部分</span>，只是为了保证 Token 的安全性。
 
 ![image2.png](../../../../assets/node/10-learn-jwt/image2.png)
 
 ## 6. JWT 的使用方式
-客户端收到服务器返回的 JWT 之后，通常会将它储存在 <font color='047ffd'>localStorage</font> 或 <font color='047ffd'>sessionStorage</font> 中。
+客户端收到服务器返回的 JWT 之后，通常会将它储存在 <span class="txt-blue">localStorage</span> 或 <span class="txt-blue">sessionStorage</span> 中。
 
-此后，客户端每次与服务器通信，都要带上这个 JWT 的字符串，从而进行身份认证。推荐的做法是<font color='red'>**把 JWT 放在 HTTP 请求头的 Authorization 字段中**</font>，格式如下：
+此后，客户端每次与服务器通信，都要带上这个 JWT 的字符串，从而进行身份认证。推荐的做法是<span class="txt-red">**把 JWT 放在 HTTP 请求头的 Authorization 字段中**</span>，格式如下：
 ```
 Authorization: Bearer <token>
 ```
@@ -55,11 +55,11 @@ Authorization: Bearer <token>
 npm i jsonwebtoken express-jwt
 ```
 其中：
-* <font color='red'>**jsonwebtoken**</font> 用于<font color='047ffd'>**生成 JWT 字符串**</font>
-* <font color='red'>**express-jw**t</font> 用于<font color='047ffd'>**将 JWT 字符串解析还原成 JSON 对象**</font>
+* <span class="txt-red">**jsonwebtoken**</span> 用于<span class="txt-blue">**生成 JWT 字符串**</span>
+* <span class="txt-red">**express-jw**t</span> 用于<span class="txt-blue">**将 JWT 字符串解析还原成 JSON 对象**</span>
 
 ## 8. 导入 JWT 相关的包
-使用 <font color='red'>require()</font> 函数，分别导入 JWT 相关的两个包：
+使用 <span class="txt-red">require()</span> 函数，分别导入 JWT 相关的两个包：
 ```js
 // 导入用于生成 JWT 字符串的包
 const jwt = require('jsonwebtoken')
@@ -69,16 +69,16 @@ const expressJWT = require('express-jwt')
 ```
 
 ## 9. 定义 secret 密钥 *
-为了<font color='red'>保证 JWT 字符串的安全性</font>，防止 JWT 字符串在网络传输过程中被别人破解，我们需要专门定义一个用于<font color='red'>**加密**</font>和<font color='red'>**解密**</font>的 secret 密钥：
-1. 当生成 JWT 字符串的时候，需要使用 secret 密钥对用户的信息<font color='red'>进行加密</font>，最终得到加密好的 JWT 字符串
-2. 当把 JWT 字符串解析还原成 JSON 对象的时候，需要使用 secret 密钥<font color='red'>进行解密</font>
+为了<span class="txt-red">保证 JWT 字符串的安全性</span>，防止 JWT 字符串在网络传输过程中被别人破解，我们需要专门定义一个用于<span class="txt-red">**加密**</span>和<span class="txt-red">**解密**</span>的 secret 密钥：
+1. 当生成 JWT 字符串的时候，需要使用 secret 密钥对用户的信息<span class="txt-red">进行加密</span>，最终得到加密好的 JWT 字符串
+2. 当把 JWT 字符串解析还原成 JSON 对象的时候，需要使用 secret 密钥<span class="txt-red">进行解密</span>
 ```js
 // 这个 secretKey 的是可以是任意的字符串
 const secretKey = 'smiling ^_^'
 ```
 
 ## 10. 在登录成功后生成 JWT 字符串 *
-调用 <font color='047ffd'>**jsonwebtoken**</font> 包提供的 <font color='red'>**sign()**</font> 方法，将用户的信息加密成 JWT 字符串，响应给客户端：
+调用 <span class="txt-blue">**jsonwebtoken**</span> 包提供的 <span class="txt-red">**sign()**</span> 方法，将用户的信息加密成 JWT 字符串，响应给客户端：
 ```js
 // 登录接口
 app.post('/api/login', function (req, res) {
@@ -102,9 +102,9 @@ app.post('/api/login', function (req, res) {
 ```
 
 ## 11. 将 JWT 字符串还原为 JSON 对象 *
-客户端每次在访问那些有权限接口的时候，都需要主动通过<font color='red'>**请求头中的 Authorization 字段**</font>，将 Token 字符串发送到服务器进行身份认证。
+客户端每次在访问那些有权限接口的时候，都需要主动通过<span class="txt-red">**请求头中的 Authorization 字段**</span>，将 Token 字符串发送到服务器进行身份认证。
 
-此时，服务器可以通过 <font color='047ffd'>**express-jwt**</font> 这个中间件，自动将客户端发送过来的 Token 解析还原成 JSON 对象：
+此时，服务器可以通过 <span class="txt-blue">**express-jwt**</span> 这个中间件，自动将客户端发送过来的 Token 解析还原成 JSON 对象：
 ```js
 // 1. 使用 app.use() 来注册中间件
 // 2. express.JWT({ secret: secretKey, algorithms: ['HS256'] }) 就是用来解析 Token 的中间件
@@ -130,7 +130,7 @@ app.get('/admin/getinfo', function (req, res) {
 })
 ```
 ## 13. 捕获解析 JWT 失败后产生的错误
-当使用 express-jwt 解析 Token 字符串时，如果客户端发送过来的 Token 字符串<font color='red'>过期</font>或<font color='red'>不合法</font>，会产生一个<font color='red'>解析失败</font>的错误，影响项目的正常运行。我们可以通过 <font color='red'>Express 的错误中间件</font>，捕获这个错误并进行相关的处理，示例代码如下:
+当使用 express-jwt 解析 Token 字符串时，如果客户端发送过来的 Token 字符串<span class="txt-red">过期</span>或<span class="txt-red">不合法</span>，会产生一个<span class="txt-red">解析失败</span>的错误，影响项目的正常运行。我们可以通过 <span class="txt-red">Express 的错误中间件</span>，捕获这个错误并进行相关的处理，示例代码如下:
 ```js
 app.use((err, req, res, next) => {
   // 这次错误是由 token 解析失败导致的
