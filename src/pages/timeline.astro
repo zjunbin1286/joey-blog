@@ -1,0 +1,194 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import { getCollection } from 'astro:content';
+import articleDates from '../data/article-dates.json';
+
+/**
+ * 归档页：按年份倒序列出全部笔记。
+ *
+ * 日期取 article-dates.json（npm run gen:dates 从 git 首次提交生成），
+ * 和首页、RSS 用的是同一份数据，三处顺序不会打架。
+ */
+const dates = articleDates as Record<string, string>;
+
+const columns: Record<string, string> = {
+  javascript: 'JavaScript',
+  'html5-css3': 'Html5&CSS3',
+  vue: 'Vue',
+  react: 'React',
+  node: 'Node',
+  interview: '前端必知必会',
+  'handwriting-method': '方法实现',
+  shared: '更多分享',
+  'project-solution': '工作问题记录',
+};
+
+const entries = await getCollection('docs');
+
+const posts = entries
+  .map((entry) => {
+    const slug = entry.id.replace(/\.mdx?$/, '');
+    return { slug, entry };
+  })
+  .filter(({ slug }) => {
+    if (/(^|\/)index$/.test(slug)) return false;
+    return slug.startsWith('articles/') || slug.startsWith('project-solution/');
+  })
+  .map(({ slug, entry }) => {
+    const parts = slug.split('/');
+    const dir = parts[0] === 'project-solution' ? 'project-solution' : parts[1];
+    return {
+      slug,
+      title: entry.data.title,
+      date: dates[slug] ?? '2024-12-01',
+      column: columns[dir] ?? '其他',
+    };
+  })
+  .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
+
+/* 按年份分组，组内已经按日期倒序 */
+const years: { year: string; posts: typeof posts }[] = [];
+for (const post of posts) {
+  const year = post.date.slice(0, 4);
+  const last = years[years.length - 1];
+  if (last && last.year === year) last.posts.push(post);
+  else years.push({ year, posts: [post] });
+}
+
+const firstYear = years[years.length - 1]?.year ?? '';
+const lastYear = years[0]?.year ?? '';
+const span = firstYear === lastYear ? firstYear : `${firstYear} — ${lastYear}`;
+---
+
+<StarlightPage
+  frontmatter={{
+    title: '归档',
+    description: '按时间倒序排列的全部笔记。',
+    template: 'splash',
+  }}
+>
+  <div class="archive not-content">
+    <p class="lead">{posts.length} 篇笔记 · {span}</p>
+
+    {
+      years.map(({ year, posts: list }) => (
+        <section class="year">
+          <h2>
+            <span class="num">{year}</span>
+            <span class="count">{list.length} 篇</span>
+          </h2>
+          <ul>
+            {list.map((post) => (
+              <li>
+                <a href={`/${post.slug}/`}>
+                  <time datetime={post.date}>{post.date.slice(5)}</time>
+                  <span class="title">{post.title}</span>
+                  <span class="tag">{post.column}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </div>
+</StarlightPage>
+
+<style>
+  .archive {
+    /* 左对齐、不居中：页面标题在左边，内容跟着同一条左线才不显得错开 */
+    max-width: 54rem;
+    padding-bottom: 4rem;
+  }
+
+  .lead {
+    margin: 0 0 2.6rem;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-3);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .year + .year {
+    margin-top: 2.6rem;
+  }
+
+  h2 {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin: 0 0 0.5rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--sl-color-hairline);
+  }
+
+  .num {
+    font-size: var(--sl-text-3xl);
+    font-weight: 600;
+    color: var(--sl-color-text);
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .count {
+    font-size: var(--sl-text-xs);
+    font-weight: 400;
+    color: var(--sl-color-gray-3);
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  a {
+    display: grid;
+    grid-template-columns: 3.2rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 1rem;
+    /* 负 margin 外扩，hover 底色才能铺满整行，左内边距补回同样的量 */
+    margin-inline: -0.75rem;
+    padding: 0.62rem 0.75rem;
+    border-radius: 10px;
+    color: var(--sl-color-text);
+    text-decoration: none;
+    transition: background 0.2s ease;
+  }
+
+  a:hover {
+    background: var(--sl-color-gray-6);
+  }
+
+  a:hover .title {
+    color: var(--sl-color-text-accent);
+  }
+
+  time {
+    font-size: var(--sl-text-xs);
+    color: var(--sl-color-gray-3);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .title {
+    font-size: var(--sl-text-base);
+    line-height: 1.5;
+    transition: color 0.2s ease;
+  }
+
+  .tag {
+    font-size: var(--sl-text-xs);
+    color: var(--sl-color-gray-3);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 40rem) {
+    a {
+      grid-template-columns: 2.6rem minmax(0, 1fr);
+      gap: 0.6rem;
+    }
+
+    .tag {
+      display: none;
+    }
+  }
+</style>
