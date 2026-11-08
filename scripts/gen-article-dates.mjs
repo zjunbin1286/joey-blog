@@ -10,8 +10,15 @@ import { join, relative, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const docsDir = join(root, 'src/content/docs/articles');
+const docsDir = join(root, 'src/content/docs');
 const outFile = join(root, 'src/data/article-dates.json');
+
+/**
+ * 需要日期的目录（相对 src/content/docs）。
+ * 只收「有发布语义」的两类内容，index.mdx 落地页和 404 不在其中。
+ * 归档页 /timeline 会读 project-solution，漏掉它会让那批笔记全部没有日期。
+ */
+const DATE_DIRS = ['articles', 'project-solution'];
 
 /** 递归收集 .md / .mdx 文件 */
 function walk(dir) {
@@ -41,12 +48,14 @@ function firstCommitDate(absPath) {
 }
 
 const map = {};
-for (const abs of walk(docsDir)) {
-  const rel = relative(docsDir, abs).split('\\').join('/');
-  // slug 形式：去掉扩展名，articles/ 前缀补上
-  const slug = 'articles/' + rel.replace(/\.mdx?$/, '');
-  const date = firstCommitDate(abs);
-  if (date) map[slug] = date;
+for (const dir of DATE_DIRS) {
+  for (const abs of walk(join(docsDir, dir))) {
+    const rel = relative(docsDir, abs).split('\\').join('/');
+    // slug 形式：去掉扩展名，保留 articles/ 或 project-solution/ 前缀
+    const slug = rel.replace(/\.mdx?$/, '');
+    const date = firstCommitDate(abs);
+    if (date) map[slug] = date;
+  }
 }
 
 mkdirSync(dirname(outFile), { recursive: true });

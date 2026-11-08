@@ -40,15 +40,27 @@ const posts = entries
     return {
       slug,
       title: entry.data.title,
-      date: dates[slug] ?? '2024-12-01',
+      // 缺日期时留空，不用假日期顶上：假日期会让分组和排序同时错，且完全看不出来
+      date: dates[slug] ?? '',
       column: columns[dir] ?? '其他',
     };
-  })
-  .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
+  });
+
+/* 缺日期说明 gen:dates 没覆盖到，构建日志里点出来，页面尾部单列，不静默丢内容 */
+const undated = posts.filter((post) => !post.date);
+if (undated.length) {
+  console.warn(
+    `[timeline] ${undated.length} 条笔记缺少日期，已归入「日期待补」。请运行 npm run gen:dates：\n  ` +
+      undated.map((post) => post.slug).join('\n  ')
+  );
+}
+
+posts.sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
 
 /* 按年份分组，组内已经按日期倒序 */
 const years: { year: string; posts: typeof posts }[] = [];
 for (const post of posts) {
+  if (!post.date) continue;
   const year = post.date.slice(0, 4);
   const last = years[years.length - 1];
   if (last && last.year === year) last.posts.push(post);
@@ -90,6 +102,28 @@ const span = firstYear === lastYear ? firstYear : `${firstYear} — ${lastYear}`
           </ul>
         </section>
       ))
+    }
+
+    {
+      undated.length > 0 && (
+        <section class="year">
+          <h2>
+            <span class="num pending">日期待补</span>
+            <span class="count">{undated.length} 篇</span>
+          </h2>
+          <ul>
+            {undated.map((post) => (
+              <li>
+                <a href={`/${post.slug}/`}>
+                  <span class="no-date">—</span>
+                  <span class="title">{post.title}</span>
+                  <span class="tag">{post.column}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
     }
   </div>
 </StarlightPage>
@@ -135,6 +169,13 @@ const span = firstYear === lastYear ? firstYear : `${firstYear} — ${lastYear}`
     color: var(--sl-color-gray-3);
   }
 
+  /* 缺日期分组：字号降一档，不跟年份数字抢视觉 */
+  .num.pending {
+    font-size: var(--sl-text-lg);
+    color: var(--sl-color-gray-3);
+    letter-spacing: 0;
+  }
+
   ul {
     margin: 0;
     padding: 0;
@@ -167,6 +208,12 @@ const span = firstYear === lastYear ? firstYear : `${firstYear} — ${lastYear}`
     font-size: var(--sl-text-xs);
     color: var(--sl-color-gray-3);
     font-variant-numeric: tabular-nums;
+  }
+
+  /* 与 time 同列同字号，标题左边缘才不会错开 */
+  .no-date {
+    font-size: var(--sl-text-xs);
+    color: var(--sl-color-gray-3);
   }
 
   .title {
