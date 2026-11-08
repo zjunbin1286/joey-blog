@@ -1,5 +1,7 @@
 # build output
 dist/
+# 去掉 vercel 适配器做 DOM 比对时的产物（astro.check.config.mjs）
+dist-check/
 # Vercel adapter 的构建产物（里面含函数代码，别提交）
 .vercel/
 # generated types

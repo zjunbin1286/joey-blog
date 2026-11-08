@@ -1,0 +1,38 @@
+---
+import styles from './styles.module.scss'
+import type { HomeProject } from './types'
+
+interface Props {
+  items: HomeProject[]
+  /** 作品集总数，用于「全部 N 个」 */
+  total: number
+}
+
+const { items, total } = Astro.props
+---
+
+<section class={styles.sec} data-reveal>
+  <div class={styles.secHead}>
+    <h2>作品集</h2>
+    <a href="/collection">全部 {total} 个 →</a>
+  </div>
+  <div class={styles.projects}>
+    {
+      items.map((project) => (
+        <a
+          class={styles.card}
+          data-spot
+          href={project.url}
+          target={project.external ? '_blank' : undefined}
+          rel={project.external ? 'noopener noreferrer' : undefined}
+        >
+          <h3>{project.title}</h3>
+          <p>{project.desc}</p>
+          <span class={styles.status}>
+            <i aria-hidden="true"></i>maintained
+          </span>
+        </a>
+      ))
+    }
+  </div>
+</section>

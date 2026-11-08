@@ -1,0 +1,21 @@
+---
+import styles from './styles.module.scss'
+import type { HomeLink } from './types'
+
+interface Props {
+  links: HomeLink[]
+}
+
+const { links } = Astro.props
+---
+
+<nav class={styles.moreLinks} aria-label="更多栏目" data-reveal>
+  {
+    links.map((link) => (
+      <a href={link.href}>
+        {link.label}
+        {link.count ? <span>{link.count}</span> : null}
+      </a>
+    ))
+  }
+</nav>

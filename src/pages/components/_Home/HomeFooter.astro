@@ -1,0 +1,19 @@
+---
+import styles from './styles.module.scss'
+import SiteViews from '../../../components/SiteViews/index.astro'
+
+interface Props {
+  year: number
+  lastUpdated: string
+}
+
+const { year, lastUpdated } = Astro.props
+---
+
+<footer class={styles.foot}>
+  <span>© {year} Joey · Built with Astro</span>
+  <span class={styles.footMeta}>
+    <SiteViews />
+    <span>上次更新 · {lastUpdated || '—'}</span>
+  </span>
+</footer>

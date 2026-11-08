@@ -1,0 +1,45 @@
+---
+import styles from './styles.module.scss'
+import NovapixLogo from '../../../components/NovapixLogo/index.astro'
+---
+
+<section class={styles.promo} data-reveal>
+  <div class={styles.promoHead}>
+    <h2>
+      <i class={styles.promoDot} aria-hidden="true"></i>
+      正在做的事
+    </h2>
+  </div>
+
+  <div class={`${styles.promoCard} nvp-hover`}>
+    <div class={styles.promoMain}>
+      <h3>Novapix <em>AI</em></h3>
+      <p class={styles.promoDesc}>
+        描述一句需求，它先给你铺出整版设计——拿到的是每个字都能改的源文件，不是一张图。
+        抠图、扩图、换风格、和团队一起收尾，全在同一个画布上。
+      </p>
+      <ul class={styles.promoPoints}>
+        <li>整版可编辑</li>
+        <li>8 种 AI 图像能力</li>
+        <li>多人协作带锁</li>
+      </ul>
+      <a
+        class={`${styles.btn} ${styles.pixel} nvp-hover`}
+        href="https://novapix-ai.online/"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span class={styles.pixelIco}>
+          <NovapixLogo size={16} />
+        </span>
+        <span class={styles.pixelText}>前往 novapix-ai.online</span>
+      </a>
+    </div>
+
+    <div class={styles.promoOrbit} aria-hidden="true">
+      <span class={`${styles.ring} ${styles.ringIn}`}><i></i></span>
+      <span class={`${styles.ring} ${styles.ringOut}`}><i></i></span>
+      <NovapixLogo size={132} class={styles.promoMark} />
+    </div>
+  </div>
+</section>

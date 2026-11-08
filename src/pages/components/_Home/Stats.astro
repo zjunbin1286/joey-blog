@@ -1,0 +1,24 @@
+---
+import styles from './styles.module.scss'
+import type { HomeStat } from './types'
+
+interface Props {
+  stats: HomeStat[]
+}
+
+const { stats } = Astro.props
+---
+
+<div class={styles.consts}>
+  {
+    stats.map((stat) => (
+      <div class={styles.const}>
+        <b>
+          <span data-count={stat.value}>{stat.value}</span>
+          {stat.suffix && <i>{stat.suffix}</i>}
+        </b>
+        <span>{stat.label}</span>
+      </div>
+    ))
+  }
+</div>

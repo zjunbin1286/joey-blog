@@ -1,0 +1,31 @@
+---
+import styles from './styles.module.scss'
+import type { HomeArticle } from './types'
+
+interface Props {
+  items: HomeArticle[]
+  /** 全站文章总数，用于「全部 N 篇」 */
+  total: number
+}
+
+const { items, total } = Astro.props
+---
+
+<section class={styles.sec} data-reveal>
+  <div class={styles.secHead}>
+    <h2>最近的坐标</h2>
+    <a href="/special-column">全部 {total} 篇 →</a>
+  </div>
+  <div class={styles.list}>
+    {
+      items.map((item) => (
+        <a class={styles.item} href={item.href}>
+          <h3>{item.title}</h3>
+          <span class={styles.meta}>
+            {item.date.replace(/-/g, '.')} · {item.minutes} 分钟
+          </span>
+        </a>
+      ))
+    }
+  </div>
+</section>
