@@ -1,0 +1,118 @@
+---
+import styles from './styles.module.scss'
+import { WORLD, RADIUS } from './data'
+import type { BgStar, SkyNode } from './nodes'
+
+interface Props {
+  nodes: SkyNode[]
+  bgStars: BgStar[]
+}
+
+const { nodes, bgStars } = Astro.props
+---
+
+<svg
+  id="starmap-sky"
+  class={styles.sky}
+  viewBox={`0 0 ${WORLD.w} ${WORLD.h}`}
+  preserveAspectRatio="xMidYMid meet"
+  role="img"
+  aria-label="观星台：八个技术专栏按星座排布，每颗星对应一篇笔记"
+>
+  <defs>
+    <radialGradient id="starmap-glow">
+      <stop offset="0" stop-color="var(--star-glow)" stop-opacity="0.55"></stop>
+      <stop offset="0.35" stop-color="var(--star-glow)" stop-opacity="0.16"></stop>
+      <stop offset="1" stop-color="var(--star-glow)" stop-opacity="0"></stop>
+    </radialGradient>
+  </defs>
+
+  <g class={styles.bgstars} aria-hidden="true">
+    {
+      bgStars.map((s) => (
+        <circle cx={s.x.toFixed(1)} cy={s.y.toFixed(1)} r={s.r.toFixed(2)} opacity={s.o.toFixed(2)} />
+      ))
+    }
+  </g>
+
+  <g id="starmap-world">
+    {
+      nodes.map((n) => (
+        <g class={styles.cons} data-key={n.key} data-active="true" data-cx={n.cx} data-cy={n.cy}>
+          {/* 整片星座的点击热区：放在最底层，星点仍然压在上面可以单独点 */}
+          <circle class={styles.hit} cx={n.cx} cy={n.cy} r={n.hitR} aria-hidden="true" />
+
+          <g class={styles.links} aria-hidden="true">
+            {n.links.map(([a, b]) => (
+              <line
+                x1={n.stars[a].absX}
+                y1={n.stars[a].absY}
+                x2={n.stars[b].absX}
+                y2={n.stars[b].absY}
+              />
+            ))}
+          </g>
+
+          <g class={styles.stars}>
+            {n.stars.map((s) =>
+              s.art ? (
+                <a
+                  class={styles.star}
+                  href={s.art.url}
+                  data-tw={s.tw.variant}
+                  style={`--tw-dur:${s.tw.dur}s;--tw-delay:${s.tw.delay}s`}
+                  aria-label={`${n.cn} ${s.cn}：${s.art.title}`}
+                >
+                  <circle class={styles.glow} cx={s.absX} cy={s.absY} r={s.r * 4.4} />
+                  <circle class={styles.core} cx={s.absX} cy={s.absY} r={s.r} />
+                </a>
+              ) : (
+                <g class={styles.empty}>
+                  <circle class={styles.ring} cx={s.absX} cy={s.absY} r={s.r + 5} />
+                </g>
+              )
+            )}
+            {n.companions.map((s) => (
+              <a
+                class={`${styles.star} ${styles.small}`}
+                href={s.url}
+                data-tw={s.tw.variant}
+                style={`--tw-dur:${s.tw.dur}s;--tw-delay:${s.tw.delay}s`}
+                aria-label={`${n.cn} 伴星：${s.title}`}
+              >
+                <circle class={styles.glow} cx={s.absX} cy={s.absY} r={s.r * 4} />
+                <circle class={styles.core} cx={s.absX} cy={s.absY} r={s.r} />
+              </a>
+            ))}
+          </g>
+        </g>
+      ))
+    }
+  </g>
+
+  <g id="starmap-labels" class={styles.labels} font-size="30" aria-hidden="true">
+    {
+      nodes.map((n) => (
+        <g class={styles.consLabel} data-label={n.key}>
+          <text class={styles.consName} x={n.cx} y={n.cy + RADIUS + 62} text-anchor="middle">
+            {n.cn}
+          </text>
+          <text class={styles.latin} x={n.cx} y={n.cy + RADIUS + 88} text-anchor="middle">
+            {n.latin}
+          </text>
+          {n.stars.map((s) => (
+            <text
+              class={`${styles.starName} ${s.art ? '' : styles.starNameEmpty}`}
+              x={s.labelX}
+              y={s.labelY}
+              text-anchor={s.anchor}
+              dominant-baseline="middle"
+            >
+              {s.cn}
+            </text>
+          ))}
+        </g>
+      ))
+    }
+  </g>
+</svg>

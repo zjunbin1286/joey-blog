@@ -1,0 +1,54 @@
+---
+import styles from './styles.module.scss'
+import { pad, type SkyNode } from './nodes'
+
+interface Props {
+  nodes: SkyNode[]
+  totalNotes: number
+  totalStars: number
+}
+
+const { nodes, totalNotes, totalStars } = Astro.props
+---
+
+<div class={styles.side} data-side>
+  <div class={styles.head} data-head>
+    <p class={styles.kicker}>STAR ATLAS</p>
+    <h1 class={styles.title}>观星台</h1>
+    <p class={styles.lead}>
+      {nodes.length} 个专栏，{totalNotes} 篇笔记，{totalStars} 颗星。星点位置取自真实赤经赤纬，
+      大小按星等。点星座进入专栏，再点星点看那一篇。
+    </p>
+  </div>
+
+  <nav class={styles.rail} aria-label="选择星座" data-rail>
+    <div class={styles.railHead}>
+      <button class={styles.back} type="button" data-rail-back aria-label="返回全景" title="返回全景（Esc）">
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path
+            d="M13 8H3M7 3.6 2.8 8 7 12.4"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </svg>
+      </button>
+      <p class={styles.railCap}>Constellations</p>
+    </div>
+    <ul>
+      {
+        nodes.map((n, i) => (
+          <li>
+            <a href={`/articles/${n.key}/`} data-chip={n.key}>
+              <i class={styles.idx} aria-hidden="true">
+                {pad(i + 1)}
+              </i>
+              <span class={styles.chipName}>{n.cn}</span>
+              <em>{n.arts.length}</em>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</div>

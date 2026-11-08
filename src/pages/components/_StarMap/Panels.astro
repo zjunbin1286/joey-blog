@@ -1,0 +1,62 @@
+---
+import styles from './styles.module.scss'
+import { pad, type SkyNode } from './nodes'
+
+interface Props {
+  nodes: SkyNode[]
+}
+
+const { nodes } = Astro.props
+---
+
+{
+  nodes.map((n) => (
+    <aside class={styles.panel} data-panel data-key={n.key} hidden>
+      <div class={styles.panelTop}>
+        <div>
+          <h2 class={styles.panelName}>{n.cn}</h2>
+          <p class={styles.panelLatin}>
+            {n.latin} · {n.column}
+          </p>
+        </div>
+        <button class={styles.close} type="button" data-close aria-label="关闭">
+          ×
+        </button>
+      </div>
+      <p class={styles.panelDesc}>{n.desc}</p>
+      <p class={styles.panelCount}>
+        {n.arts.length} 篇笔记 · {n.stars.length + n.companions.length} 颗星
+      </p>
+      <ol class={styles.arts}>
+        {n.arts.map((a, i) => (
+          <li>
+            <a href={a.url}>
+              <i>{pad(i + 1)}</i>
+              <span>{a.title}</span>
+              <svg class={styles.go} viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path
+                  d="M3 8h8M7.5 4.5 11 8l-3.5 3.5"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </a>
+          </li>
+        ))}
+      </ol>
+      <a class={styles.more} href={`/articles/${n.key}/`}>
+        进入整个专栏
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path
+            d="M3 8h9M8.5 4.5 12 8l-3.5 3.5"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </svg>
+      </a>
+    </aside>
+  ))
+}
