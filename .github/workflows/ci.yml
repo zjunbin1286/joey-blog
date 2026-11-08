@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  # 允许在 Actions 页面手动触发一次
+  workflow_dispatch:
+
+# 同一个分支只跑最新一次：连发几个 commit 时不排队跑旧提交
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # gen:dates 靠 `git log --diff-filter=A` 取首次提交日，浅克隆会算出错误日期
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: 安装依赖
+        run: npm ci
+
+      # 新增文章忘了跑 gen:dates 时，首页排序、RSS、归档页会一起错，且线上看不出来
+      - name: 校验 article-dates.json 与 git 历史一致
+        run: |
+          npm run gen:dates
+          if ! git diff --quiet -- src/data/article-dates.json; then
+            echo "::error file=src/data/article-dates.json::日期数据没同步，本地跑 npm run gen:dates 后一并提交"
+            git --no-pager diff -- src/data/article-dates.json
+            exit 1
+          fi
+
+      - name: 类型检查与构建
+        run: npm run build
